@@ -1,0 +1,48 @@
+spring:
+  freemarker:
+    enabled: true
+    suffix: .html
+    request-context-attribute: request
+    cache: false
+    #template-loader-path: classpath:/templates/
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://59.36.148.141:3306/jiantai?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    type: com.zaxxer.hikari.HikariDataSource
+    username: sa
+    password: pass@123
+  session:
+    store-type: none
+  devtools:
+    restart:
+      #热部署生效
+      enabled: true
+      #classpath目录下的WEB-INF文件夹内容修改不重启
+      #exclude: WEB-INF/**
+      #设置重启目录
+  resources:
+    static-locations: classpath:/static/, classpath:/templates/
+  servlet:
+    multipart:
+      max-request-size: 30MB
+      max-file-size: 30MB #配置上传文件大小
+
+  #很神奇，不加这句的话http://localhost:8080/jianTai/login可以访问，加了.html后缀就访问失败（理论上默认配置了不用显式配置）
+#  http:
+#    encoding:
+#      charset: UTF-8
+#      enabled: true
+
+#      additional-paths: src/main/java
+
+server:
+  port: 8088
+  servlet:
+    context-path: /jianTai
+
+mybatis:
+  type-aliases-package: com.jiantai.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    ##开启驼峰映射
+    map-underscore-to-camel-case: true

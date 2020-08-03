@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>企业信息</title>
+
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="../layui/css/layui.css">
+<script src="../index/assets/js/jquery-1.10.2.js"></script>
+<!--<script src="../js/jquery-1.10.2.js"></script>-->
+<script type="text/javascript" src="../layui/layui.js"></script>
+
+</head>
+<body>
+	<div style="padding: 20px; background-color: #F2F2F2;">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<div class="layui-card-body">
+						<fieldset class="layui-elem-field layui-field-title" style="clear：both;">
+							<legend>企业信息</legend>
+						</fieldset>
+						<form class="layui-form layui-form-pane" action="" id="company_info">
+						<!--   <div class="layui-upload">
+							  <button type="button" class="layui-btn" id="test1">上传图片</button>
+							  <div class="layui-upload-list">
+							    <img class="layui-upload-img" id="demo1">
+							    <p id="demoText"></p>
+							  </div>
+							</div>  -->
+							<div class="layui-form-item">
+								<div class="layui-inline">
+									<label class="layui-form-label">公司全称</label>
+									<div class="layui-input-inline"  style="width: 350px">
+										<input type="text" id="企业全称" name="企业全称" autocomplete="off"
+											class="layui-input" placeholder="请输入" disabled="">
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">公司简称</label>
+									<div class="layui-input-inline" style="width: 350px">
+										<input type="text" id="企业简称" name="企业简称" autocomplete="off"
+											class="layui-input" placeholder="请输入" disabled="">
+									</div>
+								</div>
+							</div>
+								<!-- <div class="layui-inline">
+									<label class="layui-form-label" style="width: 150px">统一社会信用代码</label>
+									<div class="layui-input-inline">
+										<input type="text" name="number" autocomplete="off"
+											class="layui-input" placeholder="请输入">
+									</div>
+								</div> -->
+							<div class="layui-form-item">
+								<div class="layui-inline">
+									<label class="layui-form-label">公司地址</label>
+									<div class="layui-input-inline" style="width: 350px">
+										<input type="text" id="联系地址" name="联系地址" autocomplete="off"
+											class="layui-input" placeholder="请输入" >
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">企业编号</label>
+									<div class="layui-input-inline" style="width: 350px">
+										<input type="text" id="企业编号" name="企业编号" autocomplete="off"
+											class="layui-input" placeholder="请输入" disabled="">
+									</div>
+								</div>
+							</div>
+
+
+							<div class="layui-form-item">
+								<div class="layui-inline">
+									
+									<div class="layui-inline">
+										<label class="layui-form-label">公司固话</label>
+										<div class="layui-input-inline">
+											<input type="text" id="公司固话" name="公司固话"
+												placeholder="请输入" autocomplete="off" class="layui-input">
+										</div>
+									</div>
+									<div class="layui-inline">
+										<label class="layui-form-label">公司传真</label>
+										<div class="layui-input-inline">
+											<input type="text" id="公司传真" name="公司传真" autocomplete="off"
+												class="layui-input" placeholder="请输入">
+										</div>
+									</div>
+								</div>
+							</div>
+
+							
+
+							<div class="layui-form-item">
+								<div class="layui-inline">
+							 		<label class="layui-form-label">开业时间</label>
+									<div class="layui-input-inline">
+										<input type="text" id="开业时间" name="开业时间" id="start_date" lay-verify="date" placeholder="请单击选择日期" autocomplete="off" class="layui-input" >
+									</div>
+								</div>
+								<div class="layui-inline">
+									<label class="layui-form-label">企业人数</label>
+									<div class="layui-input-inline">
+										<input type="text" id="企业人数" name="企业人数" lay-verify="number"
+											placeholder="请输入" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								
+								<div class="layui-inline">
+									<label class="layui-form-label" style="width:130px">统一社会信用码</label>
+									<div class="layui-input-inline">
+										<input type="text" id="统一社会信用代码" name="统一社会信用代码" 
+											placeholder="请输入" autocomplete="off" class="layui-input">
+									</div>
+								</div>
+								
+							</div>
+							
+							<div class="layui-form-item">
+								<div class="layui-inline">
+										<label class="layui-form-label">法人代表人</label>
+										<div class="layui-input-inline">
+											<input type="text" id="法人代表" name="法人代表" autocomplete="off"
+												class="layui-input" placeholder="请输入">
+										</div>
+								</div>
+								<div class="layui-inline">
+										<label class="layui-form-label">联系人</label>
+										<div class="layui-input-inline">
+											<input type="text" id="联系人" name="联系人" autocomplete="off"
+												class="layui-input" placeholder="请输入">
+										</div>
+								</div>
+								<div class="layui-inline">
+										<label class="layui-form-label" style="width:130px">联系人手机号</label>
+										<div class="layui-input-inline">
+											<input type="text" id="联系人手机号" name="联系人手机号" autocomplete="off"
+												class="layui-input" placeholder="请输入" lay-verify="phone" >
+										</div>
+								</div>
+							</div>
+							
+							
+							
+							<div class="layui-form-item" pane="">
+							    <label class="layui-form-label">产品类型</label>
+							    <div class="layui-input-block">
+							      <input type="radio" name="产品类型" id="硬板" value="硬板" title="硬板">
+							      <input type="radio" name="产品类型" id="软板" value="软板" title="软板">
+							      <input type="radio" name="产品类型" id="铝基板" value="铝基板" title="铝基板">
+							      <input type="radio" name="产品类型" id="陶瓷板" value="陶瓷板" title="陶瓷板">
+							    </div>
+							 </div>
+							  
+							 <div class="layui-form-item" pane="">
+							    <label class="layui-form-label">园区位置</label>
+							    <div class="layui-input-block">
+							      <input type="radio" name="园区位置" id="南区" value="南区" title="南区">
+							      <input type="radio" name="园区位置" id="北区" value="北区" title="北区">
+							      <input type="radio" name="园区位置" id="西区" value="西区" title="西区">
+							    </div>
+							 </div>  
+							<div class="layui-form-item layui-form-text">
+								<label class="layui-form-label">备注</label>
+								<div class="layui-input-block">
+									<textarea id="备注" placeholder="请输入内容" class="layui-textarea">123333333333333</textarea>
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo2">确定修改</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+	<form class="layui-form layui-form-pane" action="" id="addDeclareInfoForm">
+		<div style="padding: 20px; background-color: #F2F2F2;">
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+								<fieldset class="layui-elem-field layui-field-title"
+									style="margin-top: 20px;">
+									<legend>建泰企业物料使用数据填报</legend>
+								</fieldset>
+						 	<div class="layui-form-item">
+							    <label class="layui-form-label">申报时间</label>
+							    <div class="layui-input-inline">
+							        <input type="text" id="date" lay-verify="date" placeholder="请单击选择日期" autocomplete="off" class="layui-input" >
+							        
+							    </div>
+							   
+						 	</div>
+						 	<button type="button" id="upload" style="display: none;">上传</button><!-- 由于layui的机制,所以得建一个隐藏按钮用作下载按钮的桥梁 -->
+							<table class="layui-table" id="table" lay-filter="table">
+								<thead>
+									<tr>
+										<td id='ps_td'></td>
+										<td style="color: #009688;" colspan='5' id='control'>选择月份操作佐证(对账单或送货单)
+											
+										</td>
+									</tr>
+								</thead>
+								<thead>
+									<tr>
+										<td>物料名称</td>
+										<td>物料单位</td>
+										<td>物料成分</td>
+										<td>成分含量</td>
+										<td>当月用量</td>
+										<td>操作</td>
+									</tr>
+								</thead>
+								<tbody id="tbody">
+									<tr>
+										<td id="material-0"></td>
+										<td><div id="unit-0">[请先选择物料名称]</div></td>
+										<td><div id="element-0">[请先选择物料名称]</div></td>
+										<td><div id="content-0">[请先选择物料名称]</div></td>
+										<td><input type="text" id="dosage-0" name="dosage-0" autocomplete="off"
+											class="layui-input inp" placeholder="请输入" lay-verify="number" ></td>
+										<td><a
+											class="layui-btn layui-btn-danger layui-btn-xs del" onclick="del(this, '', '0')">删除</a></td>
+									</tr>
+									
+									<tr id="last">
+										<td colspan="6">
+											 <button type="button" class="layui-btn layui-btn-danger add">新增</button>
+											 <input type="hidden" id=""/>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="layui-form-item" style="margin-top: 20px">
+								<button type="button" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+								<span style="color: red;">* 若然新建提交后发现新建的物料没出现，请刷新页面或重新选择月份即可</span>
+							</div>
+							
+	                       
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</form>
+	
+	
+		<form class="layui-form layui-form-pane" action="" id="addProductInfoForm">
+		<div style="padding: 20px; background-color: #F2F2F2;">
+			<div class="layui-row layui-col-space15">
+				<div class="layui-col-md12">
+					<div class="layui-card">
+						<div class="layui-card-body">
+								<fieldset class="layui-elem-field layui-field-title"
+									style="margin-top: 20px;">
+									<legend>建泰企业产品生产数据填报</legend>
+								</fieldset>
+						 	<div class="layui-form-item">
+							    <label class="layui-form-label">生产时间</label>
+							    <div class="layui-input-inline">
+							        <input type="text" id="date_product" lay-verify="date" placeholder="请单击选择日期" autocomplete="off" class="layui-input" >
+							        
+							    </div>
+							   
+						 	</div>
+							<table class="layui-hide" id="table_product" lay-filter="table_product"></table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</form>
+	
+	<script>
+	
+		
+		var table_row = 0;//用来生产自增长标识name或id的
+		var submit_data = new Array();//发送至后台的数组
+		var data_flag = new Array();//用于选择日期后临时保存的数组 物料选择的日期
+		var data_flag_product = new Array();//用于选择日期后临时保存的数组 产品选择的日期
+		var user_id; //id
+		var username; //用户名
+		var date_flag;//物料日期
+		var right; //用户权限 true/false
+		layui.use(
+					[ 'table', 'form', 'laydate', 'upload' ],
+					function() {
+						var table = layui.table, form = layui.form, laydate = layui.laydate, $ = layui.jquery 
+			            ,upload = layui.upload;
+		
+		
+		
+		
+					  //这里开始是<物料填报>的-------------------------------------------------------
+		
+		
+		
+		
+					  //监听提交
+					  form.on('submit(demo1)', function(data){
+						  for(var i = 0; i < submit_data.length; i++){
+								if(!submit_data[i]){
+									submit_data.splice(i, 1);
+								}					
+						  }
+						  
+						  
+						  
+						  
+						  var add_arr = new Array();
+						  var update_arr = new Array();
+						  console.log(submit_data.length);	
+						  for(var i = 0; i < submit_data.length; i++){
+								if(submit_data[i]){
+									if(submit_data[i]['state'] == 'add'){
+										add_arr.push(submit_data[i]);
+									} else if (submit_data[i]['state'] == 'update'){
+										update_arr.push(submit_data[i]);
+									}
+									submit_data[i]['state'] = ''//修改状态变为最初
+								}					
+						  }
+						  for(var i = 0; i < add_arr.length; i++){
+								console.log('add:'+JSON.stringify(add_arr[i]));			
+						  }
+						  
+						  
+						  for(var i = 0; i < update_arr.length; i++){
+								console.log('update:'+JSON.stringify(update_arr[i]));			
+						  }
+						  
+						  
+						  
+						
+						  
+						  var lastTr_index = 0;
+						  if(update_arr.length <= 0&& add_arr.length <= 0){
+							  return;
+							  
+						  }	else {
+							  $.post("../data/record/addDeclareInfoToJTDeclareInfo", { 'add_arr': JSON.stringify(add_arr), 'update_arr': JSON.stringify(update_arr), 'date': $("#date").val() }, function(data) {
+								  update_arr = new Array();
+								  add_arr = new Array();
+								  /*-----------------------------------
+								  if(submit_data.length > 1){
+									  
+									  
+									  if(!submit_data[0]){
+										  console.log("数组第1个为null-----");
+										  for(var i = 0; lastTr_index != 0; i++){
+											     //("#material-" + submit_data[i]['index']).parent()
+											     if(submit_data[i]){
+											    	 lastTr_index = i;
+											     } else {
+											    	 console.log("数组第"+ i +"个为null-----");
+											     }
+										  }  
+										  
+										  
+									  }
+									  
+									  //循环删除tr
+									  for(var i = 1; i < submit_data.length; i++){
+										     //("#material-" + submit_data[i]['index']).parent()
+										     if(submit_data[i]){
+											    $("#material-" + submit_data[i]['index']).closest('tr').remove();
+										     }
+									  }  
+									  
+									  
+								  } 
+								  -------------------------------------------------*/
+								 
+								  /* var flag = submit_data[0]['index'];
+								  $("#unit-" + submit_data[0]['index']).html("[请先选择物料名称]")
+								  $("#element-" + submit_data[0]['index']).html("[请先选择物料名称]")
+								  $("#content-" + submit_data[0]['index']).html("[请先选择物料名称]")
+								  $("#addDeclareInfoForm")[0].reset();
+								  add_select(material1, 0);
+								  submit_data = new Array();
+								  submit_data[0] = JSON.parse("{}");
+								  submit_data[0]['index'] = flag;
+								  form.render("select") */
+								  
+								  layer.alert('提交成功', {
+							      	title: '信息'
+							      })
+                                  /* layer.alert(JSON.stringify(submit_data), {
+                            title: '最终的提交信息'
+                        }) */
+                                  submit_data = new Array();
+                                  table_row = 0;
+                                  $.post("../data/record/findRecordByUsername",{'username': username, 'date': date_flag} , function(data) {
+                                      $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add'>新增</button><input type='hidden' id=''/></td></tr>");
+                                      if((!data.result) || (data.result.length == 0)){
+                                          add_tr('', 1, 'add', true);//record, flag(1代表重新渲染表单，0代表不渲染), state, change
+                                          submit_data[0] = JSON.parse("{}");
+                                          submit_data[0]['index'] = 0;
+                                          return;
+                                      }
+                                      var flag;
+                                      for(var i = 0; i < data.result.length; i++){
+                                          add_tr(data.result[i], 0, '', data.change);
+
+                                          for(var j = 0; j < material1.result.length; j++){
+
+                                              if(material1.result[i].物料名称 == material1.result[j].物料名称){
+                                                  flag = material1.result[j];
+                                              }
+                                          }
+
+                                          $("#unit-" + table_row).html(flag.单位);
+                                          $("#element-" + table_row).html((flag.主要成分 ? flag.主要成分 : '[暂无备注]'));
+                                          $("#content-" + table_row).html((flag.含量 ? flag.含量 : '[暂无备注]'));
+                                          $("#dosage-" + table_row).val((data.result[i].dosage ? data.result[i].dosage : ''));
+
+
+                                          submit_data[table_row]['material'] = data.result[i].material;
+                                          submit_data[table_row]['unit'] = $('#unit-' + table_row).html();
+                                          submit_data[table_row]['element'] = $('#element-' + table_row).html();
+                                          submit_data[table_row]['content'] = $('#content-' + table_row).html();
+                                          submit_data[table_row]['dosage'] = $('#dosage-' + table_row).val();
+                                      }
+                                      console.log(JSON.stringify(submit_data));
+                                      form.render();
+
+                                  })
+                              })
+						  }
+				    	  
+
+
+					    return false;
+					  });
+
+					  //监听提交
+					  form.on('submit(demo2)', function(data){
+						
+						var arr = {};
+						arr['联系地址'] = $("#联系地址").val();
+						arr['公司固话'] = $("#公司固话").val();
+						arr['公司传真'] = $("#公司传真").val();
+						arr['开业时间'] = $("#开业时间").val();
+						arr['联系地址'] = $("#联系地址").val();
+						arr['企业人数'] = $("#企业人数").val();
+						arr['统一社会信用代码'] = $("#统一社会信用代码").val();
+						arr['法人代表'] = $("#法人代表").val();
+						arr['联系人'] = $("#联系人").val();
+						arr['联系人手机号'] = $("#联系人手机号").val();
+						arr['产品类型'] = $("input[name='产品类型']:checked").val();
+						arr['园区位置'] = $("input[name='园区位置']:checked").val();
+						arr['备注'] = $("#备注").val();
+						  
+						
+						$.post("../data/record/setCompanyInfoById", {'arr' :JSON.stringify(arr), 'id':user_id }, function(data) {
+							layer.alert('提交成功', {
+						      	title: '信息'
+						      })
+					    })	
+						//alert($("input[name='产品类型']:checked").val());	
+					    return false;
+					  });
+					  
+					  
+					  	//新增
+						$('body').on('click', '.add', function() {
+							add_tr('', 1, 'add', true);//record, flag, state, change
+						});
+						
+						
+						
+						
+						
+					  var data_select = "";
+					  var material1 = null;
+					  //初始化start
+					  $.post("../data/record/findDataToJTMaterialList", function(data) {
+						  material1 = data;
+						  
+						  add_select(material1, table_row);
+						  $("#material-0").append(data_select);
+						  // 今天做到这里--------------$("#material-0").find("option[value='干膜']").prop("selected",true);
+						  
+						  submit_data[0] = JSON.parse("{}");
+						  submit_data[0]['index'] = 0;
+						  
+						  form.render();//因为有select元素，所有添加后要重新渲染一次
+				      })	
+				      
+									      
+					  $.post("../user/getUserInfo", function(data) {
+							if(data.LOGIN_USER){
+								user_id = data.LOGIN_USER.id;
+								username = data.LOGIN_USER['企业简称']
+								$.post("../user/findUserInfo", { "id": data.LOGIN_USER.id }, function(data) {
+									if(data.company){
+										//$("#username").html(data.company['企业全称']);
+										for(let key in data.company ){
+											if(data.company[key]){
+												$("#" + key).val(data.company[key]);
+											}
+											
+											if(key == '备注'){
+												$("#" + key).html(data.company[key]);
+											}
+											if(key == '园区位置' || key == '产品类型'){
+												$("#" + data.company[key]).attr('checked', '')
+												form.render();
+											}
+										}					
+									}
+							    }, "json")
+							} else {
+								location.href = "login.html";
+							}
+					  }, "json")
+				      
+					  
+					  
+					  
+					  
+					  //初始化 end
+				      
+				      
+				      
+					  form.on('select(test)', function(data){
+						  /* if(!data.value){
+							  alert(1);
+						  } */
+						  
+						  
+						  
+						  
+						  var index = ($(data.elem).attr("name")).substring(($(data.elem).attr("name")).indexOf('-') + 1);
+						  var start_value = '';
+						  /* var state = $("#state-" + index).val();
+						  console.log(state + "index:" + index) */
+						  for(var i = 0; i < submit_data.length; i++){
+							  if(submit_data[i]){
+								  if(submit_data[i]['index'] == index){
+									  start_value = submit_data[i];
+								  }
+							  }
+						  }  
+						  
+						  
+						  if(data.value != ''){
+							  if((JSON.stringify(submit_data)).indexOf('"material":"' + data.value + '"') != -1){
+								  
+								  for(var i = 0; i < submit_data.length; i++){
+									  if(submit_data[i]){
+										  if(submit_data[i]['material'] == data.value){
+											  if(submit_data[i]['index'] != index){
+												  layer.alert('该物料当月已存在, 请勿重复选择', {
+												      	title: '信息'
+												  })
+												  $("#material-" + index).find("option[value='" + start_value['material'] + "']").prop("selected",true);
+												  submit_data[index]['material'] = start_value['material'] ? start_value['material'] : '';
+												  submit_data[index]['unit'] = start_value['unit'] ? start_value['unit'] : '';
+												  submit_data[index]['element'] = start_value['element'] ? start_value['element'] : '';
+												  submit_data[index]['content'] = start_value['content'] ? start_value['content'] : '';
+												  submit_data[index]['dosage'] = start_value['dosage'] ? start_value['dosage'] : '';
+												  console.log(JSON.stringify(submit_data))
+												  return;
+											  }
+										  }
+									  }
+								  }  
+							  } 
+							  
+							  var flag;
+							  for(var i = 0; i < material1.result.length; i++){
+								  if(material1.result[i].物料名称 == data.value){
+									  flag = material1.result[i];
+								  }
+							  }
+							  
+							  
+							  $("#unit-" + index).html(flag.单位);
+							  $("#element-" + index).html((flag.主要成分 ? flag.主要成分 : '[暂无备注]'));
+							  $("#content-" + index).html((flag.含量 ? flag.含量 : '[暂无备注]'));
+							  submit_data[index]['material'] = data.value;
+						      submit_data[index]['unit'] = $('#unit-' + index).html();
+							  submit_data[index]['element'] = $('#element-' + index).html();
+							  submit_data[index]['content'] = $('#content-' + index).html();
+							  
+							  for(var i = 0; i < submit_data.length; i++){
+									if(submit_data[i]){
+										if(submit_data[i]['index'] == index){
+											if(!submit_data[i]['state']){
+												if(submit_data[i]['state'] != 'add'){
+													submit_data[i]['state'] = 'update';
+												}
+											}
+										}
+									}					
+							  }
+							  console.log(JSON.stringify(submit_data))
+							  
+						  }
+						  
+						  
+						  
+					  });
+					  
+					  //修改---------------------------------
+					  $('body').on('change', '.inp', function(data) {
+							var index = ((data.target.id).substring((data.target.id).indexOf('-') + 1));
+							
+							console.log("修改用量-----"+index);
+							for(var i = 0; i < submit_data.length; i++){
+								if(submit_data[i]){
+									if(submit_data[i]['index'] == index){
+										submit_data[i]['dosage'] = data.target.value;
+										
+										if(!submit_data[i]['state']){
+											if(submit_data[i]['state'] != 'add'){
+												submit_data[i]['state'] = 'update';
+											}
+										}
+									}
+								}					
+							}
+							console.log(JSON.stringify(submit_data));	
+							/* if($("#state-" + index).val() == ''){
+								$("#state-" + index).val('update');
+							} */
+					  });
+					  
+					  
+					  //单击我触发
+					  lay('#date').on('click', function(){
+						  
+					    laydate.render({
+					      elem: '#date'
+					      ,type: 'month'
+					      ,show: true
+					      ,closeStop: '#date'
+					    });
+					  });
+					  
+					  
+					  
+					  //单击我触发
+					  lay('#date').on('click', function(){
+						
+					    laydate.render({
+					      elem: '#date'
+					      ,type: 'month'
+					      ,show: true
+					      ,closeStop: '#date'
+					      ,done: function(value, date){//value, date, endDate点击日期、清空、现在、确定均会触发。回调返回三个参数，分别代表：生成的值、日期时间对象、结束的日期时间对象
+					    	  date_flag = value;
+					          //console.log(date);
+					    	  submit_data = new Array();
+					          $.post("../data/record/findRecordByUsername",{'username': username, 'date': value, 'id': user_id} , function(data) {
+						    	  $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add'>新增</button><input type='hidden' id=''/></td></tr>");
+						    	  if(data.jtMaterialEvidence){
+						    		  $("#ps_td").html('本月佐证已上传');
+						    		  $("#ps_td").css('color', '#009688');
+						    		  /* $("#upload").css('display', 'none');
+						    		  $("#download").css('display', 'block'); */
+						    		  $("#control").html('<button type="button" class="layui-btn layui-btn-danger" id="upload2" onclick="uploadzz(1)"><i class="layui-icon">&#xe62f;</i>重新上传</button><button type="button" class="layui-btn layui-btn-primary" id="download" onclick="downloadzz(1)"><i class="layui-icon">&#xe601;</i>下载佐证</button>');
+						    		  
+							          
+						    	  } else {
+						    		  $("#ps_td").html('当前月份尚未上传佐证(对账单或送货单)');
+						    		  $("#ps_td").css('color', '#FF5722');
+						    		  /* $("#upload").css('display', 'block');
+						    		  $("#download").css('display', 'none');*/
+						    		  $("#control").html('<button type="button" class="layui-btn layui-btn-danger" id="upload2" onclick="uploadzz(1)"><i class="layui-icon">&#xe62f;</i>上传文件</button> <span style="color: #FF5722;">*上传格式为zip、rar、7z(压缩包格式)</span>');
+						    	  }
+					        	  if((!data.result) || (data.result.length == 0)){
+					        		  /* add_select(material1, 0, '', data.change);
+					        		  var tr_flag = '<tr>';
+					        		  tr_flag += '<td id="material-0">' + data_select + '</td>'
+					        		  tr_flag += '<td><div id="unit-0">[请先选择物料名称]</div></td>'
+					        		  tr_flag += '<td><div id="element-0">[请先选择物料名称]</div></td>'
+					        		  tr_flag += '<td><div id="content-0">[请先选择物料名称]</div></td>'
+					        		  tr_flag += '<td><input type="text" id="dosage-0" name="dosage-0" autocomplete="off" class="layui-input inp" placeholder="请输入" lay-verify="number" ></td>'
+					        		  tr_flag += '<td><a class="layui-btn layui-btn-danger layui-btn-xs del" onclick="del(this, "", "0")">删除</a></td></tr>'
+					        		  $('#last').before(tr_flag) */
+					        		  
+					        		  add_tr('', 1, 'add', true);//record, flag, state, change
+					        		  submit_data[0] = JSON.parse("{}");
+						 		 	  submit_data[0]['index'] = 0;
+					        		  form.render();
+					        	      return; 	
+						      	  }
+					        	  right = data.change; //赋值权限
+					        	  if(!data.change){
+					        		  layer.alert('当前选择的月份不能通过自定义修改，若需修改请联系建泰环保工业园有限公司（电话：0756-5162128）', {
+									      	title: '信息'
+									  })
+					        	  }
+					        	  
+					        	  var flag;
+					        	  for(var i = 0; i < data.result.length; i++){
+					        		  add_tr(data.result[i], 0, '', data.change);
+					        		  
+					        		  for(var j = 0; j < material1.result.length; j++){
+					        			  
+						        		  if(material1.result[i].物料名称 == material1.result[j].物料名称){
+											  flag = material1.result[j];
+										  }
+					        		  }
+					        		  
+					        		  $("#unit-" + table_row).html(flag.单位);
+									  $("#element-" + table_row).html((flag.主要成分 ? flag.主要成分 : '[暂无备注]'));
+									  $("#content-" + table_row).html((flag.含量 ? flag.含量 : '[暂无备注]'));
+									  $("#dosage-" + table_row).val((data.result[i].dosage ? data.result[i].dosage : ''));
+									  
+									  
+									  submit_data[table_row]['material'] = data.result[i].material;
+									  submit_data[table_row]['unit'] = $('#unit-' + table_row).html();
+									  submit_data[table_row]['element'] = $('#element-' + table_row).html();
+									  submit_data[table_row]['content'] = $('#content-' + table_row).html();
+									  submit_data[table_row]['dosage'] = $('#dosage-' + table_row).val();
+								  }
+					        	  console.log(JSON.stringify(submit_data));
+					        	  form.render();
+					        	  
+					        	  
+								  
+								  
+					        	  
+						      })	
+					      }
+					    });
+					  });
+					  window.downloadzz = function (a){
+						  location.href = '../data/file/downloadFile?folder=evidence&date=' + date_flag;
+				   	  }
+					  
+					  window.uploadzz = function (a){
+						  console.log(date_flag);
+						  $("#upload").click();
+					  }
+					  //单击我触发
+					  lay('#开业时间').on('click', function(){
+					    laydate.render({
+					      elem: '#开业时间'
+					    
+					      ,show: true
+					      ,closeStop: '#开业时间'
+					    });
+					  });
+					  
+				   //上传佐证
+				   upload.render({ //允许上传的文件后缀
+					    elem: '#upload'
+					    ,url: '../data/file/uploadEvidence' //改成您自己的上传接口
+					    ,data: {
+					    	date: function () {
+                          	 	 return date_flag;
+                       		}
+				  		}
+					    ,accept: 'file' //普通文件
+					    ,exts: 'zip|rar|7z' //只允许上传压缩文件
+					    ,done: function(res){
+					    	if(res.code > 0){
+					    		layer.msg('上传失败,请刷新页面再试');
+						      } else {//上传成功
+						    	  $("#ps_td").html('本月佐证已上传');
+						    	  $("#ps_td").css('color', '#009688');
+						    	  $("#control").html('<button type="button" class="layui-btn layui-btn-danger" id="upload2" onclick="uploadzz(1)"><i class="layui-icon">&#xe62f;</i>重新上传</button><button type="button" class="layui-btn layui-btn-primary" id="download" onclick="downloadzz(1)"><i class="layui-icon">&#xe601;</i>下载佐证</button>');
+							      form.render();
+							      layer.msg('上传成功');
+						      }
+					      
+					    }
+				   });
+				   
+						
+					//删除------------------------
+					/* $('body').on('click', '.del', function(data) {
+						
+					}); */
+				    window.del = function (is, id, index2){
+						
+						if(!right){
+							layer.msg('如需删除请联系0756-5162128。', {
+								time : 10000
+							});
+							
+							return;
+						}
+						
+						
+						if ($('#table tbody tr').length === 2) {
+							layer.msg('只有一条不允许删除。', {
+								time : 2000
+							});
+						} else {
+							//删除当前按钮所在的tr
+							
+							//console.log(JSON.stringify(submit_data));
+							
+							layer.confirm('确认要删除吗？', {
+						        btn : [ '确定', '取消' ]//按钮
+						    }, function(index) {
+						        
+						        layer.close(index);
+						        $(is).closest('tr').remove();
+								//var index2 = ((data.target.id).substring((data.target.id).indexOf('-') + 1));
+								console.log('删除的索引:' + index2)
+								for(var i = 0; i < submit_data.length; i++){
+									if(submit_data[i]){
+										if(submit_data[i]['index'] == index2){
+											console.log("index相等");
+											submit_data.splice(i, 1);
+										}
+									}					
+								}
+								
+								
+								//如果含有id的代表着该行是与后台交接删除 , 否则不需要操作(在前端删除即可)
+								if(id) {
+									$.post("../data/record/delRecordById", {'id': id}, function(data) {
+										  
+								    })	
+						   		}
+								//console.log(submit_data);
+						    });
+						}
+						
+					}
+					
+						
+					function add_tr (record, flag, state, change){
+						
+						table_row ++;
+						add_select(material1, table_row, record.material, change);
+						var html = '<tr>'
+								+ '<td>' + data_select 
+								
+								+ '</td>'
+								
+								+ '<td>'
+								+ '<div id="unit-' + table_row + '">[请先选择物料名称]</div>'
+								+ '</td>'
+								
+								+ '<td>'
+								+ '<div id="element-' + table_row + '">[请先选择物料名称]</div>'
+								+ '</td>'
+								
+								+ '<td>'
+								+ '<div id="content-' + table_row + '">[请先选择物料名称]</div>'
+								+ '</td>'
+								
+								+ '<td>'
+								+ '<input type="text" id="dosage-' + table_row + '" autocomplete="off" class="layui-input inp" placeholder="请输入" lay-verify="number" ' + (change ? '' : 'disabled') + '>'
+								+ '</td>'
+								
+								+ '<td>'
+								+ '<a class="layui-btn layui-btn-danger layui-btn-xs del" onclick="del(this, ' + record.id + ', ' + table_row + ')">删除</a>'
+								+ '</td>' + '</tr>';
+						//添加到表格最后
+						$('#last').before(html)
+						//$(html).appendTo($('#table tbody tr:first').after(html));
+						if(flag == 1){
+							form.render();//因为有select元素，所有添加后要重新渲染一次
+						}
+						//console.log("data-----"+JSON.stringify(checkStatus));
+						if(table_row != 0){
+							submit_data[table_row] = JSON.parse("{}"); 
+						}
+						submit_data[table_row]['material'] = "";
+						submit_data[table_row]['unit'] = "";
+						submit_data[table_row]['element'] = "";
+						submit_data[table_row]['content'] = "";
+						submit_data[table_row]['dosage'] = "";
+						submit_data[table_row]['state'] = state;
+						if(state != 'add'){
+							submit_data[table_row]['id'] = record.id;
+						}
+						submit_data[table_row]['index'] = table_row;
+						
+						
+						$("#material-" + table_row).find("option[value='" + record.material + "']").prop("selected",true);
+						/* submit_data[table_row]['material'] = data.value;
+						submit_data[table_row]['unit'] = $('#unit-' + index).html();
+						submit_data[table_row]['element'] = $('#element-' + index).html();
+						submit_data[table_row]['index'] = table_row; */
+						
+					}
+					function add_select(data, row, material, change){
+						//console.log(change);
+     					//$("#material-0").find("option[value='干膜']").prop("selected",true);
+						data_select = '<select id="material-' + row + '" name="material-' + row + '" lay-verify="required" lay-search="" lay-filter="test" ' + (change ? '' : 'disabled')  + '><option value=""></option>';
+						for(var i = 0; i < data.result.length; i++){
+							data_select += '<option value="' + data.result[i].物料名称 + '">' + data.result[i].物料名称 +  '</option>'
+						}
+						data_select += "</select>";
+						
+					}
+					
+					
+					// <物料填报>部分结束/////下面是<产品填报>代码-----------------------------------------------
+					
+					
+						
+					 //单击我触发--时间
+					  lay('#date_product').on('click', function(){
+						  ///alert("aaa")
+					    laydate.render({
+					      elem: '#date_product'
+					      ,type: 'month'
+					      ,show: true
+					      ,closeStop: '#date'
+					      ,done: function(value, date){//value, date, endDate点击日期、清空、现在、确定均会触发。回调返回三个参数，分别代表：生成的值、日期时间对象、结束的日期时间对象
+					    	  data_flag_product = value;//赋值日期给全局参数
+					    	  table.render({
+								    elem: '#table_product'
+								    ,url:'../data/record/findProductRecordByDate?date=' + value
+								    ,title: '用户数据表'
+								    ,totalRow: true
+								    ,cols: [[
+								      {field:'product', title:'产品'}
+								      ,{field:'unit', title:'单位'}
+								      ,{field:'yield', title:'产量（单击可编辑）', edit: 'text'}
+								      
+								    ]]
+								    ,page: true
+								  });
+					      }
+					    });
+
+
+					  });
+						
+					
+
+					  
+						  //监听单元格编辑
+						  table.on('edit(table_product)', function(obj){
+
+						    var value = obj.value //得到修改后的值
+						    ,data = obj.data //得到所在行所有键值
+						    ,field = obj.field1; //得到字段
+						    //layer.msg('[ID: '+ data.product +'] ' + field + ' 字段更改为：'+ value);
+						    $.post("../data/record/updateUnitByProduct", {'yield': value, 'date': data_flag_product, 'product': data.product}, function(data) {
+								  if(data.err){
+									  layer.msg(data.err);
+								  } else {
+									  layer.msg('修改成功');
+								  }
+						    })
+
+						  });
+					
+					});
+					
+		
+					
+		
+					
+					
+					
+					
+					
+		
+		
+	</script>
+
+</body>
+</html>

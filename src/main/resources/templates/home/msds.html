@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>msds上传</title>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../js/jquery-3.2.1.min.js"></script>
+	<!-- 必须先引入2.0.8版本的hammer.min.js -->
+	<script src="../js/hammer.js" type="text/javascript" charset="utf-8"></script>
+	<script src="../layui/layui.js"></script>
+	<script type="text/javascript" src="../js/exif.js"></script>
+    <style>
+        .layui-upload-img{width: 92px; height: 92px; margin: 0 10px 10px 0;}
+
+    </style>
+
+</head>
+<body>
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		<legend>msds上传</legend>
+</fieldset>
+
+
+<form class="layui-form layui-form-pane" action="" id="uploadAndDownloadForm">
+	<div class="layui-fluid">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<blockquote class="layui-elem-quote layui-quote-nm">
+
+						<div class="layui-upload">
+							<div><span>&nbsp;*&nbsp;务必上传的是PDF文件（后缀名为pdf）（支持多文件选择）</span>
+							<br>
+							<span style="color: red;">&nbsp;*&nbsp;增加物料或变更物料后必须上传</span>
+							</div>
+							<div style="margin-top: 8px;">
+								<button type="button" class="layui-btn layui-btn-normal"
+									id="testList">选择多文件</button>
+								<div class="layui-upload-list">
+									<table class="layui-table">
+										<thead>
+											<tr>
+												<th>文件名</th>
+												<th>大小</th>
+												<th>状态</th>
+												<th>所属物料</th>
+												<th>操作</th>
+											</tr>
+										</thead>
+										<tbody id="demoList"></tbody>
+									</table>
+								</div>
+								<button type="button" class="layui-btn" id="check" lay-submit="" lay-filter="checkFrom">开始上传</button>
+								<button type="button" class="layui-btn" id="upload" style="display:none;">隐藏</button>
+							</div>
+						</div>
+
+					</blockquote>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			<legend>已上载文件</legend>
+	</fieldset>
+	<div class="layui-fluid">
+		<div class="layui-row layui-col-space15">
+			<div class="layui-col-md12">
+				<div class="layui-card">
+					<blockquote class="layui-elem-quote layui-quote-nm">
+
+						<div class="layui-upload">
+							<div class="layui-upload-list">
+								<table class="layui-table">
+									<thead>
+										<tr>
+											<th>文件名</th>
+											<th>操作</th>
+										</tr>
+									</thead>
+									<tbody id="downloadList"></tbody>
+								</table>
+							</div>
+						</div>
+
+					</blockquote>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<script>
+
+var select_upload = "";
+var select_download = "";
+var material1 = null;
+var materialFilename = new Array();
+var downfilename = '';
+layui.use(['upload', 'form'], function(){
+	  var $ = layui.jquery
+	  , upload = layui.upload, form = layui.form;
+	  var table_row = 0;
+	  var url_flag = 'init';
+	  
+	  //多文件列表示例
+	  var demoListView = $('#demoList')
+	  ,uploadListIns = upload.render({
+	    elem: '#testList'
+	    ,url: '../data/file/uploadMsds' //改成您自己的上传接口
+	    ,accept: 'file'
+	    ,exts: 'pdf' //只允许上传pdf文件
+	    ,multiple: true
+	    ,auto: false
+	    ,bindAction: '#upload'
+	    ,data: {'result': new Array()}
+		,before: function(obj){ 
+			
+			
+			console.log('原来::' + JSON.stringify(uploadListIns.config.data.result))
+			var upload_result = uploadListIns.config.data.result;
+			for(i = 0; i < upload_result.length; i++){
+				if(upload_result[i]){
+					upload_result[i]['material'] = $("#materialToUploadFor" + upload_result[i]['index']).val()
+					//alert(upload_result[i]['material']);
+				}
+				
+			}
+			if(!upload_result || upload_result.length < 1){
+				console.log('无文件存在');
+				return;
+			}
+			
+			uploadListIns.config.data.result = new Array();
+			uploadListIns.config.data.result = JSON.stringify(upload_result);//出问题了11111111
+			/* upload_result = JSON.stringify(upload_result); */
+			
+			console.log('后来::' + JSON.stringify(uploadListIns.config.data.result))
+			
+		}
+	    ,choose: function(obj){   
+    	//监听提交
+			/* if(url_flag == 'init'){
+				url_flag = uploadListIns.config.url;
+			} */
+	    	var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+		      //读取本地文件
+		      obj.preview(function(index, file, result){
+		    	//= url_flag + '?filename=' + file.name;
+		    	var upload_result = uploadListIns.config.data.result;
+		    	
+		    	//uploadListIns.config.data = {'filename': };
+	    		upload_result[table_row] = JSON.parse("{}"); 
+		    	upload_result[table_row]['filename'] = file.name;
+		    	upload_result[table_row]['material'] = '';
+		    	upload_result[table_row]['index'] = index;
+		    	
+		    	materialFilename[table_row] = JSON.parse("{}"); 
+		    	materialFilename[table_row]['filename'] = file.name;
+		    	materialFilename[table_row]['material'] = '';
+		    	materialFilename[table_row++]['index'] = index;
+		    	//console.log(JSON.stringify(uploadListIns.config.data))
+		    	//console.log("materialFilename<<<<<<"+JSON.stringify(materialFilename))
+		    	add_select(material1, index);
+		    	
+		        var tr = $(['<tr id="upload-'+ index +'">'
+		          ,'<td>'+ file.name +'</td>'
+		          ,'<td>'+ (file.size/1024).toFixed(1) +'kb</td>'
+		          ,'<td>等待上传</td>'
+		          ,'<td>' + select_upload + '</td>'
+		          ,'<td>'
+		            ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+		            ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+		            //,'<input type="button" class="layui-hide" id="filenameFor' + index + '" vaule="' + file.name + '"/>'
+		          ,'</td>'
+		        ,'</tr>'].join(''));
+		        
+		        
+		        
+		        //单个重传
+		        tr.find('.demo-reload').on('click', function(){
+		          obj.upload(index, file);
+		        });
+		        
+		        //删除
+		        tr.find('.demo-delete').on('click', function(){
+		        	console.log(index);
+		          delete files[index]; //删除对应的文件
+		          tr.remove();
+		          uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+		          for(var i = 0; i < materialFilename.length; i++){
+					  if(materialFilename[i]){
+						  if(materialFilename[i]['index'] == index){
+							  console.log("index相等1");
+							  materialFilename.splice(i, 1);
+						  }
+					  }
+				  }  
+		          
+		          for(var i = 0; i < upload_result.length; i++){
+					  if(upload_result[i]){
+						  if(upload_result[i]['index'] == index){
+							  console.log("index相等2");
+							  upload_result.splice(i, 1);
+						  }
+					  }
+				  }  
+		        });
+		        
+		        demoListView.append(tr);
+		        form.render();//因为有select元素，所有添加后要重新渲染一次
+		      });
+	    }
+	    ,done: function(res, index, upload){
+    	//如果上传失败
+	      if(res.code > 0){
+	    	  this.error(index, upload); 
+	      } else {//上传成功
+	    	  var tr = demoListView.find('tr#upload-'+ index)
+		        ,tds = tr.children();
+		        tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+		        var flag = $("#materialToUploadFor" + index).val()
+		        tds.eq(3).html('<span>' + flag + '</span>'); //清空操作
+		        tds.eq(4).html(''); //清空操作
+		        uploadListIns.config.data.result = new Array();
+		        for(var i = 0; i < materialFilename.length; i++){
+					  if(materialFilename[i]){
+						  if(materialFilename[i]['index'] == index){
+							  console.log("index相等1");
+							  materialFilename.splice(i, 1);
+						  }
+					  }
+				  }  
+		        table_row = 0;
+		        return delete this.files[index]; //删除文件队列已经上传成功的文件
+	      }
+    	
+	    }
+	    ,error: function(index, upload){
+	      var tr = demoListView.find('tr#upload-'+ index)
+	      ,tds = tr.children();
+	      tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+	      //tds.eq(4).find('.demo-reload').removeClass('layui-hide'); //显示重传
+	    }
+	  });
+		
+	  function add_select(data, row){
+			select_upload = '<select id="materialToUploadFor' + row + '" name="materialToUploadFor' + row + '" lay-verify="required" lay-search="" lay-filter="materialToUpload"><option value=""></option>';
+			for(var i = 0; i < data.result.length; i++){
+				select_upload += '<option value="' + data.result[i].物料名称 + '">' + data.result[i].物料名称 + '</option>'
+			}
+			select_upload += "</select>";
+			
+	  }
+	  form.on('select(materialToUpload)', function(data){
+			  var index = ($(data.elem).attr("name")).substring(($(data.elem).attr("name")).indexOf('For') + 3);
+
+			  
+			  if(data.value != ''){
+				  if((JSON.stringify(materialFilename)).indexOf('"material":"' + data.value + '"') != -1){
+					  
+					  for(var i = 0; i < materialFilename.length; i++){
+						  if(materialFilename[i]){
+							  if(materialFilename[i]['material'] == data.value){
+								  if(materialFilename[i]['index'] != index){
+									  layer.alert('该物料已存在, 请勿重复选择', {
+									      	title: '信息'
+									  })
+									  $("#materialToUploadFor" + index).find("option[value='']").prop("selected",true);
+									  
+									  console.log(JSON.stringify(materialFilename))
+									  return;
+									  
+									  
+								  }
+							  }
+						  }
+					  }  
+				  } 
+				  
+				  for(var i = 0; i < materialFilename.length; i++){
+					  if(materialFilename[i]){
+						  if(materialFilename[i]['index'] == index){
+							  materialFilename[i]['material'] = data.value;
+							  console.log(JSON.stringify(materialFilename))
+							  return;
+						  }
+					  }
+				  }  
+				  
+				  console.log(JSON.stringify(materialFilename))
+				  
+			  }
+	  });
+	  
+	  //初始化
+	  form.on('select(materialToDownload)', function(data){
+		  if(data.value != ''){
+			  $.post("../data/downloadFile/findMaterialByMaterialName", {'materialName': data.value} , function(data) {
+			  	console.log(data.filename)
+				var downloadBtn = $('#downloadBtn');
+			  	if(data.filename){
+			  		downfilename = data.filename;
+					var btn = "<button type='button' class='layui-btn layui-btn-xs layui-btn-normal' onclick='download()'>下载</button>";
+					downloadBtn.html(btn)
+			  	} else {
+			  		downloadBtn.html('暂无该物料上传信息')
+			  	}
+					
+			  })
+		  }
+	  });
+	  
+	  //监听提交
+	  form.on('submit(checkFrom)', function(data){
+		
+		//console.log(JSON.stringify(materialFilename));
+		$("#upload").click();
+	  	return false;
+	  });
+	  
+		//初始化
+		var downloadList = $('#downloadList')
+
+		function init() {
+			//初始获取select内容
+			$.post("../data/record/findDataToJTMaterialList", function(data) {
+				//获取物料列
+				material1 = data;
+				
+				console.log(JSON.stringify(material1))
+				select_download = '<select id="materialToDownload" name="materialToDownload" lay-search="" lay-filter="materialToDownload"><option value=""></option>';
+				for(var i = 0; i < material1.result.length; i++){
+					select_download += '<option value="' + material1.result[i].物料名称 + '">' + material1.result[i].物料名称 + '</option>'
+				}
+				select_download += "</select>";
+				
+				
+				
+				var tr = $([
+						'<tr id="download">',
+						'<td>' + select_download + '</td>',
+						'<td id="downloadBtn">','</td>',
+						'</tr>' ].join(''));
+				downloadList.html('');
+				downloadList.append(tr);
+				form.render();//因为有select元素，所有添加后要重新渲染一次
+				
+			})
+			
+
+			
+		}
+		init();
+	  
+	});
+	
+
+	
+
+	function download() {
+		location.href = '../data/file/downloadFile?folder=msds&filename=' + downfilename;
+	}
+	
+	
+	
+	
+</script>
+</body>
+</html>

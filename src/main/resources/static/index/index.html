@@ -1,0 +1,544 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>污水处理运营页面</title>
+
+<link rel="icon" href="../../../imgs/bomin_logo2.png" type="image/x-icon"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+	rel="stylesheet">
+<link rel="stylesheet" href="assets/materialize/css/materialize.min.css"
+	media="screen,projection" />
+<!-- Bootstrap Styles-->
+<link href="assets/css/bootstrap2.css" rel="stylesheet" />
+<!-- FontAwesome Styles-->
+<link href="assets/css/font-awesome.css" rel="stylesheet" />
+<!-- Morris Chart Styles-->
+<link href="assets/js/morris/morris-0.4.3.min.css" rel="stylesheet" />
+<!-- Custom Styles-->
+<link href="assets/css/custom-styles.css" rel="stylesheet" />
+<!-- Google Fonts-->
+<link href='https://fonts.googleapis.com/css?family=Open+Sans'
+	rel='stylesheet' type='text/css' />
+<link rel="stylesheet" href="assets/js/Lightweight-Chart/cssCharts.css">
+<link rel="stylesheet" href="../../../layui/css/layui.css">
+
+
+
+<script type="text/javascript" src="../../../js/highcharts.js"></script>
+<script type="text/javascript" src="../../../js/exporting.js"></script>
+<script type="text/javascript" src="../../../js/highcharts-zh_CN.js"></script>
+</head>
+<style>
+.fontx {
+	font-size: 17px
+}
+
+#page-wrapper {
+	background-image: url("../../../imgs/xingkong.jpg");
+	background-size: 100% 100%;
+}
+
+.wrap {
+	margin: 0 auto;
+	overflow: hidden;
+}
+
+.left {
+	width: 80%;
+	float: left;
+}
+
+.left_top {
+	width: 66.66666666%;
+	float: left;
+}
+
+.right {
+	width: 20%;
+	float: left;
+	margin: 0px -15px;
+}
+
+.right_top {
+	width: 29.33333333%;
+	float: left;
+}
+</style>
+<body id="body">
+	<div id="wrapper">
+		<nav class="navbar navbar-default top-navbar" role="navigation">
+			<div class="navbar-header">
+				<div>
+					<ul class="layui-nav">
+					  <li class="layui-nav-item layui-this"><a href="">运营看板</a></li>
+					  <!-- <li class="layui-nav-item"><a href="../board/index.html">加药看板</a></li>
+					  <li class="layui-nav-item"><a href="../record/index.html">记录查询</a></li> -->
+					  <li class="layui-nav-item"><a href="../menu.html">返回</a></li>
+					</ul>
+				</div>
+
+			</div>
+		</nav>
+
+
+
+		<div id="page-wrapper">
+
+			<div id="page-inner">
+				<div class="row">
+					<div style="width: 98.4%;margin: 0px 15px 0px;">
+						<div class="card horizontal cardIcon waves-effect waves-dark">
+							<div class="card-stacked fontx">
+								<div class="card-action">
+									<span style="float: left;padding: 11px 18px 0px;font-size: 22px"><img style="padding: 0px 18px 0px;" src="../../../imgs/data.png"><span style="padding: 17px 18px 0px;font-size: 22px" id="username">loading</span></span>
+									<span id="time" style="float: left;"></span> 
+									<span id="time2" style="float: left;padding: 0px 30px 0px;"></span>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			
+				<div class="wrap">
+					<aside class="left_top">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6 col-md-3 item">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+	
+								<div class="card-stacked fontx">
+	
+									<div class="card-action">
+										综合池当天水量：<span id="综合池当天水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										综合池瞬时水量： <span id="综合池瞬时水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action" id="zh_cu">
+										综合池含铜量：<span id="综合池含铜量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+	
+						</div>
+	
+						<div class="col-xs-12 col-sm-6 col-md-3">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+	
+									<div class="card-action">
+										有机池当天水量：<span id="有机池当天水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										有机池瞬时水量：<span id="有机池瞬时水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action" id="yj_cod">
+										有机池cod含量：<span id="有机池cod含量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12 col-sm-6 col-md-3">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+									<div class="card-action">
+										氨氮池当天水量：<span id="氨氮池当天水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										氨氮池瞬时水量：<span id="氨氮池瞬时水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										氨氮池含氨氮量：<span id="氨氮池含氨氮量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+	
+						<div class="col-xs-12 col-sm-6 col-md-3">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+									<div class="card-action">
+										镍池当天水量：<span id="镍池当天水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										镍池瞬时流量：<span id="镍池瞬时流量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										镍池含镍量：<span id="镍池含镍量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+	
+						</div>
+						
+					</div>
+					
+					<div class="row">
+						
+						<div class="col-xs-12 col-sm-6 col-md-3">
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+									<div class="card-action">
+										清水池当天水量：<span id="清水池当天水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										清水池瞬时水量： <span id="清水池瞬时水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										清水池含铜量：<span id="清水池含铜量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6 col-md-3">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+									<!-- <div class="card-content">
+										<h3>25,550</h3>
+									</div> -->
+									<div class="card-action">
+										清水池含镍量：<span id="催化加酸PH值"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										清水池含cod量：<span id="催化加酸PH值"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action">
+										清水池含氨氮量：<span id="催化加酸PH值"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+	
+								</div>
+							</div>
+						</div>
+						
+						<div class="col-xs-12 col-sm-6 col-md-3">
+	
+							<div class="card horizontal cardIcon waves-effect waves-dark">
+								<div class="card-stacked fontx">
+									<div class="card-action" style="padding: 6px 20px;">
+										一沉池ph值：<span id="一沉池ph值"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action" style="padding: 6px 20px;">
+										一沉池含铜量：<span id="一沉池含铜量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action" style="padding: 6px 20px;">
+										二沉池ph值：<span id="二沉池ph值"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+									<div class="card-action" style="padding: 6px 20px;">
+										二沉池含铜量：<span id="二沉池含铜量"><span style="color: #19CAAD"><b>loading</b></span></span>
+									</div>
+								</div>
+							</div>
+						</div>
+	
+					</div>
+					</aside>
+					
+					<section class="right_top" style="margin: 0px 32px">
+						<div class="layui-carousel" id="test1" lay-filter="test1">
+						  <div carousel-item="">
+						    <div id="con" style="width: 582px; height: 313px"></div>
+						    <div>条目2</div>
+						    <div>条目3</div>
+						    <div>条目4</div>
+						    <div>条目5</div>
+						  </div>
+						</div> 
+					</section>
+				</div>
+			
+				<!-- /. ROW  -->
+				<div class="wrap">
+				<aside class="left">
+				<div class="row">
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">
+								<span class="layui-badge layui-bg-gray">综合水池实时数据</span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								综合水池容量：<span id="综合水池容量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								综合水池水量：<span id="综合水池水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								综合水池余量：<span id="综合水池余量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								综合水池铜含量：<span id="综合水池铜含量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action">
+								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo">
+								  <div id="demo" class="layui-progress-bar layui-bg-red" lay-percent="21%"></div>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">
+								<span class="layui-badge layui-bg-gray">有机水池实时数据</span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								有机水池容量：<span id="有机水池容量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								有机水池水量：<span id="有机水池水量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								有机水池余量：<span id="有机水池余量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action" style="padding: 7px 20px;">
+								有机水池cod含量：<span id="有机水池cod含量"><span style="color: #19CAAD"><b>loading</b></span></span>
+							</div>
+							<div class="card-action">
+								<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo">
+								  <div id="demo" class="layui-progress-bar layui-bg-red" lay-percent="21%"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">T6沉淀池cod含量实时数据</div>
+							<div class="card-image">
+								<div id="T6沉淀池cod含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">T6沉淀池铜含量实时数据</div>
+							<div class="card-image">
+								<div id="T6沉淀池铜含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+					</div>
+
+
+				</div>
+				<!--/.row-->
+
+
+
+				<div class="row">
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">T6沉淀池氨氮含量实时数据</div>
+							<div class="card-image">
+								<div id="T6沉淀池氨氮含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">8C生化池cod含量实时数据</div>
+							<div class="card-image">
+								<div id="8C生化池cod含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">8C生化池氨氮含量实时数据</div>
+							<div class="card-image">
+								<div id="8C生化池氨氮含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-md-3">
+						<div class="card">
+							<div class="card-action">T3沉淀池铜含量实时数据</div>
+							<div class="card-image">
+								<div id="T3沉淀池铜含量曲线图" style="height: 240px"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</aside>
+			<!-- 右侧运营数据 -->
+			<section class="right">
+					<div class="col-xs-12">
+						<div class="card horizontal cardIcon waves-effect waves-dark">
+							<div class="card-stacked fontx">
+								<div class="card-action" style="padding: 10px 20px;background-color: rgb(190,231,233,0.4);">
+									<img src="../../../imgs/yunying.png">
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									昨日累计用电量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									硫酸昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									PAC昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									PAM昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									漂白水昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									硫化钠昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									复合碱昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									氢氧化钠昨日累计用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<!-- 平均 -->
+								<div class="card-action" style="padding: 6px 20px;border-top: 1px solid rgba(238, 238, 238, 1);">
+									硫酸昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									PAC昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									PAM昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									漂白水昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									硫化钠昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									复合碱昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+								<div class="card-action" style="padding: 6px 20px;">
+									氢氧化钠昨日平均用量：<span id=" "><span style="color: #19CAAD"><b>loading</b></span></span>
+								</div>
+							</div>
+						</div>
+					</div>
+			</section>
+			</div>
+
+
+				<footer>
+				</footer>
+			</div>
+			<!-- /. PAGE INNER  -->
+		</div>
+		<!-- /. PAGE WRAPPER  -->
+	</div>
+	<!-- /. WRAPPER  -->
+	<!-- JS Scripts-->
+	<!-- jQuery Js -->
+	
+	<script src="assets/js/jquery-1.10.2.js"></script>
+	<!-- weather -->
+	<script type="text/javascript">
+	WIDGET = {FID: 'C1hD8RAHrA'}
+	</script>
+	<script type="text/javascript" src="https://apip.weatherdt.com/float/static/js/r.js?v=1111"></script>
+	
+	<!-- 仪表盘 -->
+	<script src="assets/js/easypiechart-data.js"></script>	
+	<script src="assets/js/easypiechart.js"></script>
+	<!-- 数据 -->
+	<script type="text/javascript" src="../../../layui/layui.js"></script>
+	<script>
+		layui.use(['carousel', 'form'], function(){
+		  var carousel = layui.carousel
+		  ,form = layui.form;
+		  
+		  //常规轮播
+		  carousel.render({
+		    elem: '#test1'
+		    ,width: '582px'
+		    ,height: '313px'
+		    ,anim: 'fade'
+		    ,autoplay: false
+		  });
+		  
+		  //改变下时间间隔、动画类型、高度
+		  carousel.render({
+		    elem: '#test2'
+		    ,interval: 1800
+		    ,anim: 'fade'
+		    ,height: '120px'
+		  });
+		  
+		  //设定各种参数
+		  var ins3 = carousel.render({
+		    elem: '#test3'
+		  });
+		  //图片轮播
+		  carousel.render({
+		    elem: '#test10'
+		    ,width: '778px'
+		    ,height: '440px'
+		    ,interval: 5000
+		  });
+		  
+		  //事件
+		  carousel.on('change(test4)', function(res){
+		    console.log(res)
+		  });
+		  
+		  var $ = layui.$, active = {
+		    set: function(othis){
+		      var THIS = 'layui-bg-normal'
+		      ,key = othis.data('key')
+		      ,options = {};
+		      
+		      othis.css('background-color', '#5FB878').siblings().removeAttr('style'); 
+		      options[key] = othis.data('value');
+		      ins3.reload(options);
+		    }
+		  };
+		  
+		  //监听开关
+		  form.on('switch(autoplay)', function(){
+		    ins3.reload({
+		      autoplay: this.checked
+		    });
+		  });
+		  
+		  $('.demoSet').on('keyup', function(){
+		    var value = this.value
+		    ,options = {};
+		    if(!/^\d+$/.test(value)) return;
+		    
+		    options[this.name] = value;
+		    ins3.reload(options);
+		  });
+		  
+		  //其它示例
+		  $('.demoTest .layui-btn').on('click', function(){
+		    var othis = $(this), type = othis.data('type');
+		    active[type] ? active[type].call(this, othis) : '';
+		  });
+		});
+	</script>
+	
+	<script src="assets/js/data.js"></script>
+	<!-- Bootstrap Js -->
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/materialize/js/materialize.min.js"></script>
+	
+	<script src="assets/js/Lightweight-Chart/jquery.chart.js"></script>
+</body>
+
+</html>

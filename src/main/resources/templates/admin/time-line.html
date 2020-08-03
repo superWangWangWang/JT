@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../xadmin/css/xadmin.css">
+    <script src="../xadmin/lib/layui/layui.js" charset="utf-8"></script>
+</head>
+<body>
+<!--<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">-->
+<!--    <legend>航达公司操作日志</legend>-->
+<!--</fieldset>-->
+<#list log as l>
+<ul class="layui-timeline">
+    <li class="layui-timeline-item">
+        <i class="layui-icon layui-timeline-axis"></i>
+        <div class="layui-timeline-content layui-text">
+            <h3 class="layui-timeline-title"> ${l.createTime ? string("MM月dd日 HH:mm:ss")}  ${l.content}</h3>
+
+        </div>
+    </li>
+</ul>
+</#list>
+</body>
+</html>

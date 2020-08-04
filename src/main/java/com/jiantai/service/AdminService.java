@@ -14,4 +14,5 @@ public interface AdminService {
     List getCompanyInfoByName(String name);
     void updateCompanyRightById(CompanyInfo companyInfo);
     List<JTLog> getLogByCid(Integer cid);
+    void addLog(JTLog log);
 }

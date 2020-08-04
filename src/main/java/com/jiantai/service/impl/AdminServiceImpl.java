@@ -57,8 +57,22 @@ public class AdminServiceImpl implements AdminService {
         return companyList;
     }
 
+    /**
+     * 根据公司id获取日志
+     * @param cid
+     * @return
+     */
     @Override
     public List<JTLog> getLogByCid(Integer cid) {
         return adminDao.getLogByCid(cid);
+    }
+
+    /**
+     * 添加日志
+     * @param log
+     */
+    @Override
+    public void addLog(JTLog log) {
+        adminDao.addLog(log);
     }
 }

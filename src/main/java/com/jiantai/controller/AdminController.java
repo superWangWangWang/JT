@@ -26,7 +26,11 @@ public class AdminController {
     @Autowired
     private AdminServiceImpl adminServiceImpl;
 
-
+    /**
+     * 查询所有公司详情，展示列表，返回json
+     * @param request
+     * @return
+     */
     @RequestMapping("/companyList")
     @ResponseBody
     public String companyList(HttpServletRequest request){
@@ -77,6 +81,12 @@ public class AdminController {
 
         return JSON.toJSONString(vo);
     }
+
+    /**
+     * 更新公司 是否启用（就是能不能登录） 不返回
+     * @param request
+     * @return
+     */
     @RequestMapping("updateCompanyEnable")
     @ResponseBody
     public String updateCompanyEnable(HttpServletRequest request){
@@ -88,18 +98,32 @@ public class AdminController {
         }else {
             en = 0;
         }
-
         System.out.println(request.getParameter("id"));
         System.out.println(request.getParameter("Enable"));
-        List<CompanyInfo> companyInfo = adminServiceImpl.getCompanyInfoById(id);
-        if (companyInfo.size()>0){
-            companyInfo.get(0).set是否启用(en);
-            adminServiceImpl.updateCompanyEnableById(companyInfo.get(0));
+        List<CompanyInfo> companys = adminServiceImpl.getCompanyInfoById(id);
+        if (companys.size()>0){
+            companys.get(0).set是否启用(en);
+            adminServiceImpl.updateCompanyEnableById(companys.get(0));
+            //添加日志记录
+            Integer cid = companys.get(0).getId();
+            String content;
+            if (en == 1 ){
+                content = "开启登录权限";
+            }else {
+                content = "关闭登录权限";
+            }
+            adminServiceImpl.addLog(new JTLog(cid,content));
         }else {
             
         }
         return "";
     }
+
+    /**
+     * 更新公司能不能跨月提交资料，不返回
+     * @param request
+     * @return
+     */
     @RequestMapping("updateCompanyRight")
     @ResponseBody
     public String updateCompanyRight(HttpServletRequest request){
@@ -114,15 +138,31 @@ public class AdminController {
 
         //System.out.println(request.getParameter("id"));
         //System.out.println(request.getParameter("right"));
-        List<CompanyInfo> companyInfo = adminServiceImpl.getCompanyInfoById(id);
-        if (companyInfo.size()>0){
-            companyInfo.get(0).setRight(r);
-            adminServiceImpl.updateCompanyRightById(companyInfo.get(0));
+        List<CompanyInfo> companys = adminServiceImpl.getCompanyInfoById(id);
+        if (companys.size()>0){
+            companys.get(0).setRight(r);
+            adminServiceImpl.updateCompanyRightById(companys.get(0));
+            System.out.println(companys);
+            //添加日志记录
+            Integer cid = companys.get(0).getId();
+            String content;
+            if (r == 1 ){
+                content = "开启跨月修改权限";
+            }else {
+                content = "关闭跨月修改权限";
+            }
+            adminServiceImpl.addLog(new JTLog(cid,content));
         }else {
 
         }
         return "";
     }
+
+    /**
+     * 根据公司的id 更新公司的信息 不返回
+     * @param companyInfo
+     * @return
+     */
     @RequestMapping("updateCompanyInfo")
     @ResponseBody
     public String updateCompanyInfoById(CompanyInfo companyInfo){

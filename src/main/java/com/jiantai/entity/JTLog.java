@@ -11,6 +11,13 @@ public class JTLog {
     private Date createTime;
     //contentvarchar(255) NULL日志内容
     private String content;
+    public JTLog() {//无参构造
+    }
+
+    public JTLog(Integer cid ,String content) {//有参构造
+        this.cid = cid;
+        this.content = content;
+    }
 
     @Override
     public String toString() {

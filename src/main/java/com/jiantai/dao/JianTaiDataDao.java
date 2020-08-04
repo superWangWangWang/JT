@@ -3,14 +3,9 @@ package com.jiantai.dao;
 import java.util.Date;
 import java.util.List;
 
+import com.jiantai.entity.*;
 import org.apache.ibatis.annotations.*;
 
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTMsdsUpload;
-import com.jiantai.entity.JTProductRecord;
-import com.jiantai.entity.JtMaterialEvidence;
-import com.jiantai.entity.Material;
 @Mapper
 public interface JianTaiDataDao {
 	
@@ -31,13 +26,20 @@ public interface JianTaiDataDao {
                             @Param("统一社会信用代码") String string6, @Param("法人代表") String string7, @Param("联系人") String string8, @Param("联系人手机号") String string9, @Param("产品类型") String string10, @Param("园区位置") String string11,
                             @Param("备注") String string12);
 
+	/**
+	 * 根据id查询物料详情
+	 * @param id
+	 * @return
+	 */
+	@Select("select * from `jt_declare_record` where id = #{id}")
+	List<JTDeclareRecord> getJtDeclareRecordById(Integer id);
 	
-	
-	@Select("select * from jt_declare_record where company = #{username} and datetime = #{date}")
+	@Select("select * from jt_declare_record where company = #{username} and datetime = #{date} and `delete` = 0")
 	List<JTDeclareRecord> findRecordById(@Param("username") String username, @Param("date") String date);
 
 	
-	@Delete ("delete from jt_declare_record where id = #{id}")
+	//@Delete ("delete from jt_declare_record where id = #{id}")
+	@Update("update `jt_declare_record` set `delete` = 1 where id = #{id}")
 	@Options(useGeneratedKeys = false)
 	void delRecordById(@Param("id") int id);
 
@@ -45,7 +47,12 @@ public interface JianTaiDataDao {
 	@Options(useGeneratedKeys = false)
 	void updateDeclareInfoById(@Param("material") Object material, @Param("unit") Object unit, @Param("element") Object element, @Param("content") Object content, @Param("dosage") Object dosage,
                                @Param("id") Object id);
-	
+
+	/**
+	 * 根据id更新 jt_company_info表 平面图文件名字
+	 * @param id
+	 * @param filename
+	 */
 	@Update("update jt_company_info set `plan_name` = #{plan_name} where id = #{id}")
 	@Options(useGeneratedKeys = false)
 	void setCompanyInfoPlanNameById(@Param("id") int id, @Param("plan_name") String filename);
@@ -86,6 +93,13 @@ public interface JianTaiDataDao {
 	@Select("select * from jt_product_record where company = #{company} and datetime = #{datetime} and product = #{product}")
 	JTProductRecord findUnitByCompanyAndDate(@Param("datetime") String date, @Param("product") String product, @Param("company") String name);
 
+	/**
+	 * 根据id 查询企业产品生产数据表详情
+	 * @param id
+	 * @return
+	 */
+	@Select("select * from `jt_product_record` where id = #{id}")
+	List<JTProductRecord> getJtProductRecordById(Integer id);
 
 	@Update("update jt_product_record set yield = #{yield} where id = #{id}")
 	@Options(useGeneratedKeys = false)
@@ -114,4 +128,10 @@ public interface JianTaiDataDao {
 	@Insert("INSERT INTO jt_msds_upload(update_datetime, material, company, msds_filename) values(#{update_datetime}, #{material}, #{company}, #{msds_filename})")
 	@Options(useGeneratedKeys = false)
 	void addMsdsFileInfo(@Param("update_datetime") Date date, @Param("material") String materialName, @Param("company") String user, @Param("msds_filename") String originalFilename);
+	/**
+	 * 添加操作日志
+	 * @param log
+	 */
+	@Insert("INSERT INTO jt_log (cid,content) VALUE (#{log.cid},#{log.content})")
+	void addLog(@Param("log") JTLog log);
 }

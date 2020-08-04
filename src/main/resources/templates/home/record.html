@@ -235,7 +235,7 @@
 									
 									<tr id="last">
 										<td colspan="6">
-											 <button type="button" class="layui-btn layui-btn-danger add">新增</button>
+											 <button type="button"  class="layui-btn layui-btn-danger add"id="add_btn">新增</button>
 											 <input type="hidden" id=""/>
 										</td>
 									</tr>
@@ -403,7 +403,7 @@
                                   submit_data = new Array();
                                   table_row = 0;
                                   $.post("../data/record/findRecordByUsername",{'username': username, 'date': date_flag} , function(data) {
-                                      $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add'>新增</button><input type='hidden' id=''/></td></tr>");
+                                      $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add' id='add_btn'>新增</button><input type='hidden' id=''/></td></tr>");
                                       if((!data.result) || (data.result.length == 0)){
                                           add_tr('', 1, 'add', true);//record, flag(1代表重新渲染表单，0代表不渲染), state, change
                                           submit_data[0] = JSON.parse("{}");
@@ -666,7 +666,7 @@
 					          //console.log(date);
 					    	  submit_data = new Array();
 					          $.post("../data/record/findRecordByUsername",{'username': username, 'date': value, 'id': user_id} , function(data) {
-						    	  $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add'>新增</button><input type='hidden' id=''/></td></tr>");
+						    	  $("#tbody").html("<tr id='last'><td colspan='6'><button type='button' class='layui-btn layui-btn-danger add' id='add_btn'>新增</button><input type='hidden' id=''/></td></tr>");
 						    	  if(data.jtMaterialEvidence){
 						    		  $("#ps_td").html('本月佐证已上传');
 						    		  $("#ps_td").css('color', '#009688');
@@ -699,12 +699,16 @@
 					        		  form.render();
 					        	      return; 	
 						      	  }
+
 					        	  right = data.change; //赋值权限
 					        	  if(!data.change){
 					        		  layer.alert('当前选择的月份不能通过自定义修改，若需修改请联系建泰环保工业园有限公司（电话：0756-5162128）', {
 									      	title: '信息'
 									  })
-					        	  }
+									  $("#add_btn").hide();
+					        	  } else {
+									  $("#add_btn").show();
+								  }
 					        	  
 					        	  var flag;
 					        	  for(var i = 0; i < data.result.length; i++){

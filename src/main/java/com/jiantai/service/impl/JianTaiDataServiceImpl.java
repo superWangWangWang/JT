@@ -4,16 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.jiantai.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.jiantai.dao.JianTaiDataDao;
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTMsdsUpload;
-import com.jiantai.entity.JTProductRecord;
-import com.jiantai.entity.JtMaterialEvidence;
-import com.jiantai.entity.Material;
 import com.jiantai.service.JianTaiDataService;
 
 @Service
@@ -137,4 +132,32 @@ public class JianTaiDataServiceImpl implements JianTaiDataService {
 		jianTaiDataDao.addMsdsFileInfo(date, materialName, user, originalFilename);
 	}
 
+	/**
+	 * 添加操作日志
+	 * @param log
+	 */
+	@Override
+	public void addLog(JTLog log) {
+		jianTaiDataDao.addLog(log);
+	}
+
+	/**
+	 * 根据id查询物料详情
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public List<JTDeclareRecord> getJtDeclareRecordById(Integer id) {
+		return jianTaiDataDao.getJtDeclareRecordById(id);
+	}
+
+	/**
+	 * 根据id 查询企业产品生产数据表详情
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public List<JTProductRecord> getJtProductRecordById(Integer id) {
+		return jianTaiDataDao.getJtProductRecordById(id);
+	}
 }

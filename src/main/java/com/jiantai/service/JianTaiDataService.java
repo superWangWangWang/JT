@@ -4,19 +4,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTMsdsUpload;
-import com.jiantai.entity.JTProductRecord;
-import com.jiantai.entity.JtMaterialEvidence;
-import com.jiantai.entity.Material;
+import com.jiantai.entity.*;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 @Service
 public interface JianTaiDataService {
 
-
+	List<JTDeclareRecord> getJtDeclareRecordById(Integer id);
 	List<Material> findDataToJTMaterialList();
+	List<JTProductRecord> getJtProductRecordById(Integer id);
 
 	void addDeclareInfoToJTDeclareInfo(Map<String, Object> map);
 
@@ -58,5 +55,6 @@ public interface JianTaiDataService {
 	void setMsdsFilename(String originalFilename, int id, Date now);
 
 	void addMsdsFileInfo(Date date, String materialName, String user, String originalFilename);
-	
+
+	void addLog(JTLog log);
 }

@@ -12,7 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSON;
+import com.jiantai.entity.JTLog;
 import com.jiantai.entity.LoginEntity;
+import com.jiantai.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +28,7 @@ import com.jiantai.service.UserService;
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
-	private UserService userService;
+	private UserServiceImpl userServiceImpl;
 
 	/**
 	 * 获取记住密码信息
@@ -62,7 +64,7 @@ public class UserController {
 		String keepPassword = request.getParameter("keepPassword");
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
-		CompanyInfo companyInfo = userService.companyLogin(username);
+		CompanyInfo companyInfo = userServiceImpl.companyLogin(username);
 		//System.out.println("==================");
 		try {
 
@@ -113,8 +115,10 @@ public class UserController {
 					session.setAttribute("LOGIN_USER", companyInfo);
 					//System.out.println("----"+companyInfo);
 				}
-
-
+				String ip = request.getRemoteAddr();
+				if (!"0:0:0:0:0:0:0:1".equals(ip)) {
+					userServiceImpl.addLog(new JTLog(companyInfo.getId(), " 登录成功 IP：" + request.getRemoteAddr()));
+				}
 			} else {
 				result.put("error", "用户不存在");
 			}
@@ -160,7 +164,7 @@ public class UserController {
 	public String findCompanyById(HttpServletRequest request) {
 		Map<String, Object> result = new HashMap<String, Object>();
 		String id = request.getParameter("id");
-		CompanyInfo company = userService.findCompanyById(id);
+		CompanyInfo company = userServiceImpl.findCompanyById(id);
 		result.put("company", company);
 		return JSON.toJSONString(result);
 	}
@@ -187,7 +191,7 @@ public class UserController {
 			CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
 			if (companyInfo != null) {
 				System.out.println(companyInfo.getUser() + ">正在修改密码");
-				userService.changePassword(companyInfo, new_password);
+				userServiceImpl.changePassword(companyInfo, new_password);
 			} else {
 				result.put("error", "请先登录");
 			}

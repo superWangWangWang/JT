@@ -4,16 +4,21 @@ import com.jiantai.entity.JTProductRecord;
 
 import java.util.List;
 
-public class VO {
+public class VO<T> {
 
 	private Integer code;
 	private String msg;
 	private Integer count;
-	private List data;
+	private T data;
 
-	public VO() {
-		super();
-		// TODO Auto-generated constructor stub
+	@Override
+	public String toString() {
+		return "VO{" +
+				"code=" + code +
+				", msg='" + msg + '\'' +
+				", count=" + count +
+				", data=" + data +
+				'}';
 	}
 
 	public Integer getCode() {
@@ -40,17 +45,11 @@ public class VO {
 		this.count = count;
 	}
 
-	public List<JTProductRecord> getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(List<JTProductRecord> data) {
+	public void setData(T data) {
 		this.data = data;
 	}
-
-	@Override
-	public String toString() {
-		return "ViewEntity [code=" + code + ", msg=" + msg + ", count=" + count + ", data=" + data + "]";
-	}
-
 }

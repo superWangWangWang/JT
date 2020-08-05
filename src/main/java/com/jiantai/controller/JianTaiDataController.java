@@ -606,6 +606,13 @@ public class JianTaiDataController {
     //page/views/upload目录下的upload.html页面的方法
     //上传文件(压缩包格式)
 
+    /**
+     * 生产设备明录上传
+     * @param file
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/file/uploadProduct", method = RequestMethod.POST)
     @ResponseBody
     public Map uploadProduct(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request,
@@ -627,6 +634,12 @@ public class JianTaiDataController {
 
         try {
             if (file != null) {
+                String productName = companyInfo.getProductName();
+                if(StringUtils.isNotBlank(productName)){
+                    File delFile = new File(localPath + productName);
+                    delFile.delete();
+
+                }
                 // 修改用户对应的文件名
                 jianTaiDataServiceImpl.setCompanyInfoProductNameById(companyInfo.getId(), originalFilename);
                 CompanyInfo companyInfo2 = jianTaiDataServiceImpl.findCompanyInfoById(companyInfo.getId());
@@ -641,7 +654,8 @@ public class JianTaiDataController {
                 }
                 // 复制到当前文件夹
                 file.transferTo(new File(localPath + originalFilename));
-
+                //添加日志
+                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"上传生产设备明录 " + originalFilename));
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -682,7 +696,7 @@ public class JianTaiDataController {
             }
 
         } catch (Exception e) {
-            result.put("result", "删除失败, 请重新操作");
+
             e.printStackTrace();
         } finally {
             //return JSON.toJSONString(result);
@@ -703,7 +717,7 @@ public class JianTaiDataController {
             result.put("filename", companyInfo.getPlanName());
 
         } catch (Exception e) {
-            result.put("result", "删除失败, 请重新操作");
+            //result.put("result", "删除失败, 请重新操作");
             e.printStackTrace();
         } finally {
             return result;
@@ -723,7 +737,7 @@ public class JianTaiDataController {
             result.put("filename", companyInfo.getProductName());
 
         } catch (Exception e) {
-            result.put("result", "删除失败, 请重新操作");
+            //result.put("result", "删除失败, 请重新操作");
             e.printStackTrace();
         } finally {
             return result;
@@ -736,8 +750,6 @@ public class JianTaiDataController {
     @RequestMapping(value = "/file/downloadFile", method = RequestMethod.GET)
     @ResponseBody
     public String downloadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-
 
         //获取路径和文件名
         CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
@@ -762,8 +774,6 @@ public class JianTaiDataController {
             filename_str = companyInfo2.getProductName();
             localPath += filename_str;
         }
-
-
 
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");

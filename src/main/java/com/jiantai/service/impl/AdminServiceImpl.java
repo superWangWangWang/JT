@@ -2,8 +2,11 @@ package com.jiantai.service.impl;
 
 import com.jiantai.dao.AdminDao;
 import com.jiantai.entity.CompanyInfo;
+import com.jiantai.entity.JTDeclareRecord;
 import com.jiantai.entity.JTLog;
+import com.jiantai.entity.Material;
 import com.jiantai.service.AdminService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,5 +77,30 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void addLog(JTLog log) {
         adminDao.addLog(log);
+    }
+
+    /**
+     * 搜索物料记录
+     * @param date
+     * @param company
+     * @param material
+     * @return
+     */
+    @Override
+    public List<JTDeclareRecord> searchDeclareRecords(String date, String company, String material) {
+        if (!StringUtils.isNotBlank(date)){
+            date = null;
+        }
+        if (!StringUtils.isNotBlank(company)){
+            company = null;
+        }
+        if (!StringUtils.isNotBlank(material)){
+            material = null;
+        }
+        return adminDao.searchDeclareRecords(date, company, material);
+    }
+    @Override
+    public List<Material> findMaterials() {
+        return adminDao.findMaterials();
     }
 }

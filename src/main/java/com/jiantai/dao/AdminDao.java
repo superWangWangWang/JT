@@ -1,7 +1,9 @@
 package com.jiantai.dao;
 
 import com.jiantai.entity.CompanyInfo;
+import com.jiantai.entity.JTDeclareRecord;
 import com.jiantai.entity.JTLog;
+import com.jiantai.entity.Material;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -64,6 +66,27 @@ public interface AdminDao {
      */
     @Insert("INSERT INTO jt_log (cid,content) VALUE (#{log.cid},#{log.content})")
     void addLog(@Param("log") JTLog log);
+
+    /**
+     * 查询物料记录
+     */
+    //@Select("select * from `jt_declare_record`")
+
+    @Select("<script> " +
+            "select *  from jt_declare_record " +
+            " <where> " +
+            " <if test='datetime != null'>datetime = #{datetime}</if> " +
+            " <if test='company != null'> and company=#{company}</if> " +
+            " <if test='material != null'> and material=#{material}</if> " +
+            " </where> " +
+            " </script> ")
+    List<JTDeclareRecord> searchDeclareRecords(@Param("datetime") String datetime, @Param("company") String company, @Param("material") String material);
+
+    /**
+     * 查询物料列表
+     */
+    @Select("select * from `jt_materials`")
+    List<Material> findMaterials();
 }
 
 

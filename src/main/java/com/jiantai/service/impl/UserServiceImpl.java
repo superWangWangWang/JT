@@ -1,5 +1,6 @@
 package com.jiantai.service.impl;
 
+import com.jiantai.entity.JTLog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +30,8 @@ public class UserServiceImpl implements UserService {
 		return userDao.findCompanyById(id);
 	}
 
+	@Override
+	public void addLog(JTLog log) {
+		userDao.addLog(log);
+	}
 }

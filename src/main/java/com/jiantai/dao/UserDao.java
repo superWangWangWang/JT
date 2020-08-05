@@ -1,5 +1,6 @@
 package com.jiantai.dao;
 
+import com.jiantai.entity.JTLog;
 import org.apache.ibatis.annotations.*;
 
 import com.jiantai.entity.CompanyInfo;
@@ -19,5 +20,10 @@ public interface UserDao {
 	@Select("select * from jt_company_info where `id` = #{id}")
 	public CompanyInfo findCompanyById(String id);
 
-
+	/**
+	 * 添加操作日志
+	 * @param log
+	 */
+	@Insert("INSERT INTO jt_log (cid,content) VALUE (#{log.cid},#{log.content})")
+	void addLog(@Param("log") JTLog log);
 }

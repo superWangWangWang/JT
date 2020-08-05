@@ -60,9 +60,13 @@ public interface JianTaiDataDao {
 	
 	@Select("select * from jt_company_info where id = #{id}")
 	CompanyInfo findCompanyInfoById(int id);
-	
 
-	
+
+	/**
+	 * 没有使用上此方法，不知道
+	 * @param materialName
+	 * @param filename
+	 */
 	@Update("update jt_materials set `msds_filename` = #{filename} where `物料名称` = #{materialName}")
 	@Options(useGeneratedKeys = false)
 	void setFilenameByMaterial(@Param("materialName") String materialName, @Param("filename") String filename);

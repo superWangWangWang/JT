@@ -116,6 +116,15 @@ public class UserController {
 					//System.out.println("----"+companyInfo);
 				}
 				String ip = request.getRemoteAddr();
+				String s = "<script> " +
+						"select *  from jt_declare_record " +
+						" <where> " +
+						" <if test='datetime != null'>datetime = #{datetime}</if> " +
+						" <if test='company != null'> and company=#{company}</if> " +
+						" <if test='material != null'> and material=#{material}</if> " +
+						" </where> " +
+						" </script> ";
+				System.out.println("************"+s);
 				if (!"0:0:0:0:0:0:0:1".equals(ip)) {
 					userServiceImpl.addLog(new JTLog(companyInfo.getId(), " 登录成功 IP：" + request.getRemoteAddr()));
 				}

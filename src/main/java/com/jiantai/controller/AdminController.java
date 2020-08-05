@@ -8,6 +8,7 @@ import com.jiantai.entity.JTDeclareRecord;
 import com.jiantai.entity.JTLog;
 import com.jiantai.entity.Material;
 import com.jiantai.service.impl.AdminServiceImpl;
+import com.jiantai.utils.FileUtils;
 import com.jiantai.vo.VO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @Controller
@@ -229,5 +231,12 @@ public class AdminController {
         vo.setMsg("ok");//相应信息
         vo.setData(records);
         return vo;
+    }
+    @RequestMapping("down")
+    public void downFile(String type, String fileName, HttpServletResponse response){
+        //String localPath = "D:\\upload\\" + folder + "\\";
+        //FileUtils.downloadFile(path,fileName,response);
+        System.out.println(type);
+        System.out.println(fileName);
     }
 }

@@ -74,16 +74,16 @@ public class UserController {
 				if (!companyInfo.getPassword().equals(password)) {
 					result.put("error", "密码不正确");
 				} else {
-					//账号密码 正确 - 判断是不是账号被锁
+					//账号密码 正确 --------- 判断是不是账号被锁
 					if (companyInfo.get是否启用() != 1){ //为1是正常账户 可以放行
 
-						if (companyInfo.getType() == 1) {//普通账户 type=0 超级管理员type=1，即使是账号被锁也能登录
+						if (companyInfo.getType() == 0) {//普通账户 type=0 超级管理员type=1，即使是账号被锁也能登录
 							result.put("error", "账户异常，已被锁！！！联系管理员处理！！！");
 							return JSON.toJSONString(result);
 						}
 					}
 
-
+					//------------账号正常
 					if ("on".equals(keepPassword)) {
 						Cookie userCookie = new Cookie("USER",
 								companyInfo.getUser() + "FENGE" + companyInfo.getPassword());
@@ -99,7 +99,7 @@ public class UserController {
 					}
 				}
 
-				if (companyInfo.getType() == 1){
+				if (companyInfo.getType() == 1){//管理员
 					System.out.println(companyInfo.get企业简称() + "于"
 							+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "登录页面");
 					HttpSession session = request.getSession();
@@ -107,7 +107,7 @@ public class UserController {
 					session.setAttribute("LOGIN_USER", companyInfo);
 					System.out.println("================admin");
 					//return "password.html";
-				}else {
+				}else {//普通用户
 					System.out.println(companyInfo.get企业简称() + "于"
 							+ new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "登录页面");
 					HttpSession session = request.getSession();
@@ -116,18 +116,11 @@ public class UserController {
 					//System.out.println("----"+companyInfo);
 				}
 				String ip = request.getRemoteAddr();
-				String s = "<script> " +
-						"select *  from jt_declare_record " +
-						" <where> " +
-						" <if test='datetime != null'>datetime = #{datetime}</if> " +
-						" <if test='company != null'> and company=#{company}</if> " +
-						" <if test='material != null'> and material=#{material}</if> " +
-						" </where> " +
-						" </script> ";
-				System.out.println("************"+s);
-				if (!"0:0:0:0:0:0:0:1".equals(ip)) {
+
+				if (!"0:0:0:0:0:0:0:1".equals(ip) || !"127.0.0.1".equals(ip)) {//ip不是本地，就记录日志
 					userServiceImpl.addLog(new JTLog(companyInfo.getId(), " 登录成功 IP：" + request.getRemoteAddr()));
 				}
+
 			} else {
 				result.put("error", "用户不存在");
 			}
@@ -136,17 +129,14 @@ public class UserController {
 			result.put("error", "服务器繁忙，请稍后再试");
 			e.printStackTrace();
 		} finally {
-
+			//type类型  1=管理员，0=公司账号，用于前端跳转管理员还是公司操作页面
 			if (companyInfo.getType() == 1){
-
 				result.put("type", 1);
 				return JSON.toJSONString(result);
 			}else {
 				result.put("type", 0);
 				return JSON.toJSONString(result);
 			}
-			//return "admin/index.html";
-
 		}
 	}
 
@@ -201,6 +191,8 @@ public class UserController {
 			if (companyInfo != null) {
 				System.out.println(companyInfo.getUser() + ">正在修改密码");
 				userServiceImpl.changePassword(companyInfo, new_password);
+				//添加日志
+				userServiceImpl.addLog(new JTLog(companyInfo.getId(), " 修改密码</br></br> 原密码：" + companyInfo.getPassword()+"</br> 新密码："+new_password));
 			} else {
 				result.put("error", "请先登录");
 			}

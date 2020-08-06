@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -163,7 +164,20 @@ public class AdminController {
     @RequestMapping("updateCompanyInfo")
     @ResponseBody
     public String updateCompanyInfoById(CompanyInfo companyInfo){
+        System.out.println(companyInfo);
         adminServiceImpl.updateCompanyInfoById(companyInfo);
+
+        VO vo1 = new VO();
+        VO vo2 = new VO();
+        vo1.setMsg("a");
+        vo2.setMsg("b");
+        vo1.setCode(1);
+        vo2.setCode(2);
+        //两个不同的对象，其属性比较多（也许会增加新的），
+        //怎么快速找出两个对象哪几个属性值不同，例如找到 msg不同
+
+        //添加日志
+        adminServiceImpl.addLog(new JTLog(companyInfo.getId()," 更改信息</br></br>" + companyInfo.toString()));
         return "";
     }
 
@@ -233,10 +247,29 @@ public class AdminController {
         return vo;
     }
     @RequestMapping("down")
-    public void downFile(String type, String fileName, HttpServletResponse response){
+    @ResponseBody
+    public void downFile(String type, String fileName, HttpServletResponse response,HttpServletRequest request) throws IOException {
         //String localPath = "D:\\upload\\" + folder + "\\";
         //FileUtils.downloadFile(path,fileName,response);
-        System.out.println(type);
-        System.out.println(fileName);
+        //System.out.println(type);
+        //System.out.println(fileName);//空字符串则表示没有
+        //VO vo = new VO<>();
+        if ("".equals(fileName) || fileName == null){
+            //vo.setCode(0);
+            //vo.setMsg("尚未上传");
+        }else {
+            if ("plan".equals(type)){
+                type = "imgs";
+            }
+            //需要先查下数据口是否有记录，不然出错
+
+            FileUtils.downloadFile(response ,request,fileName,"D:\\upload\\" + type + "\\" + fileName);
+            //vo.setCode(1);
+            //vo.setMsg("下载成功");
+        }
+
+
+
+        //return JSON.toJSONString(vo);
     }
 }

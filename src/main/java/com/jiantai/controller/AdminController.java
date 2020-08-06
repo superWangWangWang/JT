@@ -266,6 +266,7 @@ public class AdminController {
             FileUtils.downloadFile(response ,request,fileName,"D:\\upload\\" + type + "\\" + fileName);
             //vo.setCode(1);
             //vo.setMsg("下载成功");
+            //--
         }
 
 

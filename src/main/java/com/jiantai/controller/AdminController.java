@@ -30,6 +30,31 @@ public class AdminController {
     private AdminServiceImpl adminServiceImpl;
 
     /**
+     * 到管理员首页
+     * @return
+     */
+    @RequestMapping("index")
+    public ModelAndView toIndex(){
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("data","aaa");
+        mv.setViewName("admin/index");
+        return mv;
+    }
+
+    /**
+     * 返回管理员欢迎页面，单独写一个方法是为了后期能给模板动态赋值
+     * @return
+     */
+    @RequestMapping("welcome")
+    public ModelAndView toWelcome(){
+        System.out.println("welcome");
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("data","aaa");
+        //查询公司一共有多少
+        mv.setViewName("admin/welcome");
+        return mv;
+    }
+    /**
      * 查询所有公司详情，展示列表，返回json
      * @param request
      * @return
@@ -262,11 +287,12 @@ public class AdminController {
                 type = "imgs";
             }
             //需要先查下数据口是否有记录，不然出错
-
+            System.out.println("-----");
             FileUtils.downloadFile(response ,request,fileName,"D:\\upload\\" + type + "\\" + fileName);
             //vo.setCode(1);
             //vo.setMsg("下载成功");
             //--
+
         }
 
 

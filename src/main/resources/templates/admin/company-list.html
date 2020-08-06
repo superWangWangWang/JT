@@ -28,18 +28,23 @@
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
             <div class="layui-card">
+
                 <div class="layui-card-body ">
                     <div class="demoTable">
                         <div class="layui-inline">
                             <input class="layui-input" name="id" id="demoReload" autocomplete="off" placeholder="输入公司简称">
                         </div>
                         <button class="layui-btn" data-type="reload">搜索</button>
+                        <button class="layui-btn layui-btn-warm" id="add_company" onclick="add_company()">添加账号</button>
                     </div>
+
                 </div>
 
                 <div class="layui-card-body ">
-                    <table class="layui-table" id="table_company" lay-filter="table_filter"></table>
 
+<!--                    数据表格-->
+                    <table class="layui-table" id="table_company" lay-filter="table_filter"></table>
+                    <div class="layui-inline" align="right"><span style="font-size: 20px;color: #cc0000">注意：单击表格，能够编辑的部分是可以直接修改的</span></div>
                 </div>
             </div>
         </div>
@@ -64,7 +69,7 @@
             ,cols: [[
                 {checkbox: true, fixed: true}
                 ,{field:'id', title: 'ID', width:60, sort: true, fixed: true}
-                ,{field:'企业简称', title: '企业简称' ,width:80 , edit: 'text'}
+                ,{field:'企业简称', title: '企业简称' ,width:80, edit: 'text' }
                 ,{field:'是否启用', title:'允许登录', width:85, templet: '#enable', unresize: true}
                 ,{field:'right', title:'跨月修改', width:85, templet: '#change', unresize: true}
                 ,{fixed: '',title:'操作日志', width:80, align:'center', toolbar: '#log' }
@@ -72,26 +77,23 @@
                 ,{fixed: '',title:'平面图', width:80, align:'center', toolbar: '#dplan'}
                 //,{field:'productName', title: '产品名录文件名字' ,width:100 }
                 ,{fixed: '',title:'产品名录', width:80, align:'center', toolbar: '#dproduct'}
-                ,{field:'user', title: '用户名', width:100 , edit: 'text'}
+                ,{field:'user', title: '账号', width:100 , edit: 'text'}
                 ,{field:'password', title: '密码', width:100 ,edit: 'text'}
                 ,{field:'企业编号', title: '企业编号', width:80 , edit: 'text'}
 
                 ,{field:'企业全称', title: '企业全称' ,width:250 , edit: 'text'}
                 ,{field:'法人代表', title: '法人代表' ,width:80 , edit: 'text'}
-                ,{field:'联系地址', title: '联系地址' ,width:80 , edit: 'text'}
-                ,{field:'公司固话', title: '公司固话' ,width:80 , edit: 'text'}
-                ,{field:'公司传真', title: '公司传真' ,width:80 , edit: 'text'}
+                ,{field:'联系地址', title: '联系地址' ,width:400 , edit: 'text'}
+                ,{field:'公司固话', title: '公司固话' ,width:120 , edit: 'text'}
+                ,{field:'公司传真', title: '公司传真' ,width:120 , edit: 'text'}
                 ,{field:'联系人', title: '联系人' ,width:80 , edit: 'text'}
-                ,{field:'联系人手机号', title: '联系人手机号' ,width:80 , edit: 'text'}
-                ,{field:'统一社会信用代码', title: '统一社会信用代码' ,width:80 , edit: 'text'}
+                ,{field:'联系人手机号', title: '联系人手机' ,width:120 , edit: 'text'}
+                ,{field:'统一社会信用代码', title: '统一社会信用代码' ,width:180 , edit: 'text'}
                 ,{field:'企业人数', title: '企业人数' ,width:80 , edit: 'text'}
-                ,{field:'开业时间', title: '开业时间' ,width:80 , edit: 'text'}
+                ,{field:'开业时间', title: '开业时间' ,width:100 , edit: 'text'}
                 ,{field:'产品类型', title: '产品类型' ,width:80 , edit: 'text'}
-                ,{field:'园区位置', title: '园区位置' ,width:80 , edit: 'text'}
-                ,{field:'备注', title: '备注' ,width:80 , edit: 'text'}
-
-
-
+                ,{field:'园区位置', title: '坐标' ,width:60 , edit: 'text'}
+                ,{field:'备注', title: '备注' ,width:100 , edit: 'text'}
 
             ]]
             ,id: 'testReload'
@@ -127,8 +129,6 @@
             active[type] ? active[type].call(this) : '';
         });
 
-        //-------------
-
     });
 
 
@@ -162,7 +162,9 @@
     <input type = "checkbox" name = "是否启用" value = "{{d.id}}" lay-skin = "switch"lay-text = "是|否" lay-filter = "sexDemo" {{ d.是否启用 == 1 ? 'checked': ''}} >
 </script>
 
-<script>layui.use(["laydate","table","form"],
+<script>
+
+    layui.use(["laydate","table","form"],
     function() {
         var table = layui.table,form = layui.form;
         var laydate = layui.laydate;
@@ -211,28 +213,15 @@
         table.on('edit(table_filter)',
             function(obj) {
                 $.ajax({
-                    //请求方式
                     type : "get",
-                    //请求的媒体类型
                     contentType: "json",
-                    //请求地址
                     url : "updateCompanyInfo",
-                    //数据，json字符串
                     data : obj.data,
-                    //data : JSON.stringify(obj),
                     //请求成功
                     success : function(result) {
                         //console.log(result);
-                    },
-                    //请求失败，包含具体的错误信息
-                    error : function(e){
-                        console.log(e.status);
-                        console.log(e.responseText);
                     }
                 });
-
-
-
             });
 
         //监听是否启用操作
@@ -245,6 +234,7 @@
     });</script>
 
 <script>
+    //更新是否启用账户
     function updateEnable(id,value,name) {//传id，需要更新的字段
         $(function(){
             if (name == "是否启用"){
@@ -253,30 +243,19 @@
             if (name == "right"){
                 tem = "updateCompanyRight?id="+id+"&right"+"="+value;
             }
-
-
             $.ajax({
-                //请求方式
                 type : "get",
-                //请求的媒体类型
-                contentType: "json",
-                //请求地址
+                dataType: "json",
                 url : tem,
-                // url : "updateCompanyEnable?id="+id+"&Enable"+"="+value,
-                //数据，json字符串
-                //data : $("#listForm").serialize(),
-                //请求成功
                 success : function(result) {
-                    console.log(result);
+                    //console.log(result);
                 },
-                //请求失败，包含具体的错误信息
-                error : function(e){
-                    console.log(e.status);
-                    console.log(e.responseText);
-                }
             });
         });
     }
-
+    //添加公司账户
+    function add_company() {
+        xadmin.open("操作日志：", 'addCompany?id=1', 800, 600)
+    }
 </script>
 </html>

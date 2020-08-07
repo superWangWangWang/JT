@@ -19,4 +19,6 @@ public interface AdminService {
     void addLog(JTLog log);
     List<JTDeclareRecord> searchDeclareRecords(String date, String company, String material);
     List<Material> findMaterials();
+    List<CompanyInfo> getCompanyByUserName(String name);
+    void addCompany(String name,String pwd);
 }

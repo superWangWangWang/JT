@@ -103,4 +103,24 @@ public class AdminServiceImpl implements AdminService {
     public List<Material> findMaterials() {
         return adminDao.findMaterials();
     }
+
+    /**
+     * 根据用户名查询公司
+     * @param name
+     * @return
+     */
+    @Override
+    public List<CompanyInfo> getCompanyByUserName(String name) {
+        return adminDao.getCompanyByUserName(name);
+    }
+
+    /**
+     * 添加公司登录账号
+     * @param name
+     * @param pwd
+     */
+    @Override
+    public void addCompany(String name, String pwd) {
+        adminDao.addCompany(name,pwd);
+    }
 }

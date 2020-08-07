@@ -75,14 +75,17 @@ public interface AdminDao {
     @Select("<script> " +
             "select *  from jt_declare_record " +
             " <where> " +
-            " <if test='datetime != null'>datetime = #{datetime} and `delete` = 0</if> " +
-            " <if test='company != null'> and company=#{company} and `delete` = 0</if> " +
-            " <if test='material != null'> and material=#{material} and `delete` = 0</if> " +
+            " <if test='datetime != null'>datetime = #{datetime}</if> " +
+            " <if test='company != null'> and company=#{company}</if> " +
+            " <if test='material != null'> and material=#{material}</if> " +
 
-            " <if test='material == null'>`delete` = 0</if> " +
+            "<otherwise>" +
+            "AND `delete` = 0"+
+            "</otherwise>" +
+
+
             " </where> " +
             " </script> ")
-    //<script> select *  from jt_declare_record  <where>  <if test='datetime != null'>datetime = #{datetime}</if>  <if test='company != null'> and company=#{company}</if>  <if test='material != null'> and material=#{material}</if>  </where>  </script>
     List<JTDeclareRecord> searchDeclareRecords(@Param("datetime") String datetime, @Param("company") String company, @Param("material") String material);
 
     /**
@@ -90,6 +93,22 @@ public interface AdminDao {
      */
     @Select("select * from `jt_materials`")
     List<Material> findMaterials();
+
+    /**
+     * 根据公司登录账号查找公司信息
+     * @param name
+     * @return
+     */
+    @Select("select * from `jt_company_info` where `user` = #{name}")
+    List<CompanyInfo> getCompanyByUserName(String name);
+
+    /**
+     * 添加公司登录账号
+     * @param name
+     * @param pwd
+     */
+    @Insert("insert into `jt_company_info` (user,password) values (#{name},#{pwd})")
+    void addCompany(String name,String pwd);
 }
 
 

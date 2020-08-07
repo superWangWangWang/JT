@@ -271,6 +271,15 @@ public class AdminController {
         vo.setData(records);
         return vo;
     }
+
+    /**
+     * 管理员下载文件方法（平面图，产品名录）
+     * @param type
+     * @param fileName
+     * @param response
+     * @param request
+     * @throws IOException
+     */
     @RequestMapping("down")
     @ResponseBody
     public void downFile(String type, String fileName, HttpServletResponse response,HttpServletRequest request) throws IOException {
@@ -279,24 +288,44 @@ public class AdminController {
         //System.out.println(type);
         //System.out.println(fileName);//空字符串则表示没有
         //VO vo = new VO<>();
-        if ("".equals(fileName) || fileName == null){
-            //vo.setCode(0);
-            //vo.setMsg("尚未上传");
-        }else {
+        if (!"".equals(fileName) && fileName != null && !"".equals(type) && type != null){
             if ("plan".equals(type)){
-                type = "imgs";
+                type = "imgs";  //数据保存在的文件夹是imgs文件夹而不是plan文件夹
             }
-            //需要先查下数据口是否有记录，不然出错
-            System.out.println("-----");
+            //建议先查下数据口是否有记录，不然出错，
             FileUtils.downloadFile(response ,request,fileName,"D:\\upload\\" + type + "\\" + fileName);
-            //vo.setCode(1);
-            //vo.setMsg("下载成功");
-            //--
-
         }
+    }
 
+    /**
+     * 添加公司登录账号密码
+     * @param name
+     * @param pwd
+     * @return
+     */
+    @RequestMapping("companyAdd")
+    @ResponseBody
+    public VO companyAdd(String name,String pwd){
+        System.out.println(name+"====");
+        System.out.println(pwd+"====");
+        VO vo = new VO();
+        if (!"".equals(name) && name != null && !"".equals(pwd) && pwd != null){
+            //查询是否存在用户名
+            List<CompanyInfo> companys = adminServiceImpl.getCompanyByUserName(name);
+            if (companys.size() == 0){//没有该账号，允许注册
+                adminServiceImpl.addCompany(name,pwd);
+                vo.setCode(1);
+                vo.setMsg("新增成功");
+            }else {
+                //存在账号，返回错误信息
+                vo.setCode(0);
+                vo.setMsg("该账号已存在");
+            }
 
-
-        //return JSON.toJSONString(vo);
+        }else {
+            vo.setCode(0);
+            vo.setMsg("参数提交不正确");
+        }
+        return vo;
     }
 }

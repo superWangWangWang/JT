@@ -44,7 +44,7 @@
 
 <!--                    数据表格-->
                     <table class="layui-table" id="table_company" lay-filter="table_filter"></table>
-                    <div class="layui-inline" align="right"><span style="font-size: 20px;color: #cc0000">注意：单击表格，能够编辑的部分是可以直接修改的</span></div>
+                    <div  align="right"><span style="font-size: 20px;color: #cc0000">注意：单击表格，能够编辑的部分是可以直接修改的</span></div>
                 </div>
             </div>
         </div>
@@ -66,8 +66,14 @@
         table.render({
             elem: '#table_company'
             ,url: 'companyList'
+            ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                ,layEvent: 'LAYTABLE_TIPS'
+                ,icon: 'layui-icon-tips'
+            }]
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             ,cols: [[
-                {checkbox: true, fixed: true}
+                //{checkbox: true, fixed: true}
                 ,{field:'id', title: 'ID', width:60, sort: true, fixed: true}
                 ,{field:'企业简称', title: '企业简称' ,width:80, edit: 'text' }
                 ,{field:'是否启用', title:'允许登录', width:85, templet: '#enable', unresize: true}
@@ -230,6 +236,28 @@
             updateEnable(obj.value,obj.elem.checked,this.name);//公司id，
         });
 
+        //头工具栏事件
+        table.on('toolbar(table_company)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+
+                //自定义头工具栏右侧图标 - 提示
+                case 'LAYTABLE_TIPS':
+                    layer.alert('这是工具栏右侧自定义的一个图标按钮');
+                    break;
+            };
+        });
 
     });</script>
 

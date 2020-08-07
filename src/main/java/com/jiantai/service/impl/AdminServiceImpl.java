@@ -1,16 +1,16 @@
 package com.jiantai.service.impl;
 
-import com.jiantai.dao.AdminDao;
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
-import com.jiantai.service.AdminService;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+        import com.jiantai.dao.AdminDao;
+        import com.jiantai.entity.CompanyInfo;
+        import com.jiantai.entity.JTDeclareRecord;
+        import com.jiantai.entity.JTLog;
+        import com.jiantai.entity.Material;
+        import com.jiantai.service.AdminService;
+        import org.apache.commons.lang.StringUtils;
+        import org.springframework.beans.factory.annotation.Autowired;
+        import org.springframework.stereotype.Service;
 
-import java.util.List;
+        import java.util.List;
 
 @Service
 public class AdminServiceImpl implements AdminService {

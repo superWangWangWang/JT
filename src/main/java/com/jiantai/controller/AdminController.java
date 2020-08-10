@@ -365,11 +365,6 @@ public class AdminController {
         vo.setMsg("success");
         vo.setCount((int)info.getTotal());
         vo.setData(list);
-//        mv.addObject("logs",list);
-//        mv.addObject("page",page);
-//        mv.addObject("count",info.getTotal());
-//        mv.setViewName("admin/log");
-
         return vo;
     }
 }

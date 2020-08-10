@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.alibaba.fastjson.JSON;
 import com.jiantai.entity.*;
 import com.jiantai.service.impl.JianTaiDataServiceImpl;
+import com.jiantai.utils.DownloadUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +45,6 @@ public class JianTaiDataController {
      * 由于我是一个人开发前后端,不是很专业,所以很多地方的注释都是后来加上去的,如果有什么看不明白,请谅解
      * 如果有什么看不懂的请加微信询问:13267690357
      */
-
 
 
     @Autowired
@@ -97,7 +97,7 @@ public class JianTaiDataController {
 
             jianTaiDataServiceImpl.setCompanyInfoById(id, map);
             //添加操作日志记录
-            jianTaiDataServiceImpl.addLog(new JTLog(Integer.parseInt(id),"修改企业信息</br></br>" + map.toString()));
+            jianTaiDataServiceImpl.addLog(new JTLog(Integer.parseInt(id), "修改企业信息</br></br>" + map.toString()));
             // result.put("result", material);
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,6 +105,7 @@ public class JianTaiDataController {
             return JSON.toJSONString(result);
         }
     }
+
     //record目录下index.html对应的方法
     //这个方法因为业务需求的改变已经被放弃
     @SuppressWarnings("finally")
@@ -129,15 +130,15 @@ public class JianTaiDataController {
                     }.getType());
 
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
-            System.out.println("------------------"+add_list);
+            System.out.println("------------------" + add_list);
             for (Map<String, Object> map : add_list) {
                 if (map != null) {
                     //添加日志
-                    String material  = (String) map.get("material");//物料名
-                    String dosage = (String)map.get("dosage");//当月用量
-                    String unit = (String)map.get("unit");
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"添加物料申报信息</br></br>" + material +" " + date + " 用量 "
-                    + dosage +" "+unit
+                    String material = (String) map.get("material");//物料名
+                    String dosage = (String) map.get("dosage");//当月用量
+                    String unit = (String) map.get("unit");
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "添加物料申报信息</br></br>" + material + " " + date + " 用量 "
+                            + dosage + " " + unit
                     ));
                     map.put("date", date);
                     map.put("now", new Date());
@@ -151,13 +152,13 @@ public class JianTaiDataController {
             for (Map<String, Object> map : update_list) {
                 if (map != null) {
                     //添加日志
-                    String material  = (String) map.get("material");//物料名
-                    String dosage = (String)map.get("dosage");//当月用量
-                    String unit = (String)map.get("unit");
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"更新物料申报信息</br></br>" + material +" " + date + " 用量 "
-                            + dosage +" "+unit
+                    String material = (String) map.get("material");//物料名
+                    String dosage = (String) map.get("dosage");//当月用量
+                    String unit = (String) map.get("unit");
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "更新物料申报信息</br></br>" + material + " " + date + " 用量 "
+                            + dosage + " " + unit
                     ));
-                   jianTaiDataServiceImpl.updateDeclareInfoById(map);
+                    jianTaiDataServiceImpl.updateDeclareInfoById(map);
 
                     // System.out.println(map);
                 }
@@ -193,10 +194,10 @@ public class JianTaiDataController {
             //CompanyInfo companyInfo = jianTaiDataService.findCompanyInfoById(Integer.parseInt(id));
 
 
-            JtMaterialEvidence jtMaterialEvidence = jianTaiDataServiceImpl.findEvidenceByCompanyName(companyInfo.get企业简称(),date);
+            JtMaterialEvidence jtMaterialEvidence = jianTaiDataServiceImpl.findEvidenceByCompanyName(companyInfo.get企业简称(), date);
 
             System.out.println(jtMaterialEvidence);
-            if(jtMaterialEvidence != null && StringUtils.isNotBlank(jtMaterialEvidence.getFilename())){
+            if (jtMaterialEvidence != null && StringUtils.isNotBlank(jtMaterialEvidence.getFilename())) {
                 result.put("jtMaterialEvidence", jtMaterialEvidence);
             } else {
                 result.put("jtMaterialEvidence", null);
@@ -245,12 +246,12 @@ public class JianTaiDataController {
             String date = request.getParameter("date");
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
             List<JTProductRecord> products = jianTaiDataServiceImpl.findProducts();
-            List<JTProductRecord> jtProductRecord = jianTaiDataServiceImpl.findProductRecordByDate(companyInfo.get企业简称(),date);
+            List<JTProductRecord> jtProductRecord = jianTaiDataServiceImpl.findProductRecordByDate(companyInfo.get企业简称(), date);
 
             for (JTProductRecord record : jtProductRecord) {
 
                 for (JTProductRecord product : products) {
-                    if(product.getProduct().equals(record.getProduct())){
+                    if (product.getProduct().equals(record.getProduct())) {
                         product.setYield(record.getYield());
                     }
                 }
@@ -275,6 +276,7 @@ public class JianTaiDataController {
             return ve;
         }
     }
+
     //根据id删除插入记录
     @SuppressWarnings("finally")
     @PostMapping(value = "/record/delRecordById")
@@ -293,7 +295,7 @@ public class JianTaiDataController {
             jianTaiDataServiceImpl.delRecordById(id);
             //添加日志
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
-            jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"删除物料申报信息</br></br>"+material+" " + datetime+ " 用量 " + dosage + " " +unit));
+            jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "删除物料申报信息</br></br>" + material + " " + datetime + " 用量 " + dosage + " " + unit));
         } catch (Exception e) {
             result.put("result", "删除失败, 请重新操作");
             e.printStackTrace();
@@ -318,20 +320,19 @@ public class JianTaiDataController {
 
             JTProductRecord jtProductRecord = jianTaiDataServiceImpl.findUnitByCompanyAndDate(date, product, companyInfo.get企业简称());
 
-            if(jtProductRecord != null){
+            if (jtProductRecord != null) {
                 //List<JTProductRecord> products = jianTaiDataServiceImpl.getJtProductRecordById(jtProductRecord.getId());
 
                 jianTaiDataServiceImpl.setYieldById(jtProductRecord.getId(), yield);
                 //添加日志 更新企业产品生产数据
                 Double y = jtProductRecord.getYield();//原产量
-                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"更新企业产品生产数据</br></br>"+product+" 原产量 " + y + " 修改为 " +yield));
+                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "更新企业产品生产数据</br></br>" + product + " 原产量 " + y + " 修改为 " + yield));
             } else {
                 jianTaiDataServiceImpl.addProductRecord(product, new Date(), date, yield, companyInfo.get企业简称());
                 //添加日志 更新企业产品生产数据
-                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"添加企业产品生产数据</br></br>"+product+" 产量 " + yield));
+                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "添加企业产品生产数据</br></br>" + product + " 产量 " + yield));
 
             }
-
 
 
         } catch (Exception e) {
@@ -343,12 +344,12 @@ public class JianTaiDataController {
     }
 
 
-
     // page/views/record目录下的index.html页面的方法
     // 上传文件(压缩包格式)
 
     /**
      * 企业物料使用数据上传凭证
+     *
      * @param file
      * @param request
      * @param response
@@ -357,49 +358,45 @@ public class JianTaiDataController {
     @RequestMapping(value = "/file/uploadEvidence", method = RequestMethod.POST)
     @ResponseBody
     public String uploadEvidence(@RequestParam(value = "file") MultipartFile file,
-                                              HttpServletRequest request, HttpServletResponse response) {
+                                 HttpServletRequest request, HttpServletResponse response) {
         // 创建map2用于放下文件名
         Map<String, Object> map2 = new HashMap<String, Object>();
         // 创建map用于放下上传成功或上传失败的对应数据
         Map<String, Object> map = new HashMap<String, Object>();
         // 文件名
-        String filename = "";
         // 从session提出登录信息
         String date = request.getParameter("date");
         CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
         // 文件上传目录
+        String originalFilename = file.getOriginalFilename();
         String localPath = "D:\\upload\\evidence\\";
+        //判断是否存在这个文件夹，没有则创建
+        if (!new File(localPath).exists()) {
+            new File(localPath).mkdirs();
+        }
+        String filename = originalFilename.substring(0, originalFilename.lastIndexOf("."));//获取文件名
+        filename += "_" + companyInfo.getUser();
+        String suffixName = originalFilename.substring(originalFilename.lastIndexOf("."));//获取后缀名
+        originalFilename = filename + suffixName;
+
+
+        //System.out.println("路径:" + localPath);
         try {
-            JtMaterialEvidence jtMaterialEvidence = jianTaiDataServiceImpl.findEvidenceByCompanyName(companyInfo.get企业简称(), date);
             if (file != null) {
-                // 生成uuid作为文件名称
-                String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-
-                // 得到 文件名(随机数+uuid+后缀)
-                if (jtMaterialEvidence != null) {// 替换
-                    // 当用户不是第一次上传,走这里替换上传文件名
-                    // 文件名从登录信息里提出,意思是若不是第一次上传,继续用回之前新建的uuid作为文件名(文件名上传至数据库对应于每个登录用户)
-                    filename = jtMaterialEvidence.getFilename();
-                    jianTaiDataServiceImpl.updateMaterialEvidenceById(jtMaterialEvidence.getId(), filename);
-                    //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"更新 " + date + " 企业物料使用数据凭证"));
-                } else {// 新建
-                    // 当用户第一次上传,走这里新建上传文件名
-                    filename = (int) ((Math.random()) * 100000000) + uuid + ".rar";
-                    jianTaiDataServiceImpl.addMaterialEvidenceById(filename, companyInfo.get企业简称(), date);
-                    //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"上传 " + date + " 企业物料使用数据凭证"));
-                }
-
-                // 修改用户对应的文件名
-
-                // 判断是否有这个文件夹，没有就创建
-                if (!new File(localPath).exists()) {
-
-                    new File(localPath).mkdirs();
+                JtMaterialEvidence jtMaterialEvidence = jianTaiDataServiceImpl.findEvidenceByCompanyName(companyInfo.get企业简称(), date);
+                System.out.println(jtMaterialEvidence);
+                if (jtMaterialEvidence != null && StringUtils.isNotBlank(jtMaterialEvidence.getFilename())) {
+                    File delFile = new File(localPath + jtMaterialEvidence.getFilename());
+                    delFile.delete();
+                    jianTaiDataServiceImpl.updateMaterialEvidenceById(jtMaterialEvidence.getId(), originalFilename);
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "更新 " + date + " 企业物料使用数据凭证"));
+                } else {
+                    jianTaiDataServiceImpl.addMaterialEvidenceById(originalFilename, companyInfo.get企业简称(), date);
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "上传 " + date + " 企业物料使用数据凭证"));
                 }
                 // 复制到当前文件夹
-                file.transferTo(new File(localPath + filename));
+                file.transferTo(new File(localPath + originalFilename));
+
 
             }
         } catch (Exception e) {
@@ -427,6 +424,7 @@ public class JianTaiDataController {
 
     /**
      * 上传平面图压缩包  一个公司只有一个压缩包
+     *
      * @param file
      * @param request
      * @param response
@@ -435,70 +433,62 @@ public class JianTaiDataController {
     @RequestMapping(value = "/file/uploadPlan", method = RequestMethod.POST)
     @ResponseBody
     public String uploadPlan(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request,
-                                          HttpServletResponse response) {
+                             HttpServletResponse response) {
         //创建map2用于放下文件名
         Map<String, Object> map2 = new HashMap<String, Object>();
         //创建map用于放下上传成功或上传失败的对应数据
         Map<String, Object> map = new HashMap<String, Object>();
         //文件名
-        String filename = "";
         //从session提出登录信息
         CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
 
         //项目目录String localPath = request.getSession().getServletContext().getRealPath("/") + "\\page\\views\\upload\\file\\";
 
         //文件上传目录
-        String localPath = "D:\\upload\\imgs\\";
+        String localPath = "D:\\upload\\plan\\";
+        String originalFilename = file.getOriginalFilename();
+        //判断是否存在这个文件夹，没有则创建
+        if (!new File(localPath).exists()) {
+            new File(localPath).mkdirs();
+        }
+        String filename = originalFilename.substring(0, originalFilename.lastIndexOf("."));//获取文件名
+        filename += "_" + companyInfo.getUser();
+        String suffixName = originalFilename.substring(originalFilename.lastIndexOf("."));//获取后缀名
+        originalFilename = filename + suffixName;
+
+
+        //System.out.println("路径:" + localPath);
         try {
             if (file != null) {
-                // 生成uuid作为文件名称
-                String uuid = UUID.randomUUID().toString().replaceAll("-", "");
-                // 获得文件类型（可以判断如果不是图片，禁止上传）
-                //String contentType = file.getContentType();
-                // 获得文件后缀名
-                //String suffixName = contentType.substring(contentType.indexOf("/") + 1);
-
-
-                // 得到 文件名(随机数+uuid+后缀)
-                if(companyInfo.getPlanName() != null && StringUtils.isNotBlank(companyInfo.getPlanName())){//替换
-                    //当用户不是第一次上传,走这里替换上传文件名
-                    //文件名从登录信息里提出,意思是若不是第一次上传,继续用回之前新建的uuid作为文件名(文件名上传至数据库对应于每个登录用户)
-                    filename = companyInfo.getPlanName();
+                if (StringUtils.isNotBlank(companyInfo.getPlanName())) {
+                    File delFile = new File(localPath + companyInfo.getPlanName());
+                    delFile.delete();
+                    jianTaiDataServiceImpl.setCompanyInfoPlanNameById(companyInfo.getId(), originalFilename);
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "更新平面图"));
+                } else {
+                    jianTaiDataServiceImpl.setCompanyInfoPlanNameById(companyInfo.getId(), originalFilename);
                     //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"更新平面图"));
-                } else {//新建
-                    //当用户第一次上传,走这里新建上传文件名
-                    filename = (int) ((Math.random()) * 100000000) + uuid + ".rar"; //+ suffixName;
-                    //修改用户对应的文件名
-                    jianTaiDataServiceImpl.setCompanyInfoPlanNameById(companyInfo.getId(), filename);
-                    //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"上传平面图"));
 
-                    CompanyInfo companyInfo2 = jianTaiDataServiceImpl.findCompanyInfoById(companyInfo.getId());
-                    //修改文件名后把session中的用户更新一下
-                    request.getSession().setAttribute("LOGIN_USER", companyInfo2);
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "上传平面图"));
                 }
-
-                // 判断是否有这个文件夹，没有就创建
-                if (!new File(localPath).exists()) {
-
-                    new File(localPath).mkdirs();
-                }
+                CompanyInfo companyInfo2 = jianTaiDataServiceImpl.findCompanyInfoById(companyInfo.getId());
+                //修改文件名后把session中的用户更新一下
+                request.getSession().setAttribute("LOGIN_USER", companyInfo2);
                 // 复制到当前文件夹
-                file.transferTo(new File(localPath + filename));
+                file.transferTo(new File(localPath + originalFilename));
+
 
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.err.println(e);
             map.put("code", 1);
             map.put("msg", "");
             map.put("data", map2);
             map2.put("src", filename);
             System.out.println("上传失败");
             return JSON.toJSONString(map);
-            //return map;
-
         }
+
 
         map.put("code", 0);
         map.put("msg", "");
@@ -514,6 +504,7 @@ public class JianTaiDataController {
 
     /**
      * 上传msds压缩文件
+     *
      * @param file
      * @param request
      * @param response
@@ -522,7 +513,7 @@ public class JianTaiDataController {
     @RequestMapping(value = "/file/uploadMsds", method = RequestMethod.POST)
     @ResponseBody
     public String uploadMSDS(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request,
-                                          HttpServletResponse response) {
+                             HttpServletResponse response) {
         //创建map2用于放下文件名
         Map<String, Object> map2 = new HashMap<String, Object>();
         //创建map用于放下上传成功或上传失败的对应数据
@@ -538,8 +529,8 @@ public class JianTaiDataController {
                 }.getType());
         String materialName = "";
         for (Map<String, Object> m : update_list) {
-            if(m != null){
-                if(file.getOriginalFilename().equals(m.get("filename"))){
+            if (m != null) {
+                if (file.getOriginalFilename().equals(m.get("filename"))) {
                     materialName = (String) m.get("material");
                 }
             }
@@ -554,7 +545,7 @@ public class JianTaiDataController {
         String originalFilename = file.getOriginalFilename();
         String localPath = "D:\\upload\\msds\\";
         //判断是否存在这个文件夹，没有则创建
-        if(!new File(localPath).exists()){
+        if (!new File(localPath).exists()) {
             new File(localPath).mkdirs();
         }
 
@@ -569,16 +560,16 @@ public class JianTaiDataController {
 
                 // 复制到当前文件夹
                 file.transferTo(new File(localPath + originalFilename));
-                JTMsdsUpload jtMsdsUpload = jianTaiDataServiceImpl.findMsdsFilenameByCompanyAndMateriel(companyInfo.getUser(), materialName);
-
-                if(jtMsdsUpload != null){
+                JTMsdsUpload jtMsdsUpload = jianTaiDataServiceImpl.findMsdsFilenameByCompanyAndMateriel(companyInfo.get企业简称(), materialName);
+                if (jtMsdsUpload != null) {
+                    new File(localPath + jtMsdsUpload.getMsdsFilename()).delete();
                     jianTaiDataServiceImpl.setMsdsFilename(originalFilename, jtMsdsUpload.getId(), new Date());
                     //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"更新MSDS</br></br>" + materialName + " 文件名："+originalFilename));
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "更新MSDS</br></br>" + materialName + " 文件名：" + originalFilename));
                 } else {
-                    jianTaiDataServiceImpl.addMsdsFileInfo(new Date(), materialName, companyInfo.getUser(), originalFilename);
+                    jianTaiDataServiceImpl.addMsdsFileInfo(new Date(), materialName, companyInfo.get企业简称(), originalFilename);
                     //添加日志
-                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"上传MSDS</br></br>" + materialName + " 文件名："+originalFilename));
+                    jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "上传MSDS</br></br>" + materialName + " 文件名：" + originalFilename));
                 }
             }
         } catch (Exception e) {
@@ -608,6 +599,7 @@ public class JianTaiDataController {
 
     /**
      * 生产设备明录上传
+     *
      * @param file
      * @param request
      * @param response
@@ -616,7 +608,7 @@ public class JianTaiDataController {
     @RequestMapping(value = "/file/uploadProduct", method = RequestMethod.POST)
     @ResponseBody
     public Map uploadProduct(@RequestParam(value = "file") MultipartFile file, HttpServletRequest request,
-                                             HttpServletResponse response) {
+                             HttpServletResponse response) {
         //创建map2用于放下文件名
         Map<String, Object> map2 = new HashMap<String, Object>();
         //创建map用于放下上传成功或上传失败的对应数据
@@ -635,7 +627,7 @@ public class JianTaiDataController {
         try {
             if (file != null) {
                 String productName = companyInfo.getProductName();
-                if(StringUtils.isNotBlank(productName)){
+                if (StringUtils.isNotBlank(productName)) {
                     File delFile = new File(localPath + productName);
                     delFile.delete();
 
@@ -655,7 +647,7 @@ public class JianTaiDataController {
                 // 复制到当前文件夹
                 file.transferTo(new File(localPath + originalFilename));
                 //添加日志
-                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(),"上传生产设备明录 " + originalFilename));
+                jianTaiDataServiceImpl.addLog(new JTLog(companyInfo.getId(), "上传生产设备明录 " + originalFilename));
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -690,7 +682,7 @@ public class JianTaiDataController {
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
             JTMsdsUpload jtMsdsUpload = jianTaiDataServiceImpl.findMsdsFilenameByCompanyAndMateriel(companyInfo.getUser(), materialName);
             System.out.println(jtMsdsUpload);
-            if(jtMsdsUpload != null && StringUtils.isNotBlank(jtMsdsUpload.getMsdsFilename())){
+            if (jtMsdsUpload != null && StringUtils.isNotBlank(jtMsdsUpload.getMsdsFilename())) {
                 System.out.println("文件存在" + jtMsdsUpload);
                 result.put("filename", jtMsdsUpload.getMsdsFilename());
             }
@@ -713,7 +705,7 @@ public class JianTaiDataController {
         try {
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
             System.out.println(companyInfo);
-            System.out.println("初始化文件名:"+ companyInfo.getPlanName());
+            System.out.println("初始化文件名:" + companyInfo.getPlanName());
             result.put("filename", companyInfo.getPlanName());
 
         } catch (Exception e) {
@@ -759,51 +751,32 @@ public class JianTaiDataController {
         String filename = request.getParameter("filename");//物料名
         String localPath = "D:\\upload\\" + folder + "\\";
         String filename_str = "";
-        if("msds".equals(folder)){//MSDS目录
+        if ("msds".equals(folder)) {//MSDS目录
             filename_str = filename;
             localPath += filename_str;
-        } else if ("imgs".equals(folder)){//平面图目录
+        } else if ("plan".equals(folder)) {//平面图目录
             filename_str = companyInfo2.getPlanName();
             localPath += filename_str;
-        } else if ("evidence".equals(folder)){//佐证文件目录
+        } else if ("evidence".equals(folder)) {//佐证文件目录
             String date = request.getParameter("date");
             JtMaterialEvidence jtMaterialEvidence = jianTaiDataServiceImpl.findEvidenceByCompanyName(companyInfo.get企业简称(), date);
             filename_str = jtMaterialEvidence.getFilename();
             localPath += filename_str;
-        } else if ("product".equals(folder)){//产品设备文件目录
+        } else if ("product".equals(folder)) {//产品设备文件目录
             filename_str = companyInfo2.getProductName();
             localPath += filename_str;
         }
 
         response.setCharacterEncoding("utf-8");
         response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition", "attachment;fileName="+ filename_str);
+        response.setHeader("Content-Disposition", "attachment;fileName=" + filename_str);
         File file = new File(localPath);
-        downloadFile(file, response);
+        DownloadUtil.downloadFile(file, response);
         System.out.println("下载目录文件为:" + localPath);
         return null;
     }
 
-    //下载文件功能
-    public static void downloadFile(File file, HttpServletResponse response){
-        try {
-            // 以流的形式下载文件。
-            BufferedInputStream fis = new BufferedInputStream(new FileInputStream(file.getPath()));
-            byte[] buffer = new byte[fis.available()];
-            fis.read(buffer);
-            fis.close();
-            // 清空response
-            response.reset();
-            OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;filename=" + new String(file.getName().getBytes("UTF-8"), "ISO-8859-1"));
-            toClient.write(buffer);
-            toClient.flush();
-            toClient.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-    }
+
 
     //查找文件
     @SuppressWarnings("finally")
@@ -814,7 +787,7 @@ public class JianTaiDataController {
         try {
             CompanyInfo companyInfo = (CompanyInfo) request.getSession().getAttribute("LOGIN_USER");
             //String localPath = request.getSession().getServletContext().getRealPath("/") + "\\page\\views\\upload\\file\\";
-            String localPath = "D:\\upload\\imgs\\";
+            String localPath = "D:\\upload\\plan\\";
             ArrayList<String> filelist = new ArrayList<>();
 
 

@@ -1,12 +1,11 @@
 package com.jiantai.service;
 
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
+import com.jiantai.entity.*;
+import com.jiantai.vo.VO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AdminService {
     List<CompanyInfo> getAllCompanyInfo();
@@ -19,4 +18,18 @@ public interface AdminService {
     void addLog(JTLog log);
     List<JTDeclareRecord> searchDeclareRecords(String date, String company, String material);
     List<Material> findMaterials();
+
+    Map<String, Object> searchExprotDeclareRecords(String date, String company, String material);
+
+    List<CompanyInfo> findExistPlanName();
+
+    List<CompanyInfo> findExistProductName();
+
+    List<JTMsdsUpload> findMsdsUpload(String company, String material);
+
+    List<JtMaterialEvidence> findEvidenceUpload(String company, String datetime);
+
+    JTMsdsUpload findMsdsUploadById(String id);
+
+    JtMaterialEvidence findJtMaterialEvidenceById(String id);
 }

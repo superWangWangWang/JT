@@ -1,9 +1,6 @@
 package com.jiantai.dao;
 
-import com.jiantai.entity.CompanyInfo;
-import com.jiantai.entity.JTDeclareRecord;
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
+import com.jiantai.entity.*;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -87,6 +84,48 @@ public interface AdminDao {
      */
     @Select("select * from `jt_materials`")
     List<Material> findMaterials();
+
+    @Select("select * from `jt_company_info` where plan_name is not null and user != 'admin' and user != 't'")
+    List<CompanyInfo> findExistPlanName();
+
+
+    @Select("select * from `jt_company_info` where product_name is not null and user != 'admin' and user != 't'")
+    List<CompanyInfo> findExistProductName();
+
+
+    @Select("<script> " +
+            "select *  from jt_msds_upload " +
+            " <where> " +
+            " <if test='company != null'>company = #{company}</if> " +
+            " <if test='material != null'> and material=#{material}</if> " +
+            " </where> " +
+            " </script> ")
+    List<JTMsdsUpload> findMsdsUpload(@Param("company") String company, @Param("material") String material);
+
+    @Select("<script> " +
+            "select *  from jt_material_evidence " +
+            " <where> " +
+            " <if test='company != null'>company = #{company}</if> " +
+            " <if test='datetime != null'> and datetime=#{datetime}</if> " +
+            " </where> " +
+            " </script> ")
+    List<JtMaterialEvidence> findEvidenceUpload(@Param("company") String company, @Param("datetime") String datetime);
+
+
+    /**
+     * 根据id查询msds
+     * @param id
+     */
+    @Select("select * from `jt_msds_upload` where `id` = #{id}")
+    JTMsdsUpload findMsdsUploadById(String id);
+
+
+    /**
+     * 根据id查询佐证
+     * @param id
+     */
+    @Select("select * from `jt_material_evidence` where `id` = #{id}")
+    JtMaterialEvidence findJtMaterialEvidenceById(String id);
 }
 
 

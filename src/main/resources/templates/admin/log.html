@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>欢迎页面-X-admin2.2</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="../xadmin/css/font.css">
+        <link rel="stylesheet" href="../xadmin/css/xadmin.css">
+        <script src="../xadmin/lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../xadmin/js/xadmin.js"></script>
+        <script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+
+                        <div class="layui-card-body layui-table-body layui-table-main">
+                            <table class="layui-table" id="table_logs" lay-filter="table_filter"></table>
+<!--                            <table class="layui-table layui-form">-->
+<!--                                <thead>-->
+<!--                                  <tr>-->
+<!--                                    <th width="110px">操作时间</th>-->
+<!--                                    <th width="30px">公司名</th>-->
+<!--                                    <th>日志</th>-->
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody id="t_logs">-->
+
+<!--                                <#list logs as l>-->
+<!--                                  <tr>-->
+<!--                                    <td>${l.createTime ? string("MM月dd日 HH:mm:ss")}</td>-->
+<!--                                    <td>小明</td>-->
+<!--                                    <td>${l.content}</td>-->
+<!--                                  </tr>-->
+<!--                                </#list>-->
+
+
+<!--                                </tbody>-->
+<!--                            </table>-->
+                        </div>
+                        <div class="layui-card-body ">
+                            <div id="page"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </body>
+    <script>
+      layui.use(['laydate','form'], function(){
+        var laydate = layui.laydate;
+        var  form = layui.form;
+
+
+        // 监听全选
+        form.on('checkbox(checkall)', function(data){
+
+          if(data.elem.checked){
+            $('tbody input').prop('checked',true);
+          }else{
+            $('tbody input').prop('checked',false);
+          }
+          form.render('checkbox');
+        }); 
+        
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+
+
+      });
+
+       /*用户-停用*/
+      function member_stop(obj,id){
+          layer.confirm('确认要停用吗？',function(index){
+
+              if($(obj).attr('title')=='启用'){
+
+                //发异步把用户状态进行更改
+                $(obj).attr('title','停用')
+                $(obj).find('i').html('&#xe62f;');
+
+                $(obj).parents("tr").find(".td-status").find('span').addClass('layui-btn-disabled').html('已停用');
+                layer.msg('已停用!',{icon: 5,time:1000});
+
+              }else{
+                $(obj).attr('title','启用')
+                $(obj).find('i').html('&#xe601;');
+
+                $(obj).parents("tr").find(".td-status").find('span').removeClass('layui-btn-disabled').html('已启用');
+                layer.msg('已启用!',{icon: 5,time:1000});
+              }
+              
+          });
+      }
+
+      /*用户-删除*/
+      function member_del(obj,id){
+          layer.confirm('确认要删除吗？',function(index){
+              //发异步删除数据
+              $(obj).parents("tr").remove();
+              layer.msg('已删除!',{icon:1,time:1000});
+          });
+      }
+
+
+
+      function delAll (argument) {
+        var ids = [];
+
+        // 获取选中的id 
+        $('tbody input').each(function(index, el) {
+            if($(this).prop('checked')){
+               ids.push($(this).val())
+            }
+        });
+  
+        layer.confirm('确认要删除吗？'+ids.toString(),function(index){
+            //捉到所有被选中的，发异步进行删除
+            layer.msg('删除成功', {icon: 1});
+            $(".layui-form-checked").not('.header').parents('tr').remove();
+        });
+      }
+    </script>
+
+
+    <script>
+        layui.use('laypage', function(){
+            var laypage = layui.laypage;
+
+            //执行一个laypage实例
+            laypage.render({
+                elem: 'page'
+                //elem: 'page'
+                ,count: ${count} //数据总数，从服务端得到
+                ,jump: function(obj, first){
+                    //首次不执行
+                    if(!first){
+                        //do something
+                        window.location.href = "showLog?page="+obj.curr;
+                        // $.ajax({
+                        //     url:"showLog?page="+obj.curr,
+                        //     type:"get",
+                        //     success:function (data) {
+                        //
+                        //         //document.getElementById("t_logs").innerHTML =
+                        //     }
+                        // })
+                    }
+                }
+            });
+
+
+        });
+    </script>
+
+
+    <script>
+        layui.use('table', function(){
+            var table = layui.table;
+
+            //方法级渲染
+            table.render({
+                elem: '#table_logs'
+                ,url: 'showLog'
+                ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                    title: '提示'
+                    ,layEvent: 'LAYTABLE_TIPS'
+                    ,icon: 'layui-icon-tips'
+                }]
+                ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+                ,cols: [[
+                    //{checkbox: true, fixed: true}
+                    ,{field:'content', title: '操作日志', width:60, sort: true, fixed: true}
+                    // ,{field:'企业简称', title: '企业简称' ,width:80, edit: 'text' }
+                    // ,{field:'是否启用', title:'允许登录', width:85, templet: '#enable', unresize: true}
+                    // ,{field:'right', title:'跨月修改', width:85, templet: '#change', unresize: true}
+                    // ,{fixed: '',title:'操作日志', width:80, align:'center', toolbar: '#log' }
+                    // //,{field:'planName', title: '平面图文件名字' ,width:100 }
+                    // ,{fixed: '',title:'平面图', width:80, align:'center', toolbar: '#dplan'}
+                    // //,{field:'productName', title: '产品名录文件名字' ,width:100 }
+                    // ,{fixed: '',title:'产品名录', width:80, align:'center', toolbar: '#dproduct'}
+                    // ,{field:'user', title: '账号', width:100 , edit: 'text'}
+                    // ,{field:'password', title: '密码', width:100 ,edit: 'text'}
+                    // ,{field:'企业编号', title: '企业编号', width:80 , edit: 'text'}
+                    //
+                    // ,{field:'企业全称', title: '企业全称' ,width:250 , edit: 'text'}
+                    // ,{field:'法人代表', title: '法人代表' ,width:80 , edit: 'text'}
+                    // ,{field:'联系地址', title: '联系地址' ,width:400 , edit: 'text'}
+                    // ,{field:'公司固话', title: '公司固话' ,width:120 , edit: 'text'}
+                    // ,{field:'公司传真', title: '公司传真' ,width:120 , edit: 'text'}
+                    // ,{field:'联系人', title: '联系人' ,width:80 , edit: 'text'}
+                    // ,{field:'联系人手机号', title: '联系人手机' ,width:120 , edit: 'text'}
+                    // ,{field:'统一社会信用代码', title: '统一社会信用代码' ,width:180 , edit: 'text'}
+                    // ,{field:'企业人数', title: '企业人数' ,width:80 , edit: 'text'}
+                    // ,{field:'开业时间', title: '开业时间' ,width:100 , edit: 'text'}
+                    // ,{field:'产品类型', title: '产品类型' ,width:80 , edit: 'text'}
+                    // ,{field:'园区位置', title: '坐标' ,width:60 , edit: 'text'}
+                    // ,{field:'备注', title: '备注' ,width:100 , edit: 'text'}
+
+                ]]
+                ,id: 'testReload'
+                ,page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                    layout: ['prev', 'page', 'next', 'skip','count','limit'] //自定义分页布局
+                    ,first: '首页' //不显示首页
+                    ,last: '尾页' //不显示尾页
+                    ,limit:15
+                    ,limits: [15,30,50,100,1000]
+                }
+                //,page: true
+                //,height: 310
+            });
+
+            var $ = layui.$, active = {
+                reload: function(){
+                    var demoReload = $('#demoReload');
+
+                    //执行重载
+                    table.reload('testReload', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        ,where: {
+                            companyName: demoReload.val()
+                        }
+                    }, 'data');
+                }
+            };
+
+            $('.demoTable .layui-btn').on('click', function(){
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+        });
+
+
+
+    </script>
+</html>

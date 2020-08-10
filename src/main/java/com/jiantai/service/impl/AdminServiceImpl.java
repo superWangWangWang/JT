@@ -123,4 +123,13 @@ public class AdminServiceImpl implements AdminService {
     public void addCompany(String name, String pwd) {
         adminDao.addCompany(name,pwd);
     }
+
+    /**
+     * 查询所有的日志记录
+     * @return
+     */
+    @Override
+    public List<JTLog> getAllLog() {
+        return adminDao.getAllLog();
+    }
 }

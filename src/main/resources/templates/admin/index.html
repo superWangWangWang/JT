@@ -26,20 +26,16 @@
     </head>
     <body class="index">
         <!-- 顶部开始 -->
-        <div class="container">
+        <div class="container layui-bg-green">
             <div class="logo">
                 <a href="./index.html">首页</a></div>
             <div class="left_open">
                 <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
             </div>
+            <ul class="layui-nav layui-bg-green right">
+                <li class="layui-nav-item"> <a href="../user/index.html" target="_Blank"><i class="iconfont">&#xe6aa;</i>  公司账户模式</a></li>
+                <li class="layui-nav-item"><a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出系统</a></li>
 
-            <ul class="layui-nav right" lay-filter="">
-                <li class="layui-nav-item">
-                    <a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出</a>
-
-                </li>
-                <!--<li class="layui-nav-item to-index">-->
-                    <!--<a href="/">前台首页</a></li>-->
             </ul>
         </div>
         <!-- 顶部结束 -->
@@ -64,7 +60,11 @@
                                     <i class="iconfont">&#xe6a7;</i>
                                     <cite>物料管理</cite></a>
                             </li>
-
+                            <li>
+                                <a onclick="xadmin.add_tab('系统日志','showLog')">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    <cite>系统日志</cite></a>
+                            </li>
                         </ul>
                     </li>
 

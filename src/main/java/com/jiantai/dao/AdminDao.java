@@ -109,6 +109,13 @@ public interface AdminDao {
      */
     @Insert("insert into `jt_company_info` (user,password) values (#{name},#{pwd})")
     void addCompany(String name,String pwd);
+
+    /**
+     * 查询所有的日志，便于管理员查看
+     * @return
+     */
+    @Select("select * from `jt_log` order by create_time desc")
+    List<JTLog> getAllLog();
 }
 
 

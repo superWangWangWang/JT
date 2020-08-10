@@ -21,4 +21,5 @@ public interface AdminService {
     List<Material> findMaterials();
     List<CompanyInfo> getCompanyByUserName(String name);
     void addCompany(String name,String pwd);
+    List<JTLog> getAllLog();
 }

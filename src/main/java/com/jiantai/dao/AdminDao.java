@@ -114,7 +114,7 @@ public interface AdminDao {
      * 查询所有的日志，便于管理员查看
      * @return
      */
-    @Select("select * from `jt_log` order by create_time desc")
+    @Select("SELECT l.create_time,l.content,c.企业简称 AS shortName FROM `jt_log` AS l LEFT JOIN `jt_company_info` AS c ON l.cid = c.id ORDER BY create_time DESC")
     List<JTLog> getAllLog();
 }
 

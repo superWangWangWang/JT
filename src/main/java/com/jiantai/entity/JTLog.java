@@ -11,6 +11,8 @@ public class JTLog {
     private Date createTime;
     //contentvarchar(255) NULL日志内容
     private String content;
+    private String shortName;
+
     public JTLog() {//无参构造
     }
 
@@ -21,11 +23,12 @@ public class JTLog {
 
     @Override
     public String toString() {
-        return "Log{" +
+        return "JTLog{" +
                 "id=" + id +
                 ", cid=" + cid +
                 ", createTime=" + createTime +
                 ", content='" + content + '\'' +
+                ", shortName='" + shortName + '\'' +
                 '}';
     }
 
@@ -59,5 +62,13 @@ public class JTLog {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 }

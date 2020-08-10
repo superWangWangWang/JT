@@ -342,8 +342,34 @@ public class AdminController {
         mv.addObject("logs",list);
         mv.addObject("page",page);
         mv.addObject("count",info.getTotal());
+
         mv.setViewName("admin/log");
 
         return mv;
+    }
+    @RequestMapping("getLog")
+    @ResponseBody
+    public VO getLog(Integer page){
+
+        //
+        if (page == null)
+            page = 1;
+        System.out.println(page);
+        Page<Object> pa = (Page<Object>) PageHelper.startPage(page, 15);
+        List<JTLog> list = adminServiceImpl.getAllLog();
+        PageInfo<Object> info = new PageInfo<>(pa);
+
+
+        VO vo = new VO();
+        vo.setCode(1);
+        vo.setMsg("success");
+        vo.setCount((int)info.getTotal());
+        vo.setData(list);
+//        mv.addObject("logs",list);
+//        mv.addObject("page",page);
+//        mv.addObject("count",info.getTotal());
+//        mv.setViewName("admin/log");
+
+        return vo;
     }
 }

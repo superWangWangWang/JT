@@ -11,7 +11,7 @@ public interface AdminDao {
      * 查询所有的公司信息
      * @return
      */
-    @Select("select * from `jt_company_info`")
+    @Select("select * from `jt_company_info` where `企业简称` != '测试账号' ")
     List<CompanyInfo> getAllCompanyInfo();
 
     /**
@@ -72,11 +72,11 @@ public interface AdminDao {
     @Select("<script> " +
             "select *  from jt_declare_record " +
             " <where> " +
-            " <if test='datetime != null'>datetime = #{datetime} and `delete` = 0</if> " +
-            " <if test='company != null'> and company=#{company} and `delete` = 0</if> " +
-            " <if test='material != null'> and material=#{material} and `delete` = 0</if> " +
+            " `delete` = 0" +
+            " <if test='datetime != null'>and datetime = #{datetime}</if> " +
+            " <if test='company != null'> and company = #{company}</if> " +
+            " <if test='material != null'> and material = #{material}</if> " +
 
-            " <if test='material == null'>`delete` = 0</if> " +
             " </where> " +
             " </script> ")
     //<script> select *  from jt_declare_record  <where>  <if test='datetime != null'>datetime = #{datetime}</if>  <if test='company != null'> and company=#{company}</if>  <if test='material != null'> and material=#{material}</if>  </where>  </script>

@@ -1,19 +1,13 @@
 package com.jiantai.service.impl;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.jiantai.dao.AdminDao;
 import com.jiantai.entity.*;
 import com.jiantai.service.AdminService;
-import com.jiantai.vo.VO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -131,31 +125,34 @@ public class AdminServiceImpl implements AdminService {
 
         Map<String, Object> map = new HashMap<>();
         List<String[]> exportInfos = new ArrayList<>();
-        String[] title = new String[8];//这个数组用于excel表头
-        title[0] = "id";
+        String[] title = new String[3];//这个数组用于excel表头
+        /*title[0] = "id";
         title[1] = "所属公司";
-        title[2] = "录入时间";
-        title[3] = "物料名称";
-        title[4] = "物料单位";
-        title[5] = "物料成分";
-        title[6] = "成分含量";
-        title[7] = "当月用量";
+        title[2] = "录入时间";*/
+        title[0] = "物料名称";
+        title[1] = "物料单位";
+        title[2] = "物料用量";
+        double count = 0;
         for (JTDeclareRecord r : records) {
-            String[] content = new String[8];//excel内容
-            System.out.println(r);
-            content[0] = r.getId() + "";
-            content[1] = r.getCompany();
-            content[2] = r.getDatetime();
-            content[3] = r.getMaterial();
-            content[4] = r.getUnit();
-            content[5] = r.getElement();
-            content[6] = r.getContent();
-            content[7] = r.getDosage();
+            count += Double.parseDouble(r.getDosage());
+            String[] content = new String[3];//excel内容
+            //content[0] = r.getId() + "";
+           //content[1] = r.getCompany();
+            //content[2] = r.getDatetime();
+            content[0] = r.getMaterial();
+            content[1] = r.getUnit();
+            content[2] = r.getDosage();
             exportInfos.add(content);
         }
+        String[] end = new String[3];//用于excel表结尾的总计算
+        end[0] = "合计";
+        end[1] = "";
+        end[2] = count + "";
+        exportInfos.add(end);
+
 
         map.put("title", title);
-        map.put("result", records);
+        map.put("result", exportInfos);
 
         return map;
     }

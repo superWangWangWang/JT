@@ -32,4 +32,7 @@ public interface AdminService {
     JTMsdsUpload findMsdsUploadById(String id);
 
     JtMaterialEvidence findJtMaterialEvidenceById(String id);
+    List<CompanyInfo> getCompanyByUserName(String name);
+    void addCompany(String name,String pwd);
+    List<JTLog> getAllLog();
 }

@@ -57,7 +57,7 @@ public class UserController {
 	 * 登录
 	 **/
 	@SuppressWarnings("finally")
-	@PostMapping(value = "/companyLogin")
+	@PostMapping("companyLogin")
 	@ResponseBody
 	public String companyLogin(HttpServletRequest request, HttpServletResponse response, Model model) {
 		Map<String, Object> result = new HashMap<String, Object>();
@@ -67,8 +67,6 @@ public class UserController {
 		CompanyInfo companyInfo = userServiceImpl.companyLogin(username);
 		//System.out.println("==================");
 		try {
-
-
 			if (companyInfo != null) {
 
 				if (!companyInfo.getPassword().equals(password)) {
@@ -117,7 +115,7 @@ public class UserController {
 				}
 				String ip = request.getRemoteAddr();
 
-				if (!"0:0:0:0:0:0:0:1".equals(ip) || !"127.0.0.1".equals(ip)) {//ip不是本地，就记录日志
+				if (!"0:0:0:0:0:0:0:1".equals(ip) && !"127.0.0.1".equals(ip)) {//ip不是本地，就记录日志
 					userServiceImpl.addLog(new JTLog(companyInfo.getId(), " 登录成功 IP：" + request.getRemoteAddr()));
 				}
 
@@ -203,6 +201,19 @@ public class UserController {
 			return JSON.toJSONString(result);
 		}
 
+	}
+	@RequestMapping("toIndex")
+	public ModelAndView toIndex(HttpServletRequest request){
+		ModelAndView mv = new ModelAndView();
+		CompanyInfo companyInfo = (CompanyInfo)request.getSession().getAttribute("LOGIN_USER");
+		if (companyInfo.getType() == 1){
+			//管理员，type = 1
+			mv.setViewName("redirect:/admin/index");
+		}else {
+			//普通公司账户 type =0
+			mv.setViewName("user/index");
+		}
+		return mv;
 	}
 
 }

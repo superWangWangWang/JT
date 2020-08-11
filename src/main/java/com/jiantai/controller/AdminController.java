@@ -31,6 +31,34 @@ public class AdminController {
     private AdminServiceImpl adminServiceImpl;
 
     /**
+     * 到管理员首页
+     *
+     * @return
+     */
+    @RequestMapping("index")
+    public ModelAndView toIndex() {
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("data", "aaa");
+        mv.setViewName("admin/index");
+        return mv;
+    }
+
+    /**
+     * 返回管理员欢迎页面，单独写一个方法是为了后期能给模板动态赋值
+     *
+     * @return
+     */
+    @RequestMapping("welcome")
+    public ModelAndView toWelcome() {
+        System.out.println("welcome");
+        ModelAndView mv = new ModelAndView();
+        mv.addObject("data", "aaa");
+        //查询公司一共有多少
+        mv.setViewName("admin/welcome");
+        return mv;
+    }
+
+    /**
      * 查询所有公司详情，展示列表，返回json
      *
      * @param request
@@ -254,6 +282,8 @@ public class AdminController {
     }
 
     /**
+     * <<<<<<< HEAD
+     *
      * @page 物料导出数据 material.html
      * @funciton
      */
@@ -358,6 +388,15 @@ public class AdminController {
         return null;
     }
 
+    /**
+     * 管理员下载文件方法（平面图，产品名录）
+     *
+     * @param type
+     * @param fileName
+     * @param response
+     * @param request
+     * @throws IOException
+     */
     @RequestMapping("down")
     @ResponseBody
     public void downFile(String type, String fileName, HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -366,6 +405,7 @@ public class AdminController {
         //System.out.println(type);
         //System.out.println(fileName);//空字符串则表示没有
         //VO vo = new VO<>();
+
         if ("".equals(fileName) || fileName == null) {
             //vo.setCode(0);
             //vo.setMsg("尚未上传");
@@ -378,9 +418,85 @@ public class AdminController {
             FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
             //vo.setCode(1);
             //vo.setMsg("下载成功");
+            if (!"".equals(fileName) && fileName != null && !"".equals(type) && type != null) {
+                if ("plan".equals(type)) {
+                    type = "imgs";  //数据保存在的文件夹是imgs文件夹而不是plan文件夹
+                }
+                //建议先查下数据口是否有记录，不然出错，
+                FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
+            }
         }
-
-
-        //return JSON.toJSONString(vo);
     }
-}
+
+        /**
+         * 添加公司登录账号密码
+         * @param name
+         * @param pwd
+         * @return
+         */
+        @RequestMapping("companyAdd")
+        @ResponseBody
+        public VO companyAdd (String name, String pwd){
+
+            System.out.println(name + "====");
+            System.out.println(pwd + "====");
+            VO vo = new VO();
+            if (!"".equals(name) && name != null && !"".equals(pwd) && pwd != null) {
+                //查询是否存在用户名
+                List<CompanyInfo> companys = adminServiceImpl.getCompanyByUserName(name);
+                if (companys.size() == 0) {//没有该账号，允许注册
+                    adminServiceImpl.addCompany(name, pwd);
+                    vo.setCode(1);
+                    vo.setMsg("新增成功");
+                } else {
+                    //存在账号，返回错误信息
+                    vo.setCode(0);
+                    vo.setMsg("该账号已存在");
+                }
+
+            } else {
+                vo.setCode(0);
+                vo.setMsg("参数提交不正确");
+            }
+            return vo;
+        }
+        @RequestMapping("showLog")
+        public ModelAndView showLog (Integer page){
+            ModelAndView mv = new ModelAndView();
+            //
+            if (page == null) page = 1;
+            System.out.println(page);
+            Page<Object> pa = (Page<Object>) PageHelper.startPage(page, 15);
+            List<JTLog> list = adminServiceImpl.getAllLog();
+            PageInfo<Object> info = new PageInfo<>(pa);
+
+            mv.addObject("logs", list);
+            mv.addObject("page", page);
+            mv.addObject("count", info.getTotal());
+
+            mv.setViewName("admin/log");
+
+            return mv;
+        }
+        @RequestMapping("getLog")
+        @ResponseBody
+        public VO getLog (Integer page){
+
+            //return JSON.toJSONString(vo);
+            //
+            if (page == null)
+                page = 1;
+            System.out.println(page);
+            Page<Object> pa = (Page<Object>) PageHelper.startPage(page, 15);
+            List<JTLog> list = adminServiceImpl.getAllLog();
+            PageInfo<Object> info = new PageInfo<>(pa);
+
+
+            VO vo = new VO();
+            vo.setCode(1);
+            vo.setMsg("success");
+            vo.setCount((int) info.getTotal());
+            vo.setData(list);
+            return vo;
+        }
+    }

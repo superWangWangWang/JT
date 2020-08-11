@@ -11,7 +11,7 @@ public interface AdminDao {
      * 查询所有的公司信息
      * @return
      */
-    @Select("select * from `jt_company_info` where `企业简称` != '测试账号' ")
+    @Select("select * from `jt_company_info` where `企业简称` is not null and `企业简称` != '测试账号' ")
     List<CompanyInfo> getAllCompanyInfo();
 
     /**
@@ -76,10 +76,8 @@ public interface AdminDao {
             " <if test='datetime != null'>and datetime = #{datetime}</if> " +
             " <if test='company != null'> and company = #{company}</if> " +
             " <if test='material != null'> and material = #{material}</if> " +
-
             " </where> " +
             " </script> ")
-    //<script> select *  from jt_declare_record  <where>  <if test='datetime != null'>datetime = #{datetime}</if>  <if test='company != null'> and company=#{company}</if>  <if test='material != null'> and material=#{material}</if>  </where>  </script>
     List<JTDeclareRecord> searchDeclareRecords(@Param("datetime") String datetime, @Param("company") String company, @Param("material") String material);
 
     /**
@@ -88,11 +86,11 @@ public interface AdminDao {
     @Select("select * from `jt_materials`")
     List<Material> findMaterials();
 
-    @Select("select * from `jt_company_info` where plan_name is not null and user != 'admin' and user != 't'")
+    @Select("select * from `jt_company_info` where plan_name is not null and `企业简称` != '测试账号' ")
     List<CompanyInfo> findExistPlanName();
 
 
-    @Select("select * from `jt_company_info` where product_name is not null and user != 'admin' and user != 't'")
+    @Select("select * from `jt_company_info` where product_name is not null and `企业简称` != '测试账号' ")
     List<CompanyInfo> findExistProductName();
 
 
@@ -129,6 +127,28 @@ public interface AdminDao {
      */
     @Select("select * from `jt_material_evidence` where `id` = #{id}")
     JtMaterialEvidence findJtMaterialEvidenceById(String id);
+    /**
+     * 根据公司登录账号查找公司信息
+     * @param name
+     * @return
+     */
+    @Select("select * from `jt_company_info` where `user` = #{name}")
+    List<CompanyInfo> getCompanyByUserName(String name);
+
+    /**
+     * 添加公司登录账号
+     * @param name
+     * @param pwd
+     */
+    @Insert("insert into `jt_company_info` (user,password) values (#{name},#{pwd})")
+    void addCompany(@Param("name") String name,@Param("pwd") String pwd);
+
+    /**
+     * 查询所有的日志，便于管理员查看
+     * @return
+     */
+    @Select("SELECT l.create_time,l.content,c.企业简称 AS shortName FROM `jt_log` AS l LEFT JOIN `jt_company_info` AS c ON l.cid = c.id ORDER BY create_time DESC")
+    List<JTLog> getAllLog();
 }
 
 

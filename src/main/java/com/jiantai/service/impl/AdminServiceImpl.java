@@ -9,6 +9,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import com.jiantai.dao.AdminDao;
+import com.jiantai.entity.CompanyInfo;
+import com.jiantai.entity.JTDeclareRecord;
+import com.jiantai.entity.JTLog;
+import com.jiantai.entity.Material;
+import com.jiantai.service.AdminService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
 public class AdminServiceImpl implements AdminService {
     @Autowired
@@ -109,6 +121,7 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.findMaterials();
     }
 
+
     @Override
     public Map<String, Object> searchExprotDeclareRecords(String date, String company, String material) {
 
@@ -137,7 +150,7 @@ public class AdminServiceImpl implements AdminService {
             count += Double.parseDouble(r.getDosage());
             String[] content = new String[3];//excel内容
             //content[0] = r.getId() + "";
-           //content[1] = r.getCompany();
+            //content[1] = r.getCompany();
             //content[2] = r.getDatetime();
             content[0] = r.getMaterial();
             content[1] = r.getUnit();
@@ -218,4 +231,36 @@ public class AdminServiceImpl implements AdminService {
         return adminDao.findJtMaterialEvidenceById(id);
     }
 
+
+    /**
+     * 根据用户名查询公司
+     *
+     * @param name
+     * @return
+     */
+    @Override
+    public List<CompanyInfo> getCompanyByUserName(String name) {
+        return adminDao.getCompanyByUserName(name);
+    }
+
+    /**
+     * 添加公司登录账号
+     *
+     * @param name
+     * @param pwd
+     */
+    @Override
+    public void addCompany(String name, String pwd) {
+        adminDao.addCompany(name, pwd);
+    }
+
+    /**
+     * 查询所有的日志记录
+     *
+     * @return
+     */
+    @Override
+    public List<JTLog> getAllLog() {
+        return adminDao.getAllLog();
+    }
 }

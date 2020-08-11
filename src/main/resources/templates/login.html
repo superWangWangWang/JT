@@ -6,9 +6,10 @@
 <link rel="icon" href="imgs/logo.png" type="image/x-icon" />
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, user-scalable=yes">
-<link rel="stylesheet" href="css/login-css/style.css">
-<link rel="stylesheet" href="layui/css/layui.css" media="all">
-<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	<link rel="stylesheet" href="css/login-css/style.css">
+	<link rel="stylesheet" href="layui/css/layui.css" media="all">
+	<script type="text/javascript" src="js/jquery-3.2.1.min.js"></script>
+	
 </head>
 
 <body>
@@ -116,13 +117,7 @@
 			  layui.form.render(); //重新渲染显示效果
 			  $.post("user/companyLogin",$("#loginform").serialize(),function(data){
 					if(!data.error){
-
-						if (data.type == 1) {
-                            window.location.href = "admin/index.html";
-						}else {
-                            window.location.href = "home/index.html";
-						}
-
+						window.location.href = "user/toIndex";//用户正常，选择性跳转页面
 					}else{
 						layer.msg("登录失败：" + data.error);
 					}
@@ -144,8 +139,6 @@
 		});
 		
 		function goBack(){
-			/* $("#login-div").show();
-			$("#select-div").hide(); */
 			window.location.href ='user/logout';
 		}
 		

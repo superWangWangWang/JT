@@ -11,7 +11,7 @@ public interface AdminDao {
      * 查询所有的公司信息
      * @return
      */
-    @Select("select * from `jt_company_info` where `企业简称` is not null and `企业简称` != '测试账号' ")
+    @Select("SELECT * FROM `jt_company_info` WHERE `企业简称` NOT LIKE '%测试%' OR `企业全称` NOT LIKE '%测试%'")
     List<CompanyInfo> getAllCompanyInfo();
 
     /**

@@ -77,21 +77,8 @@
                             url:"getLog?page="+obj.curr,
                             type:"get",
                             success:function (data) {
-
-                                var str = "";
-                                for (var i = 0;i < data.data.length;i++)
-                                {
-                                    var t =  new Date().Format("MM月dd日 HH:mm:ss");
-                                     str = str +
-
-                                        '<tr>' +
-                                        '<td>' + t + '</td>'+
-                                        '<td>' + data.data[i].shortName + '</td>'+
-
-                                        '<td>' + data.data[i].content + '</td>'+
-                                        '</tr>';
-                                }
-                                document.getElementById("t_logs").innerHTML = str;
+                                //console.log(data);
+                                document.getElementById("t_logs").innerHTML = data;
                             }
                         })
                     }

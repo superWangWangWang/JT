@@ -460,7 +460,13 @@ public class AdminController {
             }
             return vo;
         }
-        @RequestMapping("showLog")
+
+    /**
+     * 显式系统日志首页
+     * @param page
+     * @return
+     */
+    @RequestMapping("showLog")
         public ModelAndView showLog (Integer page){
             ModelAndView mv = new ModelAndView();
             //
@@ -478,25 +484,21 @@ public class AdminController {
 
             return mv;
         }
-        @RequestMapping("getLog")
-        @ResponseBody
-        public VO getLog (Integer page){
 
-            //return JSON.toJSONString(vo);
-            //
+    /**
+     * 获取系统日志信息的分页数据，返回视图模型
+     * @param page
+     * @return
+     */
+    @RequestMapping("getLog")
+        public ModelAndView getLog (Integer page){
+            ModelAndView mv = new ModelAndView();
+            mv.setViewName("admin/log-tem");
             if (page == null)
                 page = 1;
-            System.out.println(page);
-            Page<Object> pa = (Page<Object>) PageHelper.startPage(page, 15);
+            PageHelper.startPage(page, 15);
             List<JTLog> list = adminServiceImpl.getAllLog();
-            PageInfo<Object> info = new PageInfo<>(pa);
-
-
-            VO vo = new VO();
-            vo.setCode(1);
-            vo.setMsg("success");
-            vo.setCount((int) info.getTotal());
-            vo.setData(list);
-            return vo;
+            mv.addObject("logs",list);
+            return mv;
         }
     }

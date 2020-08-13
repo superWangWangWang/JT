@@ -1,5 +1,6 @@
 package com.jiantai.interceptor;
 
+import com.jiantai.entity.CompanyInfo;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,11 +19,21 @@ public class MyInterceptor implements HandlerInterceptor {
         if ("/jianTai/login.html".equals(path) || "/user/companyLogin".equals(path)){
             return true;
         }else {
-           // System.out.println(request.getSession().getAttribute("LOGIN_USER")+"=========");
             if (null == session.getAttribute("LOGIN_USER")) {//session里面没有用户对象，说明没有登录，跳转到登录页面
                 response.sendRedirect(request.getContextPath() + "/login.html");
                 return false;
+            }else {
+                if (path.indexOf("admin") != -1){//访问的是admin路径下的内容，需要判断其身份是不是管理员
+                    CompanyInfo companyInfo =  (CompanyInfo)session.getAttribute("LOGIN_USER");
+                    if (companyInfo.getType() != 1){
+                        //不是管理员身份，强制跳转到公司界面
+                        response.sendRedirect(request.getContextPath() + "/user/toIndex");
+                        return false;
+                    }
+
+                }
             }
+
         }
         return true;
     }

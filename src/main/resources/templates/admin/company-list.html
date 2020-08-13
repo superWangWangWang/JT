@@ -51,10 +51,6 @@
     </div>
 </div>
 
-
-
-
-
 </body>
 
 <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
@@ -195,26 +191,8 @@
                 }
                 location.href = "down?type=product&fileName=" + productName;
             }
-            // } else if(obj.event === 'del'){
-            //     layer.confirm('真的删除行么', function(index){
-            //         obj.del();
-            //         layer.close(index);
-            //     });
-            // } else if(obj.event === 'edit'){
-            //     layer.alert('编辑行：<br>'+ JSON.stringify(data))
-            // }
-        });
 
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#start' //指定元素
         });
-
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#end' //指定元素
-        });
-
         //监听单元格编辑
         table.on('edit(table_filter)',
             function(obj) {
@@ -284,7 +262,6 @@
     //添加公司账户
     function add_company() {
         xadmin.open("新增公司登录账号：", 'company-add.html', 400, 300)
-        //xadmin.open("操作日志：", 'addCompany?id=1', 800, 600)
     }
 </script>
 </html>

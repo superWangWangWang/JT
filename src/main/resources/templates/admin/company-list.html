@@ -79,6 +79,7 @@
                 ,{fixed: '',title:'平面图', width:80, align:'center', toolbar: '#dplan'}
                 //,{field:'productName', title: '产品名录文件名字' ,width:100 }
                 ,{fixed: '',title:'产品名录', width:80, align:'center', toolbar: '#dproduct'}
+                ,{field:'备注', title: '备注' ,width:100 , edit: 'text'}
                 ,{field:'user', title: '账号', width:100 , edit: 'text'}
                 ,{field:'password', title: '密码', width:100 ,edit: 'text'}
                 ,{field:'企业编号', title: '企业编号', width:80 , edit: 'text'}
@@ -95,7 +96,7 @@
                 ,{field:'开业时间', title: '开业时间' ,width:100 , edit: 'text'}
                 ,{field:'产品类型', title: '产品类型' ,width:80 , edit: 'text'}
                 ,{field:'园区位置', title: '坐标' ,width:60 , edit: 'text'}
-                ,{field:'备注', title: '备注' ,width:100 , edit: 'text'}
+
 
             ]]
             ,id: 'testReload'
@@ -157,11 +158,11 @@
 
 <script type="text/html" id="change">
     <!-- 跨月修改 -->
-    <input type = "checkbox" name = "right" value = "{{d.id}}" lay-skin = "switch"lay-text = "是|否" lay-filter = "sexDemo" {{ d.right == 1 ? 'checked': ''}} >
+    <input type = "checkbox" name = "right" value = "{{d.id}}" lay-skin = "switch"lay-text = "是|否" lay-filter = "permition" {{ d.right == 1 ? 'checked': ''}} >
 </script>
 <script type="text/html" id="enable">
     <!-- 是否启用 -->
-    <input type = "checkbox" name = "是否启用" value = "{{d.id}}" lay-skin = "switch"lay-text = "是|否" lay-filter = "sexDemo" {{ d.是否启用 == 1 ? 'checked': ''}} >
+    <input type = "checkbox" name = "是否启用" value = "{{d.id}}" lay-skin = "switch"lay-text = "是|否" lay-filter = "permition" {{ d.是否启用 == 1 ? 'checked': ''}} >
 </script>
 
 <script>
@@ -209,7 +210,7 @@
             });
 
         //监听是否启用操作
-        form.on('switch(sexDemo)', function(obj){
+        form.on('switch(permition)', function(obj){
             //var data = obj.value;
             updateEnable(obj.value,obj.elem.checked,this.name);//公司id，
         });

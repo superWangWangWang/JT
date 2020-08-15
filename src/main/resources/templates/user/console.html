@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="../layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
+  <script src="../layuiadmin/layui/layui.js"></script>
 </head>
 <body>
   <div class="layui-fluid">
@@ -18,7 +19,7 @@
         <div class="layui-row layui-col-space15">
           <div class="layui-col-md12">
             <div class="layui-card">
-              <div class="layui-card-header">快捷方式</div>
+<!--              <div class="layui-card-header">快捷方式</div>-->
               <div class="layui-card-body">
                 
                 <div class="layui-carousel layadmin-carousel layadmin-shortcut">
@@ -97,62 +98,65 @@
               </div>
             </div>
           </div>
-          <div class="layui-col-md12">
-            <div class="layui-card">
-              <div class="layui-card-header">数据概览</div>
-              <div class="layui-card-body">
-                
-                <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">
-                  <div carousel-item id="LAY-index-dataview">
-                    <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>
-                    <div></div>
-                    <div></div>
-                  </div>
-                </div>
-                
-              </div>
-            </div>
-          </div>
+<!--          <div class="layui-col-md12">-->
+<!--            <div class="layui-card">-->
+<!--              <div class="layui-card-header">数据概览</div>-->
+<!--              <div class="layui-card-body">-->
+<!--                -->
+<!--                <div class="layui-carousel layadmin-carousel layadmin-dataview" data-anim="fade" lay-filter="LAY-index-dataview">-->
+<!--                  <div carousel-item id="LAY-index-dataview">-->
+<!--                    <div><i class="layui-icon layui-icon-loading1 layadmin-loading"></i></div>-->
+<!--                    <div></div>-->
+<!--                    <div></div>-->
+<!--                  </div>-->
+<!--                </div>-->
+<!--                -->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
         </div>
       </div>
       
       <div class="layui-col-md4">
         <div class="layui-card">
-          <div class="layui-card-header">操作指引</div>
-          <div class="layui-card-body layui-text" style="text-align: center;">
-         	 
-         	 
-         	 <ul class="layui-row layui-col-space10">
-                      <li class="layui-col-xs12">
-                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">用户注册</button>
-                      </li>
-                      
-                      <li class="layui-col-xs12">
-                        <img style="width:30px; height:30px;" src="../imgs/arrows.png">
-                      </li>
-                       <li class="layui-col-xs12">
-                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">用户登录</button>
-                      </li>
-                      
-                      <li class="layui-col-xs12">
-                        <img style="width:30px; height:30px;" src="../imgs/arrows.png">
-                      </li>
-                       <li class="layui-col-xs12">
-                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">基本信息修改</button>
-                      </li>
-                      
-                    
-              </ul>
+          <div class="layui-card-header"><span style="color: #cc0000;font-size: 30px">公告</span></div>
+          <div class="layui-card-body layui-text">
+              <div>
+                <span style="font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;欢迎使用本系统,目前系统正在逐步完善中，在使用过程中，
+                  如有疑问或者有更好的建议，请联系建泰办公室（电话：5162128）</span>
+              </div>
+
+<!--         	 <ul class="layui-row layui-col-space10">-->
+<!--                      <li class="layui-col-xs12">-->
+<!--                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">用户注册</button>-->
+<!--                      </li>-->
+
+<!--                      <li class="layui-col-xs12">-->
+<!--                        <img style="width:30px; height:30px;" src="../imgs/arrows.png">-->
+<!--                      </li>-->
+<!--                       <li class="layui-col-xs12">-->
+<!--                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">用户登录</button>-->
+<!--                      </li>-->
+
+<!--                      <li class="layui-col-xs12">-->
+<!--                        <img style="width:30px; height:30px;" src="../imgs/arrows.png">-->
+<!--                      </li>-->
+<!--                       <li class="layui-col-xs12">-->
+<!--                        <button type="button" class="layui-btn layui-btn-lg layui-btn-primary layui-btn-radius">基本信息修改</button>-->
+<!--                      </li>-->
+
+
+<!--              </ul>-->
           </div>
         </div>
-        
-  
+
+
       </div>
       
     </div>
   </div>
 
-  <script src="../layuiadmin/layui/layui.js?t=1"></script>
+
   
   
   <script>
@@ -161,7 +165,7 @@
   }).extend({
     index: 'lib/index' //主入口模块
   }).use(['index', 'console']);
-  
+
   </script>
 </body>
 </html>

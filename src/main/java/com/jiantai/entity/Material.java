@@ -1,6 +1,16 @@
 package com.jiantai.entity;
 
+import java.util.Date;
+
 public class Material {
+	private String name;
+	private String unit;
+	private String unitCn;
+	private String remarks;
+	private Date createTime;
+	private Double used;//使用量，为了回显，这个不是表的字段
+
+
 	private String 物料名称;
 	private String 主要成分;
 	private String 物料类别;
@@ -9,7 +19,7 @@ public class Material {
 	private String 使用工序;
 	private String 备注;
 	private String msds_filename;
-	
+
 	
 	public String getMsds_filename() {
 		return msds_filename;
@@ -69,11 +79,71 @@ public class Material {
 		this.备注 = 备注;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getUnit() {
+		return unit;
+	}
+
+	public void setUnit(String unit) {
+		this.unit = unit;
+	}
+
+	public String getRemarks() {
+		return remarks;
+	}
+
+	public void setRemarks(String remarks) {
+		this.remarks = remarks;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getUnitCn() {
+		return unitCn;
+	}
+
+	public void setUnitCn(String unitCn) {
+		this.unitCn = unitCn;
+	}
+
+	public Double getUsed() {
+		return used;
+	}
+
+	public void setUsed(Double used) {
+		this.used = used;
+	}
+
 	@Override
 	public String toString() {
-		return "Material [物料名称=" + 物料名称 + ", 主要成分=" + 主要成分 + ", 物料类别=" + 物料类别 + ", 含量=" + 含量 + ", 单位=" + 单位 + ", 使用工序="
-				+ 使用工序 + ", 备注=" + 备注 + ", msds_filename=" + msds_filename + "]";
+		return "Material{" +
+				"name='" + name + '\'' +
+				", unit='" + unit + '\'' +
+				", unitCn='" + unitCn + '\'' +
+				", remarks='" + remarks + '\'' +
+				", createTime=" + createTime +
+				", used=" + used +
+				", 物料名称='" + 物料名称 + '\'' +
+				", 主要成分='" + 主要成分 + '\'' +
+				", 物料类别='" + 物料类别 + '\'' +
+				", 含量='" + 含量 + '\'' +
+				", 单位='" + 单位 + '\'' +
+				", 使用工序='" + 使用工序 + '\'' +
+				", 备注='" + 备注 + '\'' +
+				", msds_filename='" + msds_filename + '\'' +
+				'}';
 	}
-	
-	
 }

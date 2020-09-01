@@ -252,6 +252,7 @@ public class AdminController {
         } else {
             PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(pageSize));//设置分页 15条每页
             List<JTDeclareRecord> records = adminServiceImpl.searchDeclareRecords(date, company, material);
+            System.out.println("records==================="+records);
             PageInfo pageInfo = new PageInfo<>(records);
             //封装返回
             vo.setCount((int) pageInfo.getTotal());//分页条数

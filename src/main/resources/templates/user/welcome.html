@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>建泰申报平台</title>
+        <meta name="renderer" content="webkit">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <link rel="stylesheet" href="../xadmin/css/font.css">
+        <link rel="stylesheet" href="../xadmin/css/xadmin.css">
+        <script src="../xadmin/lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../xadmin/js/xadmin.js"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+        <div class="layui-fluid">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-body ">
+                            <blockquote class="layui-elem-quote">欢迎使用建泰环保工业园申报平台（建泰办公室电话：5162128）
+                            </blockquote>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><span style="font-size: 20px">公司详情</span></div>
+                        <div hidden="hidden" id="userId">${user.id}</div>
+                        <div class="layui-card-body">
+                            <div class="layui-fluid">
+                                <div class="layui-row">
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo ">简称：${(user.companyShortName)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">全称：${(user.companyName)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo ">法人：${(user.legalPerson)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">地址：${(user.address)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">固话：${(user.telephone)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">传真：${(user.fax)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">联系人：${(user.contacts)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">手机号：${(user.contactsMobilePhone)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">信用代码：${(user.socialCreditCode)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">人数：${(user.employees)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">开业时间：${(user.openingTime)!""}</div>
+                                    </div>
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">产品类型：${(user.productType)!""}</div>
+                                    </div>
+
+                                    <div class="layui-col-sm4">
+                                        <div class="grid-demo">备注：${(user.remarks)!""}</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="layui-btn layui-btn-normal" onclick="update()">修改详情</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-col-md12">
+                    <div class="layui-card">
+                        <div class="layui-card-header"><span style="font-size: 20px">数据统计</span></div>
+                        <div class="layui-collapse">
+                            <div class="layui-colla-item">
+                                <h2 class="layui-colla-title">上传文件的格式要求</h2>
+                                <div class="layui-colla-content">
+                                    <p>1.上传文件的大小不大于30MB</p>
+                                    <p>2.平面图要求上传格式为（zip、rar、7z）</p>
+                                    <p>3.产品名录要求上传格式为（doc、docx、xlsx、xls）</p>
+                                    <p>4.MSDS上传要求上传格式为（pdf）</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-card-body ">
+
+                            <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
+                                <#if user.planeFigure?? && user.planeFigure != "">
+                                    <li class="layui-col-md3 layui-col-xs6">
+                                        <div class="layui-card-header">平面图：已上传</div>
+                                        <div class="layui-card-body">
+                                            <button type="button" class="layui-btn" onclick="download(1)" ><i class="layui-icon"></i>下载</button>
+                                            <button type="button" class="layui-btn upload_plane_figure" ><i class="layui-icon"></i>重传</button>
+                                        </div>
+                                    </li>
+                                <#else>
+                                    <li class="layui-col-md3 layui-col-xs6">
+                                        <div class="layui-card-header">平面图：待上传</p></div>
+                                        <div class="layui-card-body">
+                                            <button type="button" class="layui-btn upload_plane_figure"><i class="layui-icon"></i>上传</button>
+                                        </div>
+                                    </li>
+                                </#if>
+
+
+                                <#if user.productList?? && user.productList != "">
+                                    <li class="layui-col-md3 layui-col-xs6">
+                                        <div class="layui-card-header">生产设备明录：已上传</div>
+                                        <div class="layui-card-body">
+                                            <button type="button" class="layui-btn" onclick="download(2)" ><i class="layui-icon"></i>下载</button>
+                                            <button type="button" class="layui-btn upload_product_list" ><i class="layui-icon"></i>重传</button>
+                                        </div>
+                                    </li>
+                                    <#else>
+                                    <li class="layui-col-md3 layui-col-xs6">
+                                        <div class="layui-card-header">生产设备明录：待上传</div>
+                                        <div class="layui-card-body">
+                                            <button type="button" class="layui-btn upload_product_list"><i class="layui-icon"></i>上传</button>
+                                        </div>
+                                    </li>
+                                </#if>
+
+                                <li class="layui-col-md3 layui-col-xs6">
+                                    <div class="layui-card-header">MSDS：已上传${msds_number}份</div>
+                                    <div class="layui-card-body">
+                                        <button type="button" class="layui-btn" onclick="msds()"><i class="layui-icon"></i>查看</button>
+                                    </div>
+                                </li>
+                            <li class="layui-col-md3 layui-col-xs6">
+                                <div class="layui-card-header">物料使用数据填报</div>
+                                <div class="layui-card-body">
+                                    <button type="button" class="layui-btn" onclick="upload_materiel_data()" ><i class="layui-icon"></i>查看</button>
+                                </div>
+                            </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <div class="layui-card-header">产品生产数据填报</div>
+                            <div class="layui-card-body">
+                                <button type="button" class="layui-btn" onclick="upload_product_data()" ><i class="layui-icon"></i>查看</button>
+                            </div>
+                        </li>
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <div class="layui-card-header">生产设备参数</div>
+                            <div class="layui-card-body">
+                                <button type="button" class="layui-btn" onclick="equipment()" ><i class="layui-icon"></i>查看</button>
+                            </div>
+                        </li>
+
+
+
+                            </ul>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <style id="welcome_style"></style>
+
+        </div>
+        </div>
+    </body>
+<script>
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        upload.render({ //允许上传的文件后缀
+            elem: '.upload_plane_figure'
+            , url: 'upload?type=1' //改成您自己的上传接口
+            , accept: 'file' //普通文件
+            , exts: 'zip|rar|7z' //只允许上传压缩文件
+            , done: function (res) {
+                layer.msg(res.msg);
+                location.href = "welcome";
+            }
+        });
+    });
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        upload.render({ //允许上传的文件后缀
+            elem: '.upload_product_list'
+            , url: 'upload?type=2' //改成您自己的上传接口
+            , accept: 'file' //普通文件
+            , exts: 'doc|docx|xlsx|xls' //只允许word和excel
+            , done: function (res) {
+                layer.msg(res.msg);
+                location.href = "welcome";
+            }
+        });
+    });
+
+
+
+    function update() {
+        xadmin.open("修改公司详情信息（请按实规范填写）", "toDetails?id="+${user.id}, 500, 750)
+    }
+    function download(type) {
+            location.href = "download?type="+type;
+    }
+    function msds() {
+        xadmin.open("【注：如果没找到对应的物料，请联系建泰办公室电话：5162128】", "toMsds?id="+${user.id}, 500, 750)
+    }
+    function upload_materiel_data() {
+        xadmin.open("建泰企业物料使用数据填报", "materielData", 800, 750)
+    }
+    function upload_product_data() {
+        xadmin.open("建泰企业产品生产数据填报", "productData", 800, 750)
+    }
+    function equipment() {
+        //xadmin.add_tab("建泰企业生产设备参数填报", "equipment",true)
+        xadmin.open("建泰企业生产设备参数填报", "equipmentList",'','',true,false)
+    }
+</script>
+</html>

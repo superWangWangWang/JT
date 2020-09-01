@@ -24,13 +24,7 @@
 							<legend>企业信息</legend>
 						</fieldset>
 						<form class="layui-form layui-form-pane" action="" id="company_info">
-						<!--   <div class="layui-upload">
-							  <button type="button" class="layui-btn" id="test1">上传图片</button>
-							  <div class="layui-upload-list">
-							    <img class="layui-upload-img" id="demo1">
-							    <p id="demoText"></p>
-							  </div>
-							</div>  -->
+
 							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">公司全称</label>
@@ -47,13 +41,7 @@
 									</div>
 								</div>
 							</div>
-								<!-- <div class="layui-inline">
-									<label class="layui-form-label" style="width: 150px">统一社会信用代码</label>
-									<div class="layui-input-inline">
-										<input type="text" name="number" autocomplete="off"
-											class="layui-input" placeholder="请输入">
-									</div>
-								</div> -->
+
 							<div class="layui-form-item">
 								<div class="layui-inline">
 									<label class="layui-form-label">公司地址</label>
@@ -170,7 +158,7 @@
 								</div>
 							</div>
 							<div class="layui-form-item">
-								<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo2">确定修改</button>
+								<button type="submit" class="layui-btn" lay-submit="" lay-filter="demo2">修改企业信息</button>
 							</div>
 						</form>
 					</div>
@@ -242,7 +230,7 @@
 								</tbody>
 							</table>
 							<div class="layui-form-item" style="margin-top: 20px">
-								<button type="button" class="layui-btn" lay-submit="" lay-filter="demo1">立即提交</button>
+								<button type="button" class="layui-btn" lay-submit="" lay-filter="demo1">提交物料数据</button>
 								<span style="color: red;">* 若然新建提交后发现新建的物料没出现，请刷新页面或重新选择月份即可</span>
 							</div>
 							
@@ -353,53 +341,11 @@
 							  $.post("../data/record/addDeclareInfoToJTDeclareInfo", { 'add_arr': JSON.stringify(add_arr), 'update_arr': JSON.stringify(update_arr), 'date': $("#date").val() }, function(data) {
 								  update_arr = new Array();
 								  add_arr = new Array();
-								  /*-----------------------------------
-								  if(submit_data.length > 1){
-									  
-									  
-									  if(!submit_data[0]){
-										  console.log("数组第1个为null-----");
-										  for(var i = 0; lastTr_index != 0; i++){
-											     //("#material-" + submit_data[i]['index']).parent()
-											     if(submit_data[i]){
-											    	 lastTr_index = i;
-											     } else {
-											    	 console.log("数组第"+ i +"个为null-----");
-											     }
-										  }  
-										  
-										  
-									  }
-									  
-									  //循环删除tr
-									  for(var i = 1; i < submit_data.length; i++){
-										     //("#material-" + submit_data[i]['index']).parent()
-										     if(submit_data[i]){
-											    $("#material-" + submit_data[i]['index']).closest('tr').remove();
-										     }
-									  }  
-									  
-									  
-								  } 
-								  -------------------------------------------------*/
-								 
-								  /* var flag = submit_data[0]['index'];
-								  $("#unit-" + submit_data[0]['index']).html("[请先选择物料名称]")
-								  $("#element-" + submit_data[0]['index']).html("[请先选择物料名称]")
-								  $("#content-" + submit_data[0]['index']).html("[请先选择物料名称]")
-								  $("#addDeclareInfoForm")[0].reset();
-								  add_select(material1, 0);
-								  submit_data = new Array();
-								  submit_data[0] = JSON.parse("{}");
-								  submit_data[0]['index'] = flag;
-								  form.render("select") */
 								  
 								  layer.alert('提交成功', {
 							      	title: '信息'
 							      })
-                                  /* layer.alert(JSON.stringify(submit_data), {
-                            title: '最终的提交信息'
-                        }) */
+
                                   submit_data = new Array();
                                   table_row = 0;
                                   $.post("../data/record/findRecordByUsername",{'username': username, 'date': date_flag} , function(data) {
@@ -683,15 +629,7 @@
 						    		  $("#control").html('<button type="button" class="layui-btn layui-btn-danger" id="upload2" onclick="uploadzz(1)"><i class="layui-icon">&#xe62f;</i>上传文件</button> <span style="color: #FF5722;">*上传格式为zip、rar、7z(压缩包格式)</span>');
 						    	  }
 					        	  if((!data.result) || (data.result.length == 0)){
-					        		  /* add_select(material1, 0, '', data.change);
-					        		  var tr_flag = '<tr>';
-					        		  tr_flag += '<td id="material-0">' + data_select + '</td>'
-					        		  tr_flag += '<td><div id="unit-0">[请先选择物料名称]</div></td>'
-					        		  tr_flag += '<td><div id="element-0">[请先选择物料名称]</div></td>'
-					        		  tr_flag += '<td><div id="content-0">[请先选择物料名称]</div></td>'
-					        		  tr_flag += '<td><input type="text" id="dosage-0" name="dosage-0" autocomplete="off" class="layui-input inp" placeholder="请输入" lay-verify="number" ></td>'
-					        		  tr_flag += '<td><a class="layui-btn layui-btn-danger layui-btn-xs del" onclick="del(this, "", "0")">删除</a></td></tr>'
-					        		  $('#last').before(tr_flag) */
+
 					        		  
 					        		  add_tr('', 1, 'add', true);//record, flag, state, change
 					        		  submit_data[0] = JSON.parse("{}");

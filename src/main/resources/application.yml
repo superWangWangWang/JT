@@ -7,10 +7,10 @@ spring:
     #template-loader-path: classpath:/templates/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://59.36.148.141:3306/jiantai?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/jiantai?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     type: com.zaxxer.hikari.HikariDataSource
-    username: sa
-    password: pass@123
+    username: jt
+    password: jt123560
   session:
     store-type: none
   devtools:
@@ -21,13 +21,13 @@ spring:
       #exclude: WEB-INF/**
       #设置重启目录
   resources:
-    static-locations: classpath:/static/, classpath:/templates/
+    static-locations: classpath:/static/, classpath:/templates/ #很神奇，不加这句的话http://localhost:8080/jianTai/login可以访问，加了.html后缀就访问失败（理论上默认配置了的，不用显式配置）
   servlet:
     multipart:
       max-request-size: 30MB
       max-file-size: 30MB #配置上传文件大小
 
-  #很神奇，不加这句的话http://localhost:8080/jianTai/login可以访问，加了.html后缀就访问失败（理论上默认配置了不用显式配置）
+
 #  http:
 #    encoding:
 #      charset: UTF-8
@@ -39,10 +39,26 @@ server:
   port: 8088
   servlet:
     context-path: /jianTai
-
+    session:
+      timeout: 1440 #session过期时间--单位分钟 -- 1天
+#  tomcat:
+#    accesslog:
+#      enabled: true
+#      filted-request-entries: #uri匹配模式:0/null-完全匹配;1-前缀匹配;2-后缀匹配;3-正则表达式
+#        - uri: /jianTai/user/
+#          type: 2
+#      pattern:
+#         jiantai %u %t "%r" %s %b %D
+#    basedir: D:/logs/accesslog.log
 mybatis:
   type-aliases-package: com.jiantai.entity
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     ##开启驼峰映射
     map-underscore-to-camel-case: true
+
+logging:
+  config: classpath:logback-spring.xml
+
+#  file:
+#    name: D:/logs/%d{yyyy-MM-dd}.log

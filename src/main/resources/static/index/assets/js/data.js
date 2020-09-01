@@ -870,7 +870,7 @@
 			if(data.LOGIN_USER){
 				$("#username").html(data.LOGIN_USER.realName);
 			} else {
-				location.href = "../../../login.html";
+				location.href = "../../../../templates/login-old.html";
 			}
 		}, "json")
 		

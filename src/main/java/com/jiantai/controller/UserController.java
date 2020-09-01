@@ -13,7 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import com.alibaba.fastjson.JSON;
 import com.jiantai.entity.JTLog;
-import com.jiantai.entity.LoginEntity;
 import com.jiantai.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.jiantai.entity.CompanyInfo;
-import com.jiantai.service.UserService;
 
 @Controller
 @RequestMapping("/user")
@@ -169,11 +167,11 @@ public class UserController {
 	/**
 	 * 用户退出
 	 **/
-	@GetMapping(value = "/logout")
-	public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		request.getSession().removeAttribute("LOGIN_USER");
-		response.sendRedirect(request.getContextPath() + "/login.html");
-	}
+//	@GetMapping(value = "/logout")
+//	public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//		request.getSession().removeAttribute("LOGIN_USER");
+//		response.sendRedirect(request.getContextPath() + "/login.html");
+//	}
 
 	/**
 	 * 修改密码
@@ -202,18 +200,6 @@ public class UserController {
 		}
 
 	}
-	@RequestMapping("toIndex")
-	public ModelAndView toIndex(HttpServletRequest request){
-		ModelAndView mv = new ModelAndView();
-		CompanyInfo companyInfo = (CompanyInfo)request.getSession().getAttribute("LOGIN_USER");
-		if (companyInfo.getType() == 1){
-			//管理员，type = 1
-			mv.setViewName("redirect:/admin/index");
-		}else {
-			//普通公司账户 type =0
-			mv.setViewName("user/index");
-		}
-		return mv;
-	}
+
 
 }

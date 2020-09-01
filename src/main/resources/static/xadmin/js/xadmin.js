@@ -73,7 +73,7 @@
 	 * @param  {Boolean} full  [全屏]
 	 * @return {[type]}        [description]
 	 */
-	Xadmin.prototype.open = function (title,url,w,h,full) {
+	Xadmin.prototype.open = function (title,url,w,h,full,maxmin) {
 		if (title == null || title == '') {
 	        var title=false;
 	    };
@@ -86,11 +86,16 @@
 	    if (h == null || h == '') {
 	        var h=($(window).height() - 50);
 	    };
+        if (maxmin == true || maxmin == null) {
+            maxmin = true;
+        }else {
+            maxmin = false;
+        };
 	    var index = layer.open({
 	        type: 2,
 	        area: [w+'px', h +'px'],
 	        fix: false, //不固定
-	        maxmin: true,
+	        maxmin: maxmin,
 	        shadeClose: true,
 	        shade:0.4,
 	        title: title,

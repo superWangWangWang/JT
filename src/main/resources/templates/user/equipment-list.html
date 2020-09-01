@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>生产设备</title>
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../xadmin/css/font.css">
+    <link rel="stylesheet" href="../xadmin/css/xadmin.css">
+
+    <script src="../index/assets/js/jquery-1.10.2.js"></script>
+    <!--<script src="../js/jquery-1.10.2.js"></script>-->
+    <script type="text/javascript" src="../layui/layui.js"></script>
+
+
+    <script src="../xadmin/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="../xadmin/js/xadmin.js"></script>
+</head>
+<body>
+
+
+    <div style="padding: 20px; background-color: #F2F2F2;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        空压机参数
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="add_equipment(1)">新增空压机</button>
+                   </div>
+
+                    <div class="layui-card-body">
+
+                        <table lay-filter="demo">
+                            <thead>
+                            <tr>
+                                <th lay-data="{checkbox:true}"></th>
+                                <th lay-data="{field:'2', width:100}">型号</th>
+                                <th lay-data="{field:'3', width:100}">台数</th>
+                                <th lay-data="{field:'4', width:150}">加载压力-MPA</th>
+                                <th lay-data="{field:'5', width:150}">卸载压力-MPA</th>
+                                <th lay-data="{field:'6', width:100}">功率-KW</th>
+                                <th lay-data="{field:'7', width:150}">排气温度-℃</th>
+                                <th lay-data="{field:'8', width:150}">负载率-%</th>
+                                <th lay-data="{field:'9', width:150}">润滑油使用量-L</th>
+                                <th lay-data="{field:'10', width:180}">润滑油更换周期-月/次</th>
+<!--                                <th lay-data="{field:'11', width:100}">电压-V</th>-->
+<!--                                <th lay-data="{field:'12', width:100}">电流-A</th>-->
+<!--                                <th lay-data="{field:'13', width:100}">转速-r/min</th>-->
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+                                    <td lay-data="{checkbox:true}"></td>
+                                    <td>No.10086</td>
+                                    <td>100</td>
+                                    <td>1000</td>
+                                    <td>860</td>
+                                    <td>2060</td>
+                                    <td>108</td>
+                                    <td>97</td>
+                                    <td>500</td>
+                                    <td>16</td>
+<!--                                    <td>23</td>-->
+<!--                                    <td>撤销指定</td>-->
+<!--                                    <td>已指定</td>-->
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+
+
+
+
+        </div>
+    </div>
+</body>
+
+<script>
+    //静态表格
+    layui.use('table',function(){
+        var table = layui.table;//加载表格模块
+        table.init('demo', {
+            //height: 500 //设置高度
+            //page: true //开启分页
+        });
+
+    });
+    //新增机器
+    function add_equipment(type) {
+        xadmin.open("添加设备详情信息（请按实规范填写）", "equipment?type="+type,350,600)
+    }
+</script>
+
+</html>

@@ -1,166 +1,110 @@
+<!doctype html>
+<html class="x-admin-sm">
+    <head>
+        <meta charset="UTF-8">
+        <title>建泰申报平台</title>
+        <link rel="icon" href="../imgs/logo.png" type="image/x-icon" />
+        <meta name="renderer" content="webkit|ie-comp|ie-stand">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+        <meta http-equiv="Cache-Control" content="no-siteapp" />
+        <link rel="stylesheet" href="../xadmin/css/font.css">
+        <link rel="stylesheet" href="../xadmin/css/xadmin.css">
 
-
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>建泰环保工业园企业环保信息平台</title>
-  <link rel="icon" href="../imgs/logo.png" type="image/x-icon" />
-  <meta name="renderer" content="webkit">	
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <link rel="stylesheet" href="../layui/css/layui.css" media="all">
-  <link rel="stylesheet" href="../layuiadmin/style/admin.css" media="all">
-  <link rel="stylesheet" href="../xadmin/css/font.css">
-</head>
-<body class="layui-layout-body">
-
-  <div id="LAY_app">
-    <div class="layui-layout layui-layout-admin">
-      <div class="layui-header">
-        <!-- 头部区域 -->
-        <ul class="layui-nav layui-layout-left">
-          <li class="layui-nav-item layadmin-flexible" lay-unselect>
-            <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
-              <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
-            </a>
-              
-          </li>
-        </ul>
-      
-        <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
-          
-<!--          <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
-<!--            <a href="javascript:;" layadmin-event="theme">-->
-<!--              <i class="layui-icon layui-icon-theme"></i>-->
-<!--            </a>-->
-<!--          </li>-->
-<!--          <li class="layui-nav-item layui-hide-xs" lay-unselect>-->
-<!--            <a href="javascript:;" layadmin-event="fullscreen">-->
-<!--              <i class="layui-icon layui-icon-screen-full"></i>-->
-<!--            </a>-->
-<!--          </li>-->
-          <li class="layui-nav-item"><a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出系统</a></li>
-<!--          <li class="layui-nav-item" lay-unselect>-->
-<!--            <a href="javascript:logout()">登出</a>-->
-<!--            <a href="javascript:;">-->
-<!--              -->
-<!--              <cite id="username">...</cite>-->
-<!--            </a>-->
-<!--            <dl class="layui-nav-child">-->
-<!--              <dd><a lay-href="password.html">修改密码</a></dd>-->
-<!--              <hr>-->
-<!--              <dd><a href="javascript:logout()">退出</a></dd>-->
-<!--            </dl>-->
-<!--            -->
-<!--          </li>-->
-          
-         
-        </ul>
-      </div>
-
-      <!-- 侧边菜单 -->
-      <div class="layui-side layui-side-menu">
-        <div class="layui-side-scroll">
-          <div class="layui-logo" lay-href="console.html">
-            <span>申报系统</span>
-          </div>
-          
-          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
-            <li data-name="home" class="layui-nav-item layui-nav-itemed">
-              <a href="javascript:;" lay-tips="主页" lay-direction="2">
-                <i class="layui-icon layui-icon-home"></i>
-                <cite>主页</cite>
-              </a>
-              <dl class="layui-nav-child">
-                <dd data-name="console" class="layui-this">
-                  <a lay-href="console.html">控制台</a>
-                </dd>
-                
-                <dd data-name="record">
-                  <a lay-href="record.html">填报系统</a>
-                </dd>
-                
-                <dd data-name="record">
-                  <a lay-href="msds.html">msds上传</a>
-                </dd>
-                <dd data-name="file_manage">
-                  <a lay-href="plan.html">平面图上传</a>
-                </dd>
-                <dd data-name="file_manage">
-                  <a lay-href="product.html">生产设备明录上传</a>
-                </dd>
-                <dd data-name="password">
-                  <a lay-href="password.html">修改密码</a>
-                </dd>
-              </dl>
-              
-            </li>
-          </ul>
+        <!-- <link rel="stylesheet" href="./css/theme5.css"> -->
+        <script src="../xadmin/lib/layui/layui.js" charset="utf-8"></script>
+        <script type="text/javascript" src="../xadmin/js/xadmin.js"></script>
+        <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+        <!--[if lt IE 9]>
+          <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+          <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+        <script>
+            // 是否开启刷新记忆tab功能
+            // var is_remember = false;
+        </script>
+    </head>
+    <body class="index">
+        <!-- 顶部开始 -->
+        <div class="container layui-bg-green">
+            <div class="logo">
+                <a href="./index.html">首页</a></div>
+            <div class="left_open">
+                <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
+            </div>
+            <ul class="layui-nav layui-bg-green right">
+                <li class="layui-nav-item"><a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出系统</a></li>
         </div>
-      </div>
 
-      <!-- 页面标签 -->
-      <div class="layadmin-pagetabs" id="LAY_app_tabs">
-<!--        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>-->
-<!--        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>-->
-<!--        <div class="layui-icon layadmin-tabs-control layui-icon-down">-->
-<!--          <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">-->
-<!--            <li class="layui-nav-item" lay-unselect>-->
-<!--              <a href="javascript:;"></a>-->
-<!--              <dl class="layui-nav-child layui-anim-fadein">-->
-<!--                <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>-->
-<!--                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>-->
-<!--                <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>-->
-<!--              </dl>-->
-<!--            </li>-->
-<!--          </ul>-->
-<!--        </div>-->
-        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
-          <ul class="layui-tab-title" id="LAY_app_tabsheader">
-            <li lay-id="console.html" lay-attr="console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
-          </ul>
-        </div>
-      </div>
-      
-      
-      <!-- 主体内容 -->
-      <div class="layui-body" id="LAY_app_body">
-        <div class="layadmin-tabsbody-item layui-show">
-          <iframe src="console.html" frameborder="0" class="layadmin-iframe"></iframe>
-        </div>
-      </div>
-      
-      <!-- 辅助元素，一般用于移动设备下遮罩 -->
-      <div class="layadmin-body-shade" layadmin-event="shade"></div>
-    </div>
-  </div>
+        <!-- 顶部结束 -->
+        <!-- 中部开始 -->
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <li>
+                        <a href="javascript:;">
+                            <i class="iconfont left-nav-li" lay-tips="操作">&#xe6b8;</i>
+                            <cite>管理</cite>
+                            <i class="iconfont nav_right">&#xe697;</i></a>
+                        <ul class="sub-menu">
+<!--                            <li>-->
+<!--                                <a onclick="xadmin.add_tab('物料使用数据填报','materielData')">-->
+<!--                                    <i class="iconfont">&#xe70b;</i>-->
+<!--                                    <cite>物料使用数据填报</cite></a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a onclick="xadmin.add_tab('物料管理','material.html')">-->
+<!--                                    <i class="iconfont">&#xe6f6;</i>-->
+<!--                                    <cite>物料管理</cite></a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a onclick="xadmin.add_tab('文件管理','file.html',true)">-->
+<!--                                    <i class="iconfont">&#xe744;</i>-->
+<!--                                    <cite>文件管理</cite></a>-->
+<!--                            </li>-->
+<!--                            <li>-->
+<!--                                <a onclick="xadmin.add_tab('系统日志','showLog')">-->
+<!--                                    <i class="iconfont">&#xe74e;</i>-->
+<!--                                    <cite>系统日志</cite></a>-->
+<!--                            </li>-->
 
-  <script src="../layuiadmin/layui/layui.js"></script>
-  <script src="../layuiadmin/layui/layui.js"></script>
-  <script src="../js/jquery-3.2.1.min.js"></script>
-  
-  <script>
-  layui.config({
-    base: '../layuiadmin/' //静态资源所在路径
-  }).extend({
-  }).use('index');
-  // $(function(){
-	//   $.post("../user/getUserInfo", function(data) {
-	// 		if(data.LOGIN_USER){
-	// 			$("#username").html(data.LOGIN_USER['企业全称']);
-	// 		} else {
-	// 			location.href = "../login.html";
-	// 		}
-	//   }, "json")
-  // })
-  
-	//   function logout(){
-	//   window.location.href ='../user/logout';
-  //
-  // }
-  </script>
-</body>
+                        </ul>
+
+                    </li>
+
+
+                </ul>
+            </div>
+        </div>
+        <!-- <div class="x-slide_left"></div> -->
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+            <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <li class="home">
+                        <i class="layui-icon">&#xe68e;</i>企业概览</li>
+                </ul>
+<!--                <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">-->
+<!--                    <dl>-->
+<!--                        <dd data-type="this">关闭当前</dd>-->
+<!--                        <dd data-type="other">关闭其它</dd>-->
+<!--                        <dd data-type="all">关闭全部</dd></dl>-->
+<!--                </div>-->
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe src='welcome' frameborder="0" scrolling="yes" class="x-iframe"></iframe>
+                    </div>
+                </div>
+                <div id="tab_show"></div>
+            </div>
+        </div>
+        <div class="page-content-bg"></div>
+        <style id="theme_style"></style>
+        <!-- 右侧主体结束 -->
+        <!-- 中部结束 -->
+
+    </body>
+
 </html>
-
-

@@ -35,19 +35,21 @@
 
                     <div class="layui-card-body">
 
-                        <table lay-filter="demo">
+                        <table lay-filter="demo"  class="layui-table">
                             <thead>
                             <tr>
-                                <th lay-data="{checkbox:true}"></th>
-                                <th lay-data="{field:'2', width:100}">型号</th>
-                                <th lay-data="{field:'3', width:100}">台数</th>
-                                <th lay-data="{field:'4', width:150}">加载压力-MPA</th>
-                                <th lay-data="{field:'5', width:150}">卸载压力-MPA</th>
-                                <th lay-data="{field:'6', width:100}">功率-KW</th>
-                                <th lay-data="{field:'7', width:150}">排气温度-℃</th>
-                                <th lay-data="{field:'8', width:150}">负载率-%</th>
-                                <th lay-data="{field:'9', width:150}">润滑油使用量-L</th>
-                                <th lay-data="{field:'10', width:180}">润滑油更换周期-月/次</th>
+<!--                                <th lay-data="{type:'checkbox',fixed:'left'}"></th>-->
+                                <th lay-data="{field:'id',width:115,hide:true}">ID</th>
+                                <th lay-data="{field:'operation',width:115}">操作</th>
+                                <th lay-data="{field:'kinds', width:100}">型号</th>
+                                <th lay-data="{field:'total', width:100}">台数</th>
+                                <th lay-data="{field:'loadPressure', width:150}">加载压力-MPA</th>
+                                <th lay-data="{field:'unloadPressure', width:150}">卸载压力-MPA</th>
+                                <th lay-data="{field:'power', width:100}">功率-KW</th>
+                                <th lay-data="{field:'exhaustTemperature', width:150}">排气温度-℃</th>
+                                <th lay-data="{field:'loadRate', width:150}">负载率-%</th>
+                                <th lay-data="{field:'lubricatingOilUsed', width:150}">润滑油使用量-L</th>
+                                <th lay-data="{field:'lubricatingOilReplace', width:180}">润滑油更换周期-月/次</th>
 <!--                                <th lay-data="{field:'11', width:100}">电压-V</th>-->
 <!--                                <th lay-data="{field:'12', width:100}">电流-A</th>-->
 <!--                                <th lay-data="{field:'13', width:100}">转速-r/min</th>-->
@@ -55,24 +57,144 @@
                             </thead>
 
                             <tbody>
-
+                                <#list airList as al>
                                 <tr>
-                                    <td lay-data="{checkbox:true}"></td>
-                                    <td>No.10086</td>
-                                    <td>100</td>
-                                    <td>1000</td>
-                                    <td>860</td>
-                                    <td>2060</td>
-                                    <td>108</td>
-                                    <td>97</td>
-                                    <td>500</td>
-                                    <td>16</td>
+<!--                                    <td lay-data="{checkbox:true}"></td>-->
+                                    <td>${al.id}</td>
+                                    <td>
+                                        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                                        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                                    </td>
+
+                                    <td>${al.kinds}</td>
+                                    <td>${al.total}</td>
+                                    <td>${al.loadPressure}</td>
+                                    <td>${al.unloadPressure}</td>
+                                    <td>${al.power}</td>
+                                    <td>${al.exhaustTemperature}</td>
+                                    <td>${al.loadRate}</td>
+                                    <td>${al.lubricatingOilUsed}</td>
+                                    <td>${al.lubricatingOilReplace}</td>
 <!--                                    <td>23</td>-->
 <!--                                    <td>撤销指定</td>-->
 <!--                                    <td>已指定</td>-->
                                 </tr>
-
+                                </#list>
                             </tbody>
+<!--                            <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+                        </table>
+
+
+
+
+                    </div>
+                </div>
+<!--=======================================================================================================================-->
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        风机参数
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="add_equipment(2)">新增风机</button>
+                    </div>
+
+                    <div class="layui-card-body">
+
+                        <table lay-filter="demo"  class="layui-table">
+                            <thead>
+                            <tr>
+
+                                <th lay-data="{field:'id',width:115,hide:true}">ID</th>
+                                <th lay-data="{field:'operation',width:115}">操作</th>
+                                <th lay-data="{field:'kinds', width:100}">型号</th>
+                                <th lay-data="{field:'total', width:100}">台数</th>
+
+                                <th lay-data="{field:'power', width:100}">功率-KW</th>
+
+                                <th lay-data="{field:'lubricatingOilUsed', width:150}">润滑油使用量-L</th>
+                                <th lay-data="{field:'lubricatingOilReplace', width:180}">润滑油更换周期-月/次</th>
+
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <#list windList as wl>
+                            <tr>
+
+                                <td>${wl.id}</td>
+                                <td>
+                                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                                </td>
+
+                                <td>${wl.kinds}</td>
+                                <td>${wl.total}</td>
+
+                                <td>${wl.power}</td>
+
+                                <td>${wl.lubricatingOilUsed}</td>
+                                <td>${wl.lubricatingOilReplace}</td>
+
+                            </tr>
+                            </#list>
+                            </tbody>
+                            <!--                            <button class="layui-btn" data-type="getCheckData">获取选中行数据</button>-->
+                        </table>
+
+
+
+
+                    </div>
+                </div>
+<!--=====================================================================================================================                -->
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        电机参数
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <button type="button" class="layui-btn layui-btn-xs layui-btn-normal" onclick="add_equipment(3)">新增电机</button>
+                    </div>
+
+                    <div class="layui-card-body">
+
+                        <table lay-filter="demo"  class="layui-table">
+                            <thead>
+                            <tr>
+                                <!--                                <th lay-data="{type:'checkbox',fixed:'left'}"></th>-->
+                                <th lay-data="{field:'id',width:115,hide:true}">ID</th>
+                                <th lay-data="{field:'operation',width:115}">操作</th>
+                                <th lay-data="{field:'kinds', width:100}">型号</th>
+                                <th lay-data="{field:'total', width:100}">台数</th>
+
+                                <th lay-data="{field:'power', width:100}">功率-KW</th>
+
+                                <th lay-data="{field:'voltage', width:100}">电压-V</th>
+                                <th lay-data="{field:'electricCurrent', width:100}">电流-A</th>
+                                <th lay-data="{field:'speed', width:100}">转速-r/min</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <#list electricList as el>
+                            <tr>
+                                <!--                                    <td lay-data="{checkbox:true}"></td>-->
+                                <td>${el.id}</td>
+                                <td>
+                                    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+                                    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+                                </td>
+
+                                <td>${el.kinds}</td>
+                                <td>${el.total}</td>
+
+                                <td>${el.power}</td>
+
+                                <td>${el.voltage}</td>
+                                <td>${el.electricCurrent}</td>
+                                <td>${el.speed}</td>
+
+                            </tr>
+                            </#list>
+                            </tbody>
+
                         </table>
 
 
@@ -97,12 +219,63 @@
             //height: 500 //设置高度
             //page: true //开启分页
         });
+        //监听行单击事件（双击事件为：rowDouble）
+        // table.on('row(demo)', function(obj) {
+        //     var data = obj.data;
+        //
+        //     layer.alert(JSON.stringify(data), {
+        //         title: '当前行数据：'
+        //     })
+        // });
+        //监听工具条
+        table.on('tool(demo)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.id + ' 的查看操作');
+            } else if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    $.ajax({
+                        url:"deleteEquipment?id=" + data.id,
+                        type:"get",
+                        dateType:"json",
+                        success:function (d) {
+                            //console.log(data.id);
+                            obj.del();
+                            layer.close(index);
+                        }
+                    })
+
+
+
+                });
+            } else if(obj.event === 'edit'){
+
+                xadmin.open("添加设备详情信息（请按实规范填写）", "toEquipmentEdit?eid=" + data.id,350,600)
+                //layer.alert('编辑行：<br>'+ JSON.stringify(data))
+            }
+        });
 
     });
+    // var $ = layui.$, active = {
+    //     getCheckData: function(){ //获取选中数据
+    //         var checkStatus = table.checkStatus('table_air')
+    //             ,data = checkStatus.data;
+    //         layer.alert(JSON.stringify(data));
+    //     }
+    // }
     //新增机器
     function add_equipment(type) {
-        xadmin.open("添加设备详情信息（请按实规范填写）", "equipment?type="+type,350,600)
+        if (type == 1){
+            xadmin.open("添加设备详情信息（请按实规范填写）", "equipment?type="+type,350,560)
+        }
+        if (type == 2){
+            xadmin.open("添加设备详情信息（请按实规范填写）", "equipment?type="+type,350,380)
+        }
+        if (type == 3){
+            xadmin.open("添加设备详情信息（请按实规范填写）", "equipment?type="+type,350,420)
+        }
     }
+
 </script>
 
 </html>

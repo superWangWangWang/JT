@@ -318,24 +318,88 @@ public class UserServiceImpl implements UserService {
 
 	/**
 	 * 添加空压机参数
-	 * @param c_id
-	 * @param kinds
-	 * @param total
-	 * @param load_pressure
-	 * @param unload_pressure
-	 * @param power
-	 * @param exhaust_temperature
-	 * @param load_rate
-	 * @param lubricating_oil_used
-	 * @param lubricating_oil_replace
+	 * @param equipment
 	 */
 	@Override
-	public void addEquipmentAir(Integer c_id,Integer type, Double kinds, Double total, Double load_pressure, Double unload_pressure, Double power, Double exhaust_temperature, Double load_rate, Double lubricating_oil_used, Double lubricating_oil_replace) {
-		userDao.addEquipmentAir(c_id,type,kinds,total,load_pressure,unload_pressure,power,exhaust_temperature,load_rate,lubricating_oil_used,lubricating_oil_replace);
+	public void addEquipmentAir(Equipment equipment) {
+		userDao.addEquipmentAir(equipment);
 	}
 
+	/**
+	 * 添加风机参数
+	 * @param equipment
+	 */
+	@Override
+	public void addEquipmentWind(Equipment equipment) {
+		userDao.addEquipmentWind(equipment);
+	}
+
+	/**
+	 * 添加电机参数
+	 * @param equipment
+	 */
+	@Override
+	public void addEquipmentElectric(Equipment equipment) {
+		userDao.addEquipmentElectric(equipment);
+	}
+
+	/**
+	 * 根据公司id查出其所有的设备
+	 * @param c_id
+	 * @return
+	 */
 	@Override
 	public List<Equipment> getEquipmentListByCid(Integer c_id) {
 		return userDao.getEquipmentListByCid(c_id);
+	}
+
+	/**
+	 * 根据equipment表的id删除单行 -- state状态置为0
+	 * @param id
+	 */
+	@Override
+	public void deleteEquipmentById(Integer id) {
+		userDao.deleteEquipmentById(id);
+	}
+
+	/**
+	 * 根据id查对应的设备详情
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public List<Equipment> getEquipmentById(Integer id) {
+		return userDao.getEquipmentById(id);
+	}
+
+	/**
+	 * 根据id更新设备
+	 * @param e
+	 */
+	@Override
+	public void updateEquipment(Equipment e) {
+		userDao.updateEquipment(e);
+	}
+
+	/**
+	 * 查询物料使用的时间（2020-08），根据物料记忆表没有删除的物料（因为删除了的物料就没必要再统计了），分组，
+	 * 用于回显给用户看自己提交了哪几个月的数据
+	 * @param c_id
+	 * @return
+	 */
+	@Override
+	public List<String> getMaterialsUsedTime(Integer c_id) {
+		return userDao.getMaterialsUsedTime(c_id);
+	}
+
+	/**
+	 * 查询产品产量提交的时间（2020-08），分组，
+	 * 用于回显给用户看自己提交了哪几个月的数据
+	 * @param c_id
+	 * @return
+	 */
+	@Override
+	public List<String> getProductsOutputByCid(Integer c_id) {
+		return userDao.getProductsOutputByCid(c_id);
 	}
 }

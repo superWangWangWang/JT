@@ -83,7 +83,7 @@ public interface UserDao {
 	 * @param cId
 	 * @return
 	 */
-	@Select("select * from `msds` where `c_id` = #{cId} and `name` = #{name}")
+	@Select("select * from `msds` where `c_id` = #{cId} and `name` = #{name} and `state` = 1")
 	List<Msds> getMsdsByCidAndName(Integer cId,String name);
 
 	/**
@@ -94,11 +94,12 @@ public interface UserDao {
 	@Update("update `msds` set `src` = #{src} where `id` = #{id}")
 	void updateMsdsById(String src,Integer id);
 
+
 	/**
 	 * 根据公司id查询msds
 	 * @return
 	 */
-	@Select("select * from `msds` where `c_id` = #{cId}")
+	@Select("select * from `msds` where `c_id` = #{cId} and `state` = 1")
 	List<Msds> getMsdsByCid(Integer cId);
 
 	/**
@@ -262,25 +263,69 @@ public interface UserDao {
 
 	/**
 	 * 添加空压机参数
-	 * @param c_id
-	 * @param kinds
-	 * @param total
-	 * @param load_pressure
-	 * @param unload_pressure
-	 * @param power
-	 * @param exhaust_temperature
-	 * @param load_rate
-	 * @param lubricating_oil_used
-	 * @param lubricating_oil_replace
+	 * @param equipment
 	 */
-	@Insert("INSERT INTO `equipment` (`c_id`,`type`,`kinds`,`total`,`load_pressure`,`unload_pressure`,`power`,`exhaust_temperature`,`load_rate`,`lubricating_oil_used`,`lubricating_oil_replace`) VALUES (#{c_id},#{type},#{kinds},#{total},#{load_pressure},#{unload_pressure},#{power},#{exhaust_temperature},#{load_rate},#{lubricating_oil_used},#{lubricating_oil_replace})")
-	void addEquipmentAir(Integer c_id,Integer type,Double kinds,Double total,Double load_pressure,Double unload_pressure,Double power,Double exhaust_temperature,Double load_rate,Double lubricating_oil_used,Double lubricating_oil_replace);
+	@Insert("INSERT INTO `equipment` (`c_id`,`type`,`kinds`,`total`,`load_pressure`,`unload_pressure`,`power`,`exhaust_temperature`,`load_rate`,`lubricating_oil_used`,`lubricating_oil_replace`) VALUES (#{equipment.cId},#{equipment.type},#{equipment.kinds},#{equipment.total},#{equipment.loadPressure},#{equipment.unloadPressure},#{equipment.power},#{equipment.exhaustTemperature},#{equipment.loadRate},#{equipment.lubricatingOilUsed},#{equipment.lubricatingOilReplace})")
+	void addEquipmentAir(@Param("equipment") Equipment equipment);
+
+	/**
+	 * 添加风机
+	 * @param equipment
+	 */
+	@Insert("INSERT INTO `equipment` (`c_id`,`type`,`kinds`,`total`,`power`,`lubricating_oil_used`,`lubricating_oil_replace`) VALUES (#{equipment.cId},#{equipment.type},#{equipment.kinds},#{equipment.total},#{equipment.power},#{equipment.lubricatingOilUsed},#{equipment.lubricatingOilReplace})")
+	void addEquipmentWind(@Param("equipment") Equipment equipment);
+
+	/**
+	 * 添加电机
+	 * @param equipment
+	 */
+	@Insert("INSERT INTO `equipment` (`c_id`,`type`,`kinds`,`total`,`power`,`voltage`,`electric_current`,`speed`) VALUES (#{equipment.cId},#{equipment.type},#{equipment.kinds},#{equipment.total},#{equipment.power},#{equipment.voltage},#{equipment.electricCurrent},#{equipment.speed})")
+	void addEquipmentElectric(@Param("equipment") Equipment equipment);
 
 	/**
 	 * 根据公司id查出其所有的设备
 	 * @param c_id
 	 * @return
 	 */
-	@Select("select * from `equipment` where `c_id` = #{c_id} where `state` = 1")
+	@Select("select * from `equipment` where `c_id` = #{c_id} AND `state` = 1")
 	List<Equipment> getEquipmentListByCid(Integer c_id);
+
+	/**
+	 * 根据equipment表的id删除单行 -- state状态置为0
+	 * @param id
+	 */
+	@Update("update `equipment` set `state` = 0 where `id` = #{id}")
+	void deleteEquipmentById(Integer id);
+
+	/**
+	 * 根据id查对应的设备详情
+	 * @param id
+	 * @return
+	 */
+	@Select("select * from `equipment` where `id` = #{id} AND `state` = 1")
+	List<Equipment> getEquipmentById(Integer id);
+
+	/**
+	 * 根据id更新设备
+	 * @param e
+	 */
+	@Update("UPDATE `equipment` SET `kinds` = #{e.kinds},`total` = #{e.total},`load_pressure` = #{e.loadPressure},`unload_pressure` = #{e.unloadPressure},`power` = #{e.power},`exhaust_temperature` = #{e.exhaustTemperature},`load_rate` = #{e.loadRate},`lubricating_oil_used` = #{e.lubricatingOilUsed},`lubricating_oil_replace` = #{e.lubricatingOilReplace},`voltage` = #{e.voltage},`electric_current` = #{e.electricCurrent},`speed` = #{e.speed} WHERE `id` = #{e.id}")
+	void updateEquipment(@Param("e") Equipment e);
+
+	/**
+	 * 查询物料使用提交的时间（2020-08），根据物料记忆表没有删除的物料（因为删除了的物料就没必要再统计了），分组，
+	 * 用于回显给用户看自己提交了哪几个月的数据
+	 * @return
+	 */
+	@Select("SELECT `used_time` FROM  `materials_used` WHERE `c_id` = #{c_id} AND materials_used.`name` IN (SELECT `name` FROM `materials_remember` WHERE `c_id` = #{c_id} AND `state` = 1) GROUP BY `used_time` ORDER BY materials_used.`used_time` DESC")
+	List<String> getMaterialsUsedTime(Integer c_id);
+
+	/**
+	 * 查询产品产量提交的时间（2020-08），分组，
+	 * 用于回显给用户看自己提交了哪几个月的数据
+	 * @param c_id
+	 * @return
+	 */
+	@Select("SELECT output_time FROM `products_output` WHERE `c_id` = #{c_id} GROUP BY `output_time` ORDER BY products_output.`output_time` DESC")
+	List<String> getProductsOutputByCid(Integer c_id);
 }

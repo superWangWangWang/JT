@@ -1,11 +1,15 @@
 package com.jiantai.entity;
 
+import java.util.Date;
+
 /**
  * 设备参数模型
  */
 public class Equipment {
     //id                       int(11)
     private Integer id;
+    //c_idint(11) NULL公司id
+    private  Integer cId;
     //type                     int(2)          类型(后期再加) 1=空压机，2=风机，3=电机
     private Integer type;
     //kinds                    varchar(64)     型号(自己填)-NIASD
@@ -32,11 +36,16 @@ public class Equipment {
     private Double electricCurrent;
     //speed                    int(11)         转速-r/min
     private Integer speed;
+    //state
+    private Integer state;
+    //create_time
+    private Date createTime;
 
     @Override
     public String toString() {
         return "Equipment{" +
                 "id=" + id +
+                ", cId=" + cId +
                 ", type=" + type +
                 ", kinds='" + kinds + '\'' +
                 ", total=" + total +
@@ -50,6 +59,8 @@ public class Equipment {
                 ", voltage=" + voltage +
                 ", electricCurrent=" + electricCurrent +
                 ", speed=" + speed +
+                ", state=" + state +
+                ", createTime=" + createTime +
                 '}';
     }
 
@@ -59,6 +70,14 @@ public class Equipment {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getcId() {
+        return cId;
+    }
+
+    public void setcId(Integer cId) {
+        this.cId = cId;
     }
 
     public Integer getType() {
@@ -163,5 +182,21 @@ public class Equipment {
 
     public void setSpeed(Integer speed) {
         this.speed = speed;
+    }
+
+    public Integer getState() {
+        return state;
+    }
+
+    public void setState(Integer state) {
+        this.state = state;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

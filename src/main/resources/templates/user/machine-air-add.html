@@ -36,7 +36,7 @@
 
 
                                 <div class="layui-form-item">
-                                    <input placeholder="型号" type="text" name="kinds"  lay-verify="required" autocomplete="off" class="layui-input" value="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+                                    <input placeholder="型号" type="text" name="kinds"  lay-verify="required" autocomplete="off" class="layui-input" value="" >
                                 </div>
                                 <div class="layui-form-item">
                                     <input placeholder="台数" type="text" name="total"  lay-verify="required" autocomplete="off" class="layui-input" value="" onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
@@ -69,7 +69,7 @@
 
 <div class="layui-form-item" align="center">
     <div class="layui-input-inline">
-        <button class="layui-btn" lay-filter="add" lay-submit="">确认修改</button></div>
+        <button class="layui-btn" lay-filter="add" lay-submit="">确认新增</button></div>
 <!--    <button class="layui-btn" onclick="add(1)"  lay-submit="">确认修改</button></div>-->
 </div>
 </form>
@@ -119,6 +119,35 @@
 
                     return false;
                 });
+
+
+                    //
+                    //
+                    // $.ajax({
+                    //     //url:"companyAdd?name="+$('#L_username').val()+"&pwd="+$('#L_pass').val(),
+                    //     url:"addEquipment?type=1",
+                    //     type:"post",
+                    //     data: data.field,
+                    //     dataType:"json",
+                    //     success:function (data) {
+                    //         if (data.code == 0){
+                    //             layer.alert(data.msg,{icon: 5})
+                    //         }else {
+                    //             layer.alert(data.msg, {
+                    //                     icon: 6
+                    //                 },
+                    //                 function() {
+                    //                     //关闭当前frame
+                    //                     xadmin.close();
+                    //                     // 可以对父窗口进行刷新
+                    //                     xadmin.father_reload();
+                    //                 });
+                    //         }
+                    //
+                    //     }
+                    // })
+
+
 
         });
 

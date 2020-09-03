@@ -42,6 +42,13 @@ public interface UserService {
 	void saveMaterielsEvidence(Integer cId,String src,String evidenceTime);
 	void updateMaterielsEvidence(String src,Integer cId,String evidenceTime);
 	List<Evidence> getMaterielsEvidenceById(Integer id);
-	void addEquipmentAir(Integer c_id,Integer type,Double kinds,Double total,Double load_pressure,Double unload_pressure,Double power,Double exhaust_temperature,Double load_rate,Double lubricating_oil_used,Double lubricating_oil_replace);
+	void addEquipmentAir(Equipment equipment);
 	List<Equipment> getEquipmentListByCid(Integer c_id);
+	void deleteEquipmentById(Integer id);
+	List<Equipment> getEquipmentById(Integer id);
+	void addEquipmentWind(Equipment equipment);
+	void addEquipmentElectric(Equipment equipment);
+	void updateEquipment(Equipment e);
+	List<String> getMaterialsUsedTime(Integer c_id);
+	List<String> getProductsOutputByCid(Integer c_id);
 }

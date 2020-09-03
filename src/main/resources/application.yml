@@ -7,7 +7,7 @@ spring:
     #template-loader-path: classpath:/templates/
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/jiantai?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/jt?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai
     type: com.zaxxer.hikari.HikariDataSource
     username: jt
     password: jt123560

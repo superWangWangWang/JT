@@ -60,8 +60,35 @@
                         </#list>
                         </tbody>
                     </table>
+
+
                     </form>
                     <div align="center"><button type="button" class="layui-btn layui-btn-normal" onclick="save()">提交</button></div>
+
+                    <table class="layui-table ">
+                        <thead>
+                        <tr>
+                            <th>月份</th>
+                            <th>是否已提交</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <#assign map=submitted/>
+                        <#assign  keys=map?keys/>
+                        <#list keys as key>
+                        <tr>
+                            <td>${key}</td>
+                            <#if map[key]=="已提交">
+                            <td><span style="color: #1B5E20">${map[key]!''}</span></td>
+                            <#else>
+                            <td><span style="color: #cc0000">${map[key]!''}</span></td>
+                        </#if>
+                        </tr>
+                        </#list>
+
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
@@ -75,6 +102,8 @@
             $ = layui.jquery;
             var form = layui.form,
                 layer = layui.layer;
+
+
             //监听提交
 
 
@@ -102,17 +131,17 @@
                 if (res.code == 0){
                     layer.alert(res.msg,{icon: 5})
                 }else {
-                    layer.alert(res.msg,{icon: 6})
-                    // layer.alert(res.msg, {
-                    //         icon: 6
-                    //     },
-                    //     function() {
-                    //         //location.reload()
-                    //         //关闭当前frame
-                    //         //xadmin.close();
-                    //         // 可以对父窗口进行刷新
-                    //         //xadmin.father_reload();
-                    //     });
+                    //layer.alert(res.msg,{icon: 6})
+                    layer.alert(res.msg, {
+                            icon: 6
+                        },
+                        function() {
+                            location.reload()
+                            //关闭当前frame
+                            //xadmin.close();
+                            // 可以对父窗口进行刷新
+                            //xadmin.father_reload();
+                        });
                 }
 
             }
@@ -122,15 +151,17 @@
     // //日期组件初始赋值
     layui.use('laydate', function(){
         var laydate = layui.laydate;
+        var d = new Date();
         //初始赋值
         laydate.render({
             elem: '#date_time'
-            ,value: ""
+            //,value: ""
             ,type: 'month'
             ,trigger:'click'	//日期框只能点击选择，不能手动输入
             ,format: 'yyyy-MM'
             ,theme: 'molv'
             ,value: "${(dateTime)!''}"
+            ,max: d.getFullYear() + '-' + lay.digit(d.getMonth() + 1)
             ,done: function(date){
                 location.href = "productData?dateTime="+date;
                 // text = document.getElementById("date_time").value;

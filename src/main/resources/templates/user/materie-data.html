@@ -36,14 +36,15 @@
                         </div>
 
                         <div class="layui-inline layui-show-xs-block">
-                            <button class="layui-btn" lay-submit="">添加</button>&nbsp;&nbsp;&nbsp;<span style="color: #cc0000;font-size: 15px">没有对应物料请联系建泰办公室新增</span>
+                            <button class="layui-btn" lay-submit="">添加物料</button>&nbsp;&nbsp;&nbsp;<span style="color: #cc0000;font-size: 15px">没有对应物料请联系建泰办公室新增</span>
                         </div>
                     </form>
                     <p style="color: #cc0000;font-size: 15px">操作步骤：</p>
-                    <p style="color: #cc0000;font-size: 15px">1.添加申报的物料（只要添加一次）</p>
+                    <p style="color: #cc0000;font-size: 15px">1.添加申报的物料（只要添加一次，系统会记录你的选择）</p>
                     <p style="color: #cc0000;font-size: 15px">2.选择对应的月份</p>
-                    <p style="color: #cc0000;font-size: 15px">3.输入当月的使用量</p>
-                    <p style="color: #cc0000;font-size: 15px">4.提交</p>
+                    <p style="color: #cc0000;font-size: 15px">3.上传佐证【格式为压缩包，后缀zip、rar、7z】</p>
+                    <p style="color: #cc0000;font-size: 15px">4.输入当月的使用量</p>
+                    <p style="color: #cc0000;font-size: 15px">5.提交</p>
                 </div>
 
 
@@ -60,7 +61,7 @@
 
                                 <div>
                                     <#if evidence_upload??>
-                                        <span style="color: #cc0000;font-size: 15px">当前月份尚未上传佐证（对账单或送货单）</span>
+                                        <span style="color: #cc0000;font-size: 15px">当前月份尚未上传佐证（对账单或送货单文件）</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>上传佐证</button>
                                      </#if>
 
@@ -76,33 +77,70 @@
 
 
                         </div>
-                    <table class="layui-table ">
-                        <thead>
-                        <tr>
-                            <th>物料名</th>
-                            <th>单位</th>
-                            <th>月用量（不为整数的，可保留小数点后两位）</th>
-                            <th>操作</th>
 
-                        </thead>
-                        <tbody>
-                        <#list materials_remember as mr>
-                        <tr>
-                            <td>${mr.name}</td>
-                            <td>${mr.unitCn}</td>
-                            <td>
-                                <input placeholder="该月的用量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used)!''}" >
-                            </td>
-                            <td width="20px">
-                                <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除</button></div>
-                            </td>
-                        </tr>
-                        </#list>
-                        </tbody>
-                    </table>
+            <table lay-filter="demo"  class="layui-table">
+                <thead>
+                <tr>
+                    <th lay-data="{field:'id', width:150}">物料名</th>
+                    <th lay-data="{field:'operation', width:60}">单位</th>
+                    <th lay-data="{field:'kinds', width:400}">月用量（不为整数的，可保留小数点后两位）</th>
+                    <th lay-data="{field:'total', width:80}">操作</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                    <#list materials_remember as mr>
+                    <tr>
+                        <td>${mr.name}</td>
+                        <td>${mr.unitCn}</td>
+                        <td>
+                            <input placeholder="该月的用量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used)!''}" >
+                        </td>
+                        <td width="20px">
+                            <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除</button></div>
+                        </td>
+                    </tr>
+                    </#list>
+                </tbody>
+
+            </table>
+
+
+
+
+
                     </form>
                     <div align="center"><button type="button" class="layui-btn layui-btn-normal" onclick="save()">提交</button></div>
                 </div>
+<!--        ================================================-->
+        <table class="layui-table ">
+            <thead>
+            <tr>
+                <th>月份</th>
+                <th>是否已提交</th>
+
+            </tr>
+            </thead>
+            <tbody>
+            <#assign map=submitted/>
+            <#assign  keys=map?keys/>
+            <#list keys as key>
+            <tr>
+                <td>${key}</td>
+                <#if map[key]=="已提交">
+                    <td><span style="color: #1B5E20">${map[key]!''}</span></td>
+                <#else>
+                <td><span style="color: #cc0000">${map[key]!''}</span></td>
+                </#if>
+            </tr>
+            </#list>
+
+            </tbody>
+        </table>
+
+<!--====================-->
+
+
 
             </div>
         </div>
@@ -110,11 +148,22 @@
 </div>
 </body>
 <script>
+    //静态表格
+    layui.use('table',function() {
+        var table = layui.table;//加载表格模块
+        table.init('demo', {
+            //height: 500 //设置高度
+            //page: true //开启分页
+            //width:650
+        });
+    });
+
     layui.use(['form', 'layer','jquery','upload'],//不能删
         function() {
             $ = layui.jquery,upload = layui.upload;;
             var form = layui.form,
                 layer = layui.layer;
+            var d = new Date();
             //监听提交
             // //日期组件初始赋值
             layui.use('laydate', function(){
@@ -122,15 +171,18 @@
                 //初始赋值
                 laydate.render({
                     elem: '#date_time'
-                    ,value: ""
+                    //,value: ""
                     ,type: 'month'
                     ,trigger:'click'	//日期框只能点击选择，不能手动输入
                     ,format: 'yyyy-MM'
                     ,theme: 'molv'
                     ,value: "${(dateTime)!''}"
+                    //,max: "2020-06"
+                    ,max: d.getFullYear() + '-' + lay.digit(d.getMonth() + 1)
                     ,done: function(date){
                         location.href = "materielData?dateTime="+date;
                     }
+
                 });
 
             });
@@ -140,16 +192,24 @@
                 , accept: 'file' //普通文件
                 , exts: 'zip|rar|7z' //只允许上传压缩文件
                 , done: function (res) {
-                    layer.alert(res.msg, {
-                            icon: 6
-                        },
-                        function() {
-                            //关闭当前frame
-                            //xadmin.close();
-                            // 可以对父窗口进行刷新
-                            //xadmin.father_reload();
-                            location.reload()
-                        });
+                    if (res.code == 1){
+                        layer.alert(res.msg, {
+                            icon: 5
+                        })
+                    }else {
+                        layer.alert(res.msg, {
+                                icon: 6
+                            },
+                            function() {
+                                //关闭当前frame
+                                //xadmin.close();
+                                // 可以对父窗口进行刷新
+                                //xadmin.father_reload();
+                                location.reload()
+                            });
+                    }
+
+
                     return false;
                 }
                 ,before:function () {

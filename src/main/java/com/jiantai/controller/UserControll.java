@@ -8,7 +8,6 @@ import com.jiantai.vo.ResultVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,8 +18,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -110,19 +112,6 @@ public class UserControll {
 
     }
 
-//    @RequestMapping("toIndex")
-//    public ModelAndView toIndex(HttpServletRequest request){
-//        ModelAndView mv = new ModelAndView();
-//        CompanyInfo companyInfo = (CompanyInfo)request.getSession().getAttribute("LOGIN_USER");
-//        if (companyInfo.getType() == 1){
-//            //管理员，type = 1
-//            mv.setViewName("redirect:/admin/index");
-//        }else {
-//            //普通公司账户 type =0
-//            mv.setViewName("user/index-old");
-//        }
-//        return mv;
-//    }
     /**
      * 欢迎页面
      * @param request
@@ -280,11 +269,23 @@ public class UserControll {
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(1);//0=上传成功，1=上传失败
         String filePath = "D://upload/declare/";//上传文件存放的磁盘位置
-        User user = (User)request.getSession().getAttribute("user");
+        User u = (User)request.getSession().getAttribute("user");
+
+        List<User> users = userService.getUserById(u.getId());
+        User user = users.get(0);
+
         String field = "";//字段名
         String materials = "";//物料名称
         String path = "";//完整的文件路径
         String dateTime = request.getParameter("dateTime");//传来的时间 2020-02
+
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime last = now.minusMonths(1);
+        String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 2020-08
+        int day = now.getDayOfMonth();//获取 日
+
+
+
 
         if (file.isEmpty()) {
             resultVO.setMsg("上传失败，文件为空");
@@ -321,7 +322,18 @@ public class UserControll {
                     resultVO.setMsg("上传失败：请选择时间日期");
                     return resultVO;
                 }
+                System.out.println("进来了");
+                if (day <= 20 && dateTime.equals(last_month)){//传来的时间是上一个月的
+                    //当月20日前，可以修改/提交上一个月的
 
+                }else{
+                    //当月20号后，不能上传
+
+                    if (user.getModify() == 0) {
+                        resultVO.setMsg("上传失败！原因：只能于本月21号前上传上一个月的数据【联系建泰办公室取得权限即可】");
+                        return resultVO;
+                    }
+                }
                 //field = "materiels_evidence";这是数据库字段 不需要的
                 filePath = filePath + "materiels_evidence/";
 
@@ -371,6 +383,7 @@ public class UserControll {
                         List<Msds> msdss = userService.getMsdsByCidAndName(user.getId(),materials);
                         if (msdss.size() > 0){
                             userService.updateMsdsById(path,msdss.get(0).getId());
+
                             //添加日志
                             content = "更新MSDS -> " + materials;
                             commonService.addLog(new JTLog(user.getId(),content));
@@ -380,6 +393,7 @@ public class UserControll {
                             content = "上传MSDS -> " + materials;
                             commonService.addLog(new JTLog(user.getId(),content));
                         }
+                        resultVO.setCode(0);
                         break;
                     case 4:
                         //时间对了，查询数据库该时间下有没有上传过,没有传过，直接写进数据库，上传过，就更新数据库src
@@ -398,6 +412,7 @@ public class UserControll {
                             content = "更新物料凭证 -> " + dateTime;
                             commonService.addLog(new JTLog(user.getId(),content));
                         }
+                        resultVO.setCode(0);
                         break;
                 }
                 request.getSession().setAttribute("user",user);//因为其他地方需要用到session，这里就更新一下session
@@ -499,6 +514,25 @@ public class UserControll {
             dateTime = "";
         }
         mv.addObject("dateTime",dateTime);
+        //查询物料使用的时间（2020-08），根据物料记忆表没有删除的物料（因为删除了的物料就没必要再统计了），分组，
+        // 用于回显给用户看自己提交了那几个月的数据
+        List<String> materialsUsedTime = userService.getMaterialsUsedTime(id);
+        //System.out.println(materialsUsedTime+"==================");
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        Map map = new LinkedHashMap();//{"2020-01":"you","2020-02":"you"}
+        for (int i = 1;i <= 12;i++){
+            String msg = "未提交";
+            for (int j = 0;j<materialsUsedTime.size();j++){
+                if ((year + "-" + (i < 10 ? "0" + i : "" + i)).equals(materialsUsedTime.get(j))){
+                     msg = "已提交";
+                     break;
+                }
+            }
+            map.put(year + "-" + (i < 10 ? "0" + i : "" + i),msg);
+        }
+        //System.out.println(map+"===================");
+        mv.addObject("submitted",map);
         return mv;
     }
 
@@ -587,29 +621,63 @@ public class UserControll {
             return vo;
         }
         //空时间的上面已经处理了，下面的代码是上传来的时间不为空
-        User user = (User)request.getSession().getAttribute("user");
+        User u = (User)request.getSession().getAttribute("user");
+        List<User> users = userService.getUserById(u.getId());
+        User user = users.get(0);
         Integer id = user.getId();
 
-        String finalUsedTime = usedTime;
+        String finalUsedTime = usedTime;//传来的时间
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime last = now.minusMonths(1);
+        String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 2020-08
+        int day = now.getDayOfMonth();//获取 日
+
         map.forEach((k, v)->{
-            System.out.println(k);
-            System.out.println(v);
+//            System.out.println(k);
+//            System.out.println(v);
             //先查该年月有没有对应的数据，没有就插入，有就更新
+
             List<MaterialsUsed> list = userService.getMaterialsUsedByCidAndUsedTimeAndName(id, finalUsedTime, k);
             if (list.size()> 0){
                 //数据库中存在了该公司该物料的该年月的使用情况，更新
                 // 要判断，20天前的可以更新，且有更新资格才行
+                //String this_month = now.format(DateTimeFormatter.ofPattern("yyyy-MM"));//2020-09
+                if (day <= 20 && finalUsedTime.equals(last_month)){//传来的时间是上一个月的
+                    //当月20日前，可以修改/提交上一个月的
+                    userService.updateMaterialsUsed(v,id,k,finalUsedTime);
+                    vo.setCode(1);
+                    vo.setMsg(finalUsedTime + "数据" + "更新成功");
+                }else{
+                    //当月20号后，不能修改
+                    if (user.getModify() == 0) {
+                        vo.setCode(0);
+                        vo.setMsg(finalUsedTime + "数据" + "更新失败！原因：只能于本月21号前更新上一个月的数据【联系建泰办公室取得权限即可】");
+                    }else {//有权限
+                        userService.updateMaterialsUsed(v,id,k,finalUsedTime);
+                        vo.setCode(1);
+                        vo.setMsg(finalUsedTime + "数据" + "更新成功");
+                    }
+                }
 
-
-
-                userService.updateMaterialsUsed(v,id,k,finalUsedTime);
-                vo.setCode(1);
-                vo.setMsg(finalUsedTime + "数据" + "更新成功");
             }else {
                 //查不到结果，直接插入数据
-                userService.saveMaterialsUsed(id,k,v,finalUsedTime);
-                vo.setCode(1);
-                vo.setMsg(finalUsedTime + "数据" + "提交成功");
+                if (day <= 20 && finalUsedTime.equals(last_month)){//传来的时间是上一个月的
+                    //当月20日前，可以修改/提交上一个月的
+                    userService.saveMaterialsUsed(id,k,v,finalUsedTime);
+                    vo.setCode(1);
+                    vo.setMsg(finalUsedTime + "数据" + "提交成功");
+                }else{
+                    //当月20号后，不能提交
+                    if (user.getModify() == 0) {
+                        vo.setCode(0);
+                        vo.setMsg(finalUsedTime + "数据" + "提交失败！原因：只能于本月21号前提交上一个月的数据【联系建泰办公室取得权限即可】");
+                    }else {//有权限
+                        userService.saveMaterialsUsed(id,k,v,finalUsedTime);
+                        vo.setCode(1);
+                        vo.setMsg(finalUsedTime + "数据" + "提交成功");
+                    }
+                }
+
             }
 
         });
@@ -642,6 +710,26 @@ public class UserControll {
             }
         }
         mv.addObject("dateTime",dateTime);
+
+        //查询物料使用的时间（2020-08），根据物料记忆表没有删除的物料（因为删除了的物料就没必要再统计了），分组，
+        // 用于回显给用户看自己提交了那几个月的数据
+        List<String> productsOutputTime = userService.getProductsOutputByCid(id);
+        //System.out.println(materialsUsedTime+"==================");
+        LocalDate now = LocalDate.now();
+        int year = now.getYear();
+        Map map = new LinkedHashMap();//{"2020-01":"you","2020-02":"you"}
+        for (int i = 1;i <= 12;i++){
+            String msg = "未提交";
+            for (int j = 0;j<productsOutputTime.size();j++){
+                if ((year + "-" + (i < 10 ? "0" + i : "" + i)).equals(productsOutputTime.get(j))){
+                    msg = "已提交";
+                    break;
+                }
+            }
+            map.put(year + "-" + (i < 10 ? "0" + i : "" + i),msg);
+        }
+        System.out.println(map+"===================");
+        mv.addObject("submitted",map);
 
         return mv;
     }
@@ -702,34 +790,33 @@ public class UserControll {
         return vo;
     }
     @RequestMapping("equipmentList")
-    public ModelAndView equipmentList(){
+    public ModelAndView equipmentList(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
         mv.setViewName("user/equipment-list");
+        User user = (User) request.getSession().getAttribute("user");
+        Integer id = user.getId();
         //模板赋值
+        List<Equipment> equipmentList = userService.getEquipmentListByCid(id);
+        ArrayList<Equipment> airList = new ArrayList<>();
+        ArrayList<Equipment> windList = new ArrayList<>();
+        ArrayList<Equipment> electricList = new ArrayList<>();
+        equipmentList.forEach(l -> {
+            if (l.getType() == 1){//类型(后期再加) 1=空压机，2=风机，3=电机
+                airList.add(l);
+            }
+            if (l.getType() == 2){//类型(后期再加) 1=空压机，2=风机，3=电机
+                windList.add(l);
+            }
+            if (l.getType() == 3){//类型(后期再加) 1=空压机，2=风机，3=电机
+                electricList.add(l);
+            }
+        });
+        mv.addObject("airList",airList);
+        mv.addObject("windList",windList);
+        mv.addObject("electricList",electricList);
         return mv;
     }
-//    @RequestMapping("equipmentDetail")
-//    @ResponseBody
-//    public ResultVO equipmentDetail(HttpServletRequest request){
-//        ResultVO resultVO = new ResultVO();
-//        resultVO.setCode(0);
-//        Equipment equipment = new Equipment();
-//        equipment.setKinds("型号");
-//        equipment.setTotal(100);
-//
-//        Equipment equipment2 = new Equipment();
-//        equipment2.setKinds("型号");
-//        equipment2.setTotal(100);
-//
-//        List list = new ArrayList();
-//        list.add(equipment);
-//        list.add(equipment2);
-//        resultVO.setData(list);
-//
-//
-//
-//        return resultVO;
-//    }
+
     @RequestMapping("equipment")
     public ModelAndView equipment(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -738,7 +825,16 @@ public class UserControll {
             switch (type){
                 case "1":
                     //添加空压机
-                    mv.setViewName("user/machine-air");
+                    mv.setViewName("user/machine-air-add");
+                    break;
+                case "2"://跳转到风机添加页面
+                    mv.setViewName("user/machine-wind-add");
+                    break;
+                case "3":
+                    mv.setViewName("user/machine-electric-add");
+                    break;
+                default:
+                    mv.setViewName("error");
                     break;
             }
         }
@@ -746,35 +842,103 @@ public class UserControll {
     }
     @RequestMapping("addEquipment")
     @ResponseBody
-    public ResultVO addEquipment(HttpServletRequest request){
+    public ResultVO addEquipment(HttpServletRequest request,Equipment equipment){
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(0);//0=失败
+
         User user = (User)request.getSession().getAttribute("user");
-        Integer id = user.getId();
+        Integer cid = user.getId();
 
-        ArrayList<Double> air = new ArrayList<>();
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()){
-            String key = parameterNames.nextElement();
-            String value = request.getParameter(key);
-            System.out.println(key);
-            System.out.println(value);
-            if (StringUtils.isBlank(value)){
-                resultVO.setMsg("添加失败，传入参数不对！");
-                return resultVO;
+        switch (request.getParameter("type")){
+            case "1":
+                equipment.setcId(cid);
+                equipment.setType(1);
+                userService.addEquipmentAir(equipment);
+                resultVO.setCode(1);
+                resultVO.setMsg("空压机添加成功！");
+                break;
+            case "2":
+                equipment.setcId(cid);
+                equipment.setType(2);
+                userService.addEquipmentWind(equipment);
+                resultVO.setCode(1);
+                resultVO.setMsg("空压机添加成功！");
+                break;
+            case "3":
+                equipment.setcId(cid);
+                equipment.setType(3);
+                userService.addEquipmentElectric(equipment);
+                resultVO.setCode(1);
+                resultVO.setMsg("电机添加成功！");
+                break;
+            default:
+                resultVO.setMsg("新增错误！暂不支持该设备类型添加");
+                break;
+        }
+
+        return resultVO;
+    }
+    @RequestMapping("deleteEquipment")
+    @ResponseBody
+    public ResultVO deleteEquipment(Integer id){
+        ResultVO resultVO = new ResultVO();
+
+        userService.deleteEquipmentById(id);
+        resultVO.setCode(1);
+        resultVO.setMsg("删除成功");
+        return resultVO;
+    }
+    @RequestMapping("toEquipmentEdit")
+    public ModelAndView toEquipmentEdit(HttpServletRequest request){
+        ModelAndView mv = new ModelAndView();
+        String id = request.getParameter("eid");
+        if (StringUtils.isNotBlank(id)){//带着id来
+            //查询该id的数据然后回显，查不到就报错
+
+            List<Equipment> equipment = userService.getEquipmentById(Integer.parseInt(id));
+            if (equipment.size() > 0){
+                Equipment eq = equipment.get(0);
+
+                mv.addObject("equipment",eq);
+                if (eq.getType() == 1){//空压机
+                    mv.setViewName("user/machine-air-edit");
+                }
+                if (eq.getType() == 2){//风机
+                    mv.setViewName("user/machine-wind-edit");
+                }
+                if (eq.getType() == 3){//电机
+                    mv.setViewName("user/machine-electric-edit");
+                }
+
+
+            }else {
+                mv.setViewName("error");
             }
-            air.add(Double.parseDouble(value));
-            //userService.addEquipmentAir();
+
+        }else {
+            mv.setViewName("error");
         }
-        if ("1".equals(request.getParameter("type"))){//新增空压机
-            Integer type = 1;
-            userService.addEquipmentAir(id,type,air.get(0),air.get(1),air.get(2),air.get(3),air.get(4),air.get(5),air.get(6),air.get(7),air.get(8));
+        return mv;
+    }
+
+    @RequestMapping("equipmentEdit")
+    @ResponseBody
+    public ResultVO equipmentEdit(Equipment e){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        List<Equipment> equipmentList = userService.getEquipmentById(e.getId());
+
+        if (equipmentList.size() > 0){
+            //说明id正确,更新之
+            userService.updateEquipment(e);
+            resultVO.setMsg("更新成功");
             resultVO.setCode(1);
-            resultVO.setMsg("空压机添加成功！");
+        }else {
+            //id不存在，返回异常
+            //mv.setViewName("error");
+            resultVO.setMsg("更新失败，数据不存在");
         }
 
-
-        //System.out.println(equipment);
         return resultVO;
     }
 }

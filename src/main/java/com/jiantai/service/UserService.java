@@ -51,4 +51,12 @@ public interface UserService {
 	void updateEquipment(Equipment e);
 	List<String> getMaterialsUsedTime(Integer c_id);
 	List<String> getProductsOutputByCid(Integer c_id);
+	void deleteMsdsById(String id,Integer c_id);
+	List<Msds> getMsdsExist(Integer cId,String name);
+	List<String> getMaintainTimeByCid(Integer c_id);
+	List<EquipmentMaintenance> getEquipmentMaintenance(Integer c_id,String maintain_time);
+	void saveEquipmentMaintenance(Integer c_id,String maintain_time,String src);
+	void updateEquipmentMaintenanceById(String src,Integer id);
+	void deleteEquipmentMaintenanceById(Integer id);
+	void changePwd(String pwd,Integer id);
 }

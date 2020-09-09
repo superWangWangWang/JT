@@ -7,9 +7,12 @@ import com.github.pagehelper.PageInfo;
 import com.jiantai.entity.*;
 import com.jiantai.service.impl.AdminServiceImpl;
 
+import com.jiantai.service.impl.CommonServiceImpl;
 import com.jiantai.utils.DownloadUtil;
 
 import com.jiantai.utils.FileUtils;
+import com.jiantai.utils.MyUtils;
+import com.jiantai.vo.ResultVO;
 import com.jiantai.vo.VO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +34,9 @@ public class AdminController {
     @Autowired
     private AdminServiceImpl adminServiceImpl;
 
+    @Autowired
+    private CommonServiceImpl commonService;
+
     /**
      * 到管理员首页
      *
@@ -38,7 +45,7 @@ public class AdminController {
     @RequestMapping("index")
     public ModelAndView toIndex() {
         ModelAndView mv = new ModelAndView();
-        mv.addObject("data", "aaa");
+        //mv.addObject("data", "aaa");
         mv.setViewName("admin/index");
         return mv;
     }
@@ -66,57 +73,98 @@ public class AdminController {
      */
     @RequestMapping("/companyList")
     @ResponseBody
-    public String companyList(HttpServletRequest request) {
+    public ResultVO companyList(HttpServletRequest request) {
+        User user = (User)request.getSession().getAttribute("user");
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
-        VO vo = new VO();//前端需要的试图模型，view object
-        String companyName = request.getParameter("companyName");
-        if (companyName != "" && companyName != null) {
-            //根据公司名查询公司信息
+        ResultVO resultVO = new ResultVO();//前端需要的试图模型，view object
+        resultVO.setCode(1);//状态码 0=正常 1 = err
+
+        if (StringUtils.isNotBlank(page) || StringUtils.isNotBlank(limit)){
             Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
-            List company = adminServiceImpl.getCompanyInfoByName(companyName);
-            if (company.size() > 0) {
-                //封装返回
-                vo.setCode(0);//状态码 0=正常
-                PageInfo pageInfo = new PageInfo(pa);
-                int total = (int) pageInfo.getTotal();
-                vo.setCount(total);//分页条数
-                vo.setMsg("ok");//相应信息
 
-                vo.setData(company);
-                return JSON.toJSONString(vo);
-            } else {
-                vo.setCode(1);//状态码 0=正常 1 = 异常
-                vo.setCount(0);//分页条数
-                vo.setMsg("page传值不对");//相应信息
-
-                return JSON.toJSONString(vo);
+            List<User> companyList;
+            if (user.getType() == 2){//超级管理员  能查询包括自己
+                companyList= adminServiceImpl.getAllCompanyInfo();
+            }else {//普通管理员 不能查询超级管理员
+                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
             }
-        }
-
-        if (null == page || "".equals(page)) {
-            //封装返回
-           /* vo.setCode(1);//状态码 0=正常 1 = 异常
-            vo.setCount(0);//分页条数
-            vo.setMsg("page传值不对");//相应信息*/
-            List companyList = adminServiceImpl.getAllCompanyInfo();
-            vo.setCode(0);//状态码 0=正常
-            vo.setCount(0);// 总数据条数
-            vo.setMsg("ok");//相应信息
-            vo.setData(companyList);
-        } else {//页码传入正常
-            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
-            List companyList = adminServiceImpl.getAllCompanyInfo();
-            vo.setCode(0);//状态码 0=正常封装返回
+            resultVO.setCode(0);//状态码 0=正常封装返回
             PageInfo pageInfo = new PageInfo(pa);
             int total = (int) pageInfo.getTotal();
-            vo.setCount(total);//分页条数
-            vo.setMsg("ok");//相应信息
+            resultVO.setCount(total);//分页条数
+            resultVO.setMsg("ok");//相应信息
+            resultVO.setData(companyList);
 
-            vo.setData(companyList);
+
+        }else {
+            resultVO.setMsg("传参不对！");
         }
 
-        return JSON.toJSONString(vo);
+
+
+//
+//        String companyName = request.getParameter("companyName");
+//        if (companyName != "" && companyName != null) {
+//            //根据公司名查询公司信息
+//            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
+//            List company = adminServiceImpl.getCompanyInfoByName(companyName);
+//            if (company.size() > 0) {
+//                //封装返回
+//                vo.setCode(0);//状态码 0=正常
+//                PageInfo pageInfo = new PageInfo(pa);
+//                int total = (int) pageInfo.getTotal();
+//                vo.setCount(total);//分页条数
+//                vo.setMsg("ok");//相应信息
+//
+//                vo.setData(company);
+//                return JSON.toJSONString(vo);
+//            } else {
+//                vo.setCode(1);//状态码 0=正常 1 = 异常
+//                vo.setCount(0);//分页条数
+//                vo.setMsg("page传值不对");//相应信息
+//
+//                return JSON.toJSONString(vo);
+//            }
+//        }
+//
+//        if (null == page || "".equals(page)) {
+//            //封装返回
+//           /* vo.setCode(1);//状态码 0=正常 1 = 异常
+//            vo.setCount(0);//分页条数
+//            vo.setMsg("page传值不对");//相应信息*/
+//            List<User> companyList;
+//            if (user.getType() == 2){//超级管理员  能查询包括自己
+//                companyList= adminServiceImpl.getAllCompanyInfo();
+//            }else {//普通管理员 不能查询超级管理员
+//                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
+//            }
+//
+//            vo.setCode(0);//状态码 0=正常
+//            vo.setCount(0);// 总数据条数
+//            vo.setMsg("ok");//相应信息
+//            vo.setData(companyList);
+//        } else {//页码传入正常
+//            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
+//            List<User> companyList;
+//
+//            if (user.getType() == 2){//超级管理员  能查询包括自己
+//                companyList= adminServiceImpl.getAllCompanyInfo();
+//            }else {//普通管理员 不能查询超级管理员
+//                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
+//            }
+//
+//
+//            vo.setCode(0);//状态码 0=正常封装返回
+//            PageInfo pageInfo = new PageInfo(pa);
+//            int total = (int) pageInfo.getTotal();
+//            vo.setCount(total);//分页条数
+//            vo.setMsg("ok");//相应信息
+//
+//            vo.setData(companyList);
+//        }
+
+        return resultVO;
     }
 
     /**
@@ -128,6 +176,7 @@ public class AdminController {
     @RequestMapping("updateCompanyEnable")
     @ResponseBody
     public String updateCompanyEnable(HttpServletRequest request) {
+        User u = (User)request.getSession().getAttribute("user");
         String id = request.getParameter("id");
         String enable = request.getParameter("Enable");
         Integer en;
@@ -136,19 +185,19 @@ public class AdminController {
         } else {
             en = 0;
         }
-        List<CompanyInfo> companys = adminServiceImpl.getCompanyInfoById(id);
-        if (companys.size() > 0) {
-            companys.get(0).set是否启用(en);
-            adminServiceImpl.updateCompanyEnableById(companys.get(0));
+        List<User> users = adminServiceImpl.getCompanyInfoById(id);
+        if (users.size() > 0) {
+            users.get(0).setState(en);
+            adminServiceImpl.updateCompanyEnableById(users.get(0));
             //添加日志记录
-            Integer cid = companys.get(0).getId();
+            Integer cid = users.get(0).getId();
             String content;
             if (en == 1) {
-                content = "开启登录权限";
+                content = "开启登录权限 ->" + users.get(0).getCompanyShortName();
             } else {
-                content = "关闭登录权限";
+                content = "关闭登录权限 ->" + users.get(0).getCompanyShortName();
             }
-            adminServiceImpl.addLog(new JTLog(cid, content));
+            commonService.addLog(new JTLog(u.getId(), content));
         }
         return "";
     }
@@ -159,9 +208,10 @@ public class AdminController {
      * @param request
      * @return
      */
-    @RequestMapping("updateCompanyRight")
+    @RequestMapping("updateCompanyModify")
     @ResponseBody
-    public String updateCompanyRight(HttpServletRequest request) {
+    public void updateCompanyModify(HttpServletRequest request) {
+        User user = (User)request.getSession().getAttribute("user");
         String id = request.getParameter("id");
         String right = request.getParameter("right");
         Integer r;
@@ -171,21 +221,21 @@ public class AdminController {
             r = 0;
         }
 
-        List<CompanyInfo> companys = adminServiceImpl.getCompanyInfoById(id);
-        if (companys.size() > 0) {
-            companys.get(0).setRight(r);
-            adminServiceImpl.updateCompanyRightById(companys.get(0));
+        List<User> users = adminServiceImpl.getCompanyInfoById(id);
+        if (users.size() > 0) {
+            users.get(0).setModify(r);
+            adminServiceImpl.updateCompanyModifyById(users.get(0));
             //添加日志记录
-            Integer cid = companys.get(0).getId();
+            Integer cid = users.get(0).getId();
             String content;
             if (r == 1) {
-                content = "开启跨月修改权限";
+                content = "开启跨月修改权限 -> " + users.get(0).getCompanyShortName();
             } else {
-                content = "关闭跨月修改权限";
+                content = "关闭跨月修改权限 -> " + users.get(0).getCompanyShortName();
             }
-            adminServiceImpl.addLog(new JTLog(cid, content));
+            commonService.addLog(new JTLog(user.getId(), content));
         }
-        return "";
+        //return "";
     }
 
     /**
@@ -210,7 +260,7 @@ public class AdminController {
         //怎么快速找出两个对象哪几个属性值不同，例如找到 msg不同
 
         //添加日志
-        adminServiceImpl.addLog(new JTLog(companyInfo.getId(), " 更改信息</br></br>" + companyInfo.toString()));
+        commonService.addLog(new JTLog(companyInfo.getId(), " 更改信息</br></br>" + companyInfo.toString()));
         return "";
     }
 
@@ -226,7 +276,7 @@ public class AdminController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("admin/time-line");
 
-        List<JTLog> resultList = adminServiceImpl.getLogByCid(Integer.parseInt(id));
+        List<JTLog> resultList = commonService.getLogByCid(Integer.parseInt(id));
         mv.addObject("log", resultList);
         return mv;
     }
@@ -363,20 +413,20 @@ public class AdminController {
         String id = request.getParameter("id");//物料名
         String localPath = "D:\\upload\\" + folder + "\\";
         String filename_str = "";
-        CompanyInfo companyInfo = adminServiceImpl.getCompanyInfoById(id).get(0);//获取登录用户
+        User user = adminServiceImpl.getCompanyInfoById(id).get(0);//获取登录用户
         if ("msds".equals(folder)) {//MSDS目录
             JTMsdsUpload jtMsdsUpload = adminServiceImpl.findMsdsUploadById(id);//根据id查询msds
             filename_str = jtMsdsUpload.getMsdsFilename();
             localPath += filename_str;
         } else if ("plan".equals(folder)) {//平面图目录
-            filename_str = companyInfo.getPlanName();
+            filename_str = user.getPlaneFigure();
             localPath += filename_str;
         } else if ("evidence".equals(folder)) {//佐证文件目录
             JtMaterialEvidence jtMaterialEvidence = adminServiceImpl.findJtMaterialEvidenceById(id);
             filename_str = jtMaterialEvidence.getFilename();
             localPath += filename_str;
         } else if ("product".equals(folder)) {//产品设备文件目录
-            filename_str = companyInfo.getProductName();
+            filename_str = user.getProductionEquipmentList();
             localPath += filename_str;
         }
 
@@ -391,42 +441,68 @@ public class AdminController {
 
     /**
      * 管理员下载文件方法（平面图，产品名录）
-     *
-     * @param type
-     * @param fileName
      * @param response
      * @param request
      * @throws IOException
      */
     @RequestMapping("down")
     @ResponseBody
-    public void downFile(String type, String fileName, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    public void downFile(HttpServletResponse response, HttpServletRequest request) throws IOException {
         //String localPath = "D:\\upload\\" + folder + "\\";
         //FileUtils.downloadFile(path,fileName,response);
         //System.out.println(type);
         //System.out.println(fileName);//空字符串则表示没有
         //VO vo = new VO<>();
+        String type = request.getParameter("type");// 1 = 平面图 2 = 产品名录 3 = msds 4 =
+        String cid = request.getParameter("cid");//公司的id
+        String id = request.getParameter("id");//表中行数据对应的id
 
-        if ("".equals(fileName) || fileName == null) {
-            //vo.setCode(0);
-            //vo.setMsg("尚未上传");
-        } else {
-            /*if ("plan".equals(type)){
-                type = "plan";
-            }*/
-            //需要先查下数据口是否有记录，不然出错
+        //User user = (User)request.getSession().getAttribute("user");
+        if (StringUtils.isNotBlank(type)){//传来的下载的类型才可以放行
+            switch (type){
+                case "1":
+                    //根据cid查询对应的平面图
+                    if (StringUtils.isNotBlank(cid)){
+                        List<User> companyInfos = adminServiceImpl.getCompanyInfoById(cid);
+                        if (companyInfos.size() > 0){
+                            //有这个公司id
+                            String src = companyInfos.get(0).getPlaneFigure();
+                            System.out.println(companyInfos.get(0)+"==================");
+                            MyUtils.downloadFile(response,src,"utf-8");
+                        }
+                    }
 
-            FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
-            //vo.setCode(1);
-            //vo.setMsg("下载成功");
-            if (!"".equals(fileName) && fileName != null && !"".equals(type) && type != null) {
-                if ("plan".equals(type)) {
-                    type = "imgs";  //数据保存在的文件夹是imgs文件夹而不是plan文件夹
-                }
-                //建议先查下数据口是否有记录，不然出错，
-                FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
+                    break;
+                default:
+                    //没传对，不处理
+                    break;
             }
+
+
         }
+
+
+
+//        if ("".equals(fileName) || fileName == null) {
+//            //vo.setCode(0);
+//            //vo.setMsg("尚未上传");
+//        } else {
+//            /*if ("plan".equals(type)){
+//                type = "plan";
+//            }*/
+//            //需要先查下数据口是否有记录，不然出错
+//
+//            FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
+//            //vo.setCode(1);
+//            //vo.setMsg("下载成功");
+//            if (!"".equals(fileName) && fileName != null && !"".equals(type) && type != null) {
+//                if ("plan".equals(type)) {
+//                    type = "imgs";  //数据保存在的文件夹是imgs文件夹而不是plan文件夹
+//                }
+//                //建议先查下数据口是否有记录，不然出错，
+//                FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
+//            }
+//        }
     }
 
         /**

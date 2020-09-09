@@ -27,7 +27,7 @@ public class MyInterceptor implements HandlerInterceptor {
                 if (path.indexOf("admin") != -1){
                     //访问的是admin路径下的内容，需要判断其身份是不是管理员
                     User user =  (User)session.getAttribute("user");
-                    if (user.getType() != 1){
+                    if (user.getType() == 0){
                         //不是管理员身份，强制跳转到公司界面
                         response.sendRedirect(request.getContextPath() + "/user/index");
                         //response.sendRedirect(request.getContextPath() + "/user/toIndex");

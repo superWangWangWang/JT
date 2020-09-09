@@ -41,7 +41,7 @@
                     <table class="layui-table ">
                         <thead>
                         <tr>
-                            <th>物料名</th>
+                            <th>产品名</th>
                             <th>单位</th>
                             <th>月产量（不为整数的，可保留小数点后两位）</th>
 
@@ -50,10 +50,10 @@
                         <tbody>
                         <#list products as ps>
                         <tr>
-                            <td>${ps.name}</td>
+                            <td><span style="font-size: 15px;font-weight: bold">${ps.name}</span></td>
                             <td>${ps.unitCn}</td>
                             <td>
-                                <input placeholder="该月的产量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${ps.id}" required=""  autocomplete="off" class="layui-input" value="${(ps.output)!''}" >
+                                <input placeholder="该月的产量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${ps.id}" required=""  autocomplete="off" class="layui-input" value="${(ps.output?c)!''}" >
                             </td>
 
                         </tr>

@@ -11,23 +11,30 @@ public interface AdminDao {
      * 查询所有的公司信息
      * @return
      */
-    @Select("SELECT * FROM `jt_company_info` WHERE `企业简称` NOT LIKE '%测试%' OR `企业全称` NOT LIKE '%测试%'")
-    List<CompanyInfo> getAllCompanyInfo();
+    @Select("SELECT * FROM `user`")
+    List<User> getAllCompanyInfo();
+
+    /**
+     * 查询所有的公司信息除了超级管理员 -- state不为2
+     * @return
+     */
+    @Select("SELECT * FROM `user` where `type` != 2")
+    List<User> getAllCompanyInfoExcludeSuper();
 
     /**
      * 根据公司id查询公司信息
      * @param id
      * @return
      */
-    @Select("select * from `jt_company_info` where `id` = #{id}")
-    List<CompanyInfo> getCompanyInfoById(String id);
+    @Select("select * from `user` where `id` = #{id}")
+    List<User> getCompanyInfoById(String id);
 
     /**
      * 根据公司id更新
-     * @param companyInfo
+     * @param user
      */
-    @Update("update `jt_company_info` set `是否启用` = #{companyInfo.是否启用} where `id` = #{companyInfo.id}")
-    void updateCompanyEnableById(@Param("companyInfo") CompanyInfo companyInfo);
+    @Update("update `user` set `state` = #{user.state} where `id` = #{user.id}")
+    void updateCompanyEnableById(@Param("user") User user);
     /**
      * 更新前端传来的公司数据
      */
@@ -39,30 +46,30 @@ public interface AdminDao {
      * @param name
      * @return
      */
-    @Select("select * from `jt_company_info` where `企业简称` like CONCAT('%',#{name},'%')")
-    List<CompanyInfo> getCompanyInfoByName(@Param("name") String name);
+    @Select("select * from `user` where `company_short_name` like CONCAT('%',#{name},'%')")
+    List<User> getCompanyInfoByName(@Param("name") String name);
 
     /**
      * 根据公司id设置是否开启跨月修改
-     * @param companyInfo
+     * @param user
      */
-    @Update("update `jt_company_info` set `right` = #{companyInfo.right} where `id` = #{companyInfo.id}")
-    void updateCompanyRightById(@Param("companyInfo") CompanyInfo companyInfo);
+    @Update("update `user` set `modify` = #{user.modify} where `id` = #{user.id}")
+    void updateCompanyModifyById(@Param("user") User user);
 
-    /**
-     * 根据公司id查询其操作记录
-     * @param cid
-     * @return
-     */
-    @Select("SELECT * FROM `jt_log` WHERE `cid` = #{cid} ORDER BY `create_time` DESC LIMIT 100")
-    List<JTLog> getLogByCid(Integer cid);
+//    /**
+//     * 根据公司id查询其操作记录
+//     * @param cid
+//     * @return
+//     */
+//    @Select("SELECT * FROM `log` WHERE `cid` = #{cid} ORDER BY `create_time` DESC LIMIT 100")
+//    List<JTLog> getLogByCid(Integer cid);
 
-    /**
-     * 添加操作日志
-     * @param log
-     */
-    @Insert("INSERT INTO jt_log (cid,content) VALUE (#{log.cid},#{log.content})")
-    void addLog(@Param("log") JTLog log);
+//    /**
+//     * 添加操作日志
+//     * @param log
+//     */
+//    @Insert("INSERT INTO `log` (cid,content) VALUE (#{log.cid},#{log.content})")
+//    void addLog(@Param("log") JTLog log);
 
     /**
      * 查询物料记录

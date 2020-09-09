@@ -45,7 +45,7 @@ public class User {
     //plane_figure          varchar(64)   平面图
     private String planeFigure;
     //product_list          varchar(64)   产品名录
-    private String productList;
+    private String productionEquipmentList;
     //modify                int(1)        跨月份修改/删除权限 (0无权限/1有权限)
     private Integer modify;
     //type                  int(1)        身份 0=普通公司 1 = 超级管理员 可以登录管理后台
@@ -77,7 +77,7 @@ public class User {
                 ", location='" + location + '\'' +
                 ", updateTime=" + updateTime +
                 ", planeFigure='" + planeFigure + '\'' +
-                ", productList='" + productList + '\'' +
+                ", productionEquipmentList='" + productionEquipmentList + '\'' +
                 ", modify=" + modify +
                 ", type=" + type +
                 ", state=" + state +
@@ -237,12 +237,12 @@ public class User {
         this.planeFigure = planeFigure;
     }
 
-    public String getProductList() {
-        return productList;
+    public String getProductionEquipmentList() {
+        return productionEquipmentList;
     }
 
-    public void setProductList(String productList) {
-        this.productList = productList;
+    public void setProductionEquipmentList(String productionEquipmentList) {
+        this.productionEquipmentList = productionEquipmentList;
     }
 
     public Integer getModify() {

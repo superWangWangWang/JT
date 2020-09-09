@@ -32,8 +32,10 @@
             <div class="left_open">
                 <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
             </div>
+
             <ul class="layui-nav layui-bg-green right">
                 <li class="layui-nav-item"><a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出系统</a></li>
+            </ul>
         </div>
 
         <!-- 顶部结束 -->
@@ -90,5 +92,42 @@
         <!-- 中部结束 -->
 
     </body>
+    <script >
 
+window.onload=function (){
+
+    layer.open({
+        type: 1
+        ,
+        title: '<span style="color: #cc0000;font-weight: bold;font-size: 20px">公告通知</span>' //不显示标题栏
+        ,
+        closeBtn: false
+        ,
+        area: '400px;'
+        ,
+        shade: 0.8
+        ,
+        id: 'LAY_layuipro' //设定一个id，防止重复弹出
+        ,
+        btn: ['我知道了']
+        ,
+        btnAlign: 'c'
+        ,
+        moveType: 0//拖拽模式，0或者1
+        ,
+        content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">' +
+            '<span style="color: white;font-size: 15px">&#12288;&#12288;系统升级完毕，现已正式运行，部分数据需要重新提交，感谢您的配合，如有疑问请联系建泰办公室。</span>' +
+            '</div>'
+        ,
+        success: function (layero) {
+            // var btn = layero.find('.layui-layer-btn');
+            // btn.find('.layui-layer-btn0').attr({
+            //     href: 'http://www.layui.com/'
+            //     , target: '_blank'
+            // });
+
+        }
+    })
+}
+</script>
 </html>

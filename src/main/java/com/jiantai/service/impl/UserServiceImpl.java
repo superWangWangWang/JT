@@ -49,6 +49,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
+	 * 修改密码
+	 * @param pwd
+	 * @param id
+	 */
+	@Override
+	public void changePwd(String pwd, Integer id) {
+		userDao.changePwd(pwd,id);
+	}
+
+	/**
 	 * 根据传进来的user对象，更新user表
 	 * @param u
 	 */
@@ -112,6 +122,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void updateMsdsById(String src, Integer id) {
 		userDao.updateMsdsById(src,id);
+	}
+
+	/**
+	 * 根据公司id和msds名 查询msds是否上传过
+	 * @param cId
+	 * @param name
+	 * @return
+	 */
+	@Override
+	public List<Msds> getMsdsExist(Integer cId, String name) {
+		return userDao.getMsdsExist(cId,name);
 	}
 
 	/**
@@ -401,5 +422,66 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<String> getProductsOutputByCid(Integer c_id) {
 		return userDao.getProductsOutputByCid(c_id);
+	}
+
+	/**
+	 * 根据id删除msds
+	 * @param id
+	 * @param c_id
+	 */
+	@Override
+	public void deleteMsdsById(String id, Integer c_id) {
+		userDao.deleteMsdsById(id,c_id);
+	}
+
+	/**
+	 * 根据公司id获取设备保养月份用于回显 ， 看看那个月份没有提交
+	 * @param c_id
+	 * @return
+	 */
+	@Override
+	public List<String> getMaintainTimeByCid(Integer c_id) {
+		return userDao.getMaintainTimeByCid(c_id);
+	}
+
+	/**
+	 * 根据公司id和设备保养日期查询保养记录表 -- src
+	 * @param c_id
+	 * @param maintain_time
+	 * @return
+	 */
+	@Override
+	public List<EquipmentMaintenance> getEquipmentMaintenance(Integer c_id, String maintain_time) {
+		return userDao.getEquipmentMaintenance(c_id,maintain_time);
+	}
+
+	/**
+	 * 新增设备保养记录表
+	 * @param c_id
+	 * @param maintain_time
+	 * @param src
+	 */
+	@Override
+	public void saveEquipmentMaintenance(Integer c_id, String maintain_time, String src) {
+		userDao.saveEquipmentMaintenance(c_id,maintain_time,src);
+	}
+
+	/**
+	 * 更新设备保养表
+	 * @param src
+	 * @param id
+	 */
+	@Override
+	public void updateEquipmentMaintenanceById(String src, Integer id) {
+		userDao.updateEquipmentMaintenanceById(src,id);
+	}
+
+	/**
+	 * 根据id删除设备保养记录
+	 * @param id
+	 */
+	@Override
+	public void deleteEquipmentMaintenanceById(Integer id) {
+		userDao.deleteEquipmentMaintenanceById(id);
 	}
 }

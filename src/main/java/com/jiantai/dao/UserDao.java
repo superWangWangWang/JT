@@ -62,11 +62,19 @@ public interface UserDao {
 	List<User> getUserById(Integer id);
 
 	/**
+	 * 修改密码
+	 * @param pwd
+	 * @param id
+	 */
+	@Update("update `user` set `password` = #{pwd} where `id` = #{id}")
+	void changePwd(String pwd,Integer id);
+
+	/**
 	 * 根据公司id查询未上传的物料，排除已上传的
 	 * @param id
 	 * @return
 	 */
-	@Select("SELECT * FROM materials WHERE materials.`name` NOT IN (SELECT msds.`name` FROM msds WHERE c_id = #{id})")
+	@Select("SELECT * FROM materials WHERE materials.`name` NOT IN (SELECT msds.`name` FROM msds WHERE c_id = #{id} and `state` = 1)")
 	List<Material> getMaterialByIdExcludeUploaded(Integer id);
 
 	/**
@@ -87,13 +95,27 @@ public interface UserDao {
 	List<Msds> getMsdsByCidAndName(Integer cId,String name);
 
 	/**
+	 * 根据公司id和msds名 查询msds是否上传过
+	 * @param cId
+	 * @param name
+	 * @return
+	 */
+	@Select("select * from `msds` where `c_id` = #{cId} and `name` = #{name}")
+	List<Msds> getMsdsExist(Integer cId,String name);
+
+	/**
 	 * 根据id更新msds的路径
 	 * @param src
 	 * @param id
 	 */
-	@Update("update `msds` set `src` = #{src} where `id` = #{id}")
+	@Update("update `msds` set `src` = #{src},`state` = 1 where `id` = #{id}")
 	void updateMsdsById(String src,Integer id);
 
+	/**
+	 * 根据id删除msds
+	 */
+	@Update("UPDATE msds SET state = 0 WHERE `id` = #{id} AND `c_id` = #{c_id}")
+	void deleteMsdsById(String id,Integer c_id);
 
 	/**
 	 * 根据公司id查询msds
@@ -184,7 +206,8 @@ public interface UserDao {
 	 * 查询所有产品
 	 * @return
 	 */
-	@Select("select * from `products`")
+	@Select("SELECT products.*,products_class_second.`name` AS 'second',products_class_first.`name` AS 'first' FROM products INNER JOIN products_class_second ON products.`father` = products_class_second.`id` INNER JOIN products_class_first ON products_class_second.`father` = products_class_first.`id`")
+	//@Select("select * from `products`")
 	List<Product> getProductsList();
 
 	/**
@@ -193,7 +216,8 @@ public interface UserDao {
 	 * @param outputTime
 	 * @return
 	 */
-	@Select("SELECT products.*,products_output.`output`,products_output.`output_time` FROM products INNER JOIN products_output ON products.`id` = products_output.`p_id` AND products_output.`c_id` = #{cId} AND output_time = #{outputTime}")
+	//@Select("SELECT products.*,products_output.`output`,products_output.`output_time` FROM products INNER JOIN products_output ON products.`id` = products_output.`p_id` AND products_output.`c_id` = #{cId} AND output_time = #{outputTime}")
+	@Select("SELECT products.*,products_output.`output`,products_output.`output_time`,products_class_second.`name` AS 'second',products_class_first.`name` AS 'first' FROM products INNER JOIN products_class_second ON products.`father` = products_class_second.`id` INNER JOIN products_class_first ON products_class_second.`father` = products_class_first.`id` INNER JOIN products_output ON products.`id` = products_output.`p_id` AND products_output.`c_id` = #{cId} AND output_time = #{outputTime}")
 	List<Product> getProductsOutput(Integer cId,String outputTime);
 
 	/**
@@ -328,4 +352,45 @@ public interface UserDao {
 	 */
 	@Select("SELECT output_time FROM `products_output` WHERE `c_id` = #{c_id} GROUP BY `output_time` ORDER BY products_output.`output_time` DESC")
 	List<String> getProductsOutputByCid(Integer c_id);
+
+	/**
+	 * 根据公司id获取设备保养月份用于回显 ， 看看那个月份没有提交
+	 * @param c_id
+	 * @return
+	 */
+	@Select("SELECT maintain_time FROM equipment_maintenance WHERE c_id = #{c_id} AND state = 1 GROUP BY maintain_time")
+	List<String> getMaintainTimeByCid(Integer c_id);
+
+	/**
+	 * 根据公司id和设备保养日期查询保养记录表 -- src
+	 * @param c_id
+	 * @param maintain_time
+	 * @return
+	 */
+	@Select("SELECT * FROM equipment_maintenance WHERE c_id = #{c_id} AND maintain_time = #{maintain_time} AND `state` = 1")
+	List<EquipmentMaintenance> getEquipmentMaintenance(Integer c_id,String maintain_time);
+
+	/**
+	 * 新增设备保养记录表
+	 * @param c_id
+	 * @param maintain_time
+	 * @param src
+	 */
+	@Insert("INSERT INTO equipment_maintenance (`c_id`,`maintain_time`,`src`) VALUE (#{c_id},#{maintain_time},#{src})")
+	void saveEquipmentMaintenance(Integer c_id,String maintain_time,String src);
+
+	/**
+	 * 更新设备保养表
+	 * @param src
+	 * @param id
+	 */
+	@Update("UPDATE equipment_maintenance SET `src` = #{src},`state` = 1 WHERE `id` = #{id}")
+	void updateEquipmentMaintenanceById(String src,Integer id);
+
+	/**
+	 * 根据id删除设备保养记录
+	 * @param id
+	 */
+	@Update("UPDATE equipment_maintenance SET `state` = 0 WHERE `id` = #{id}")
+	void deleteEquipmentMaintenanceById(Integer id);
 }

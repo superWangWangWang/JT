@@ -28,7 +28,7 @@
 
                         <div class="layui-input-inline layui-show-xs-block">
                             <select name="material" lay-verify="required" lay-search="" lay-filter="material">
-                                <option value="">下拉选择或输入物料</option>
+                                <option value="">输入关键字定位</option>
                                 <#list materials_list as ml>
                                 <option value="${ml.name}">${ml.name}</option>
                                 </#list>
@@ -78,7 +78,7 @@
 
                         </div>
 
-            <table lay-filter="demo"  class="layui-table">
+            <table   class="layui-table">
                 <thead>
                 <tr>
                     <th lay-data="{field:'id', width:150}">物料名</th>
@@ -94,7 +94,7 @@
                         <td>${mr.name}</td>
                         <td>${mr.unitCn}</td>
                         <td>
-                            <input placeholder="该月的用量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used)!''}" >
+                            <input placeholder="该月的用量，不输入则为0" onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used?c)!''}" >
                         </td>
                         <td width="20px">
                             <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除</button></div>
@@ -104,10 +104,6 @@
                 </tbody>
 
             </table>
-
-
-
-
 
                     </form>
                     <div align="center"><button type="button" class="layui-btn layui-btn-normal" onclick="save()">提交</button></div>

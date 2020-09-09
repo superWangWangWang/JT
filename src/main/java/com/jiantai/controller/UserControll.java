@@ -34,6 +34,53 @@ public class UserControll {
 
     @Autowired
     private CommonServiceImpl commonService;
+
+    /**
+     * 修改密码页面
+     * @return
+     */
+    @RequestMapping("toChangePassword")
+    public String toChangePassword(){
+        return "user/change-password";
+    }
+
+    /**
+     * 修改密码
+     * @return
+     */
+    @RequestMapping("changePassword")
+    @ResponseBody
+    public ResultVO changePassword(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        User user = (User)request.getSession().getAttribute("user");
+
+        resultVO.setCode(0);
+        String oldPwd = request.getParameter("old");
+        String newPwd = request.getParameter("new");
+        String reNewPwd = request.getParameter("reNew");
+        if (!newPwd.equals(reNewPwd)){
+            resultVO.setMsg("两次新密码不一致");
+            return resultVO;
+        }
+        //查询数据库
+        List<User> list = userService.getUserById(user.getId());
+        String password = list.get(0).getPassword();
+        if (!password.equals(oldPwd)){
+            resultVO.setMsg("旧密码错误");
+            return resultVO;
+        }
+        //修改
+        userService.changePwd(newPwd,user.getId());
+        resultVO.setCode(1);
+        resultVO.setMsg("修改成功");
+        user.setPassword(newPwd);
+        request.getSession().setAttribute("user",user);
+        //添加日志
+        String content = "修改密码";
+        commonService.addLog(new JTLog(user.getId(),content));
+        return resultVO;
+    }
+
     /**
      * 用户统一登录方法
      * @param user
@@ -62,7 +109,7 @@ public class UserControll {
                     System.out.println(u);
                     if (u.getType() == 0){
                         vo.setCode(1);
-                    }else if (u.getType() == 1){
+                    }else {
                         vo.setCode(2);
                     }
                     vo.setMsg("登录成功");
@@ -256,7 +303,7 @@ public class UserControll {
     }
 
     /**
-     * 上传文件接口，type: 1=平面图 2=产品目录 3=MSDS 4=物料凭证
+     * 上传文件接口，type: 1=平面图 2=产品目录 3=MSDS 4=物料凭证 5=保养记录表
      * 文件保存在 D://upload/declare/ 下
      * @param type
      * @param file
@@ -283,10 +330,6 @@ public class UserControll {
         LocalDateTime last = now.minusMonths(1);
         String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 2020-08
         int day = now.getDayOfMonth();//获取 日
-
-
-
-
         if (file.isEmpty()) {
             resultVO.setMsg("上传失败，文件为空");
         }else {
@@ -299,8 +342,8 @@ public class UserControll {
                 field = "plane_figure";
                 filePath = filePath + "plane_figure/";
             }else if (type == 2){//产品目录
-                field = "product_list";
-                filePath = filePath + "product_list/";
+                field = "production_equipment_list";
+                filePath = filePath + "production_equipment_list/";
             }else if (type == 3){//msds
                 materials = request.getParameter("name");
                 if (StringUtils.isBlank(materials)){
@@ -336,8 +379,28 @@ public class UserControll {
                 }
                 //field = "materiels_evidence";这是数据库字段 不需要的
                 filePath = filePath + "materiels_evidence/";
-
-
+            }else if (type == 5){//设备运行及保养记录
+                if (StringUtils.isNotBlank(dateTime)){//判断有没有传来时间
+                    if (!MyUtils.isValidDate(dateTime)){//判断是不是时间格式
+                        resultVO.setMsg("上传失败：时间格式不对！");
+                        return resultVO;
+                    }
+                }else {
+                    resultVO.setMsg("上传失败：请选择时间日期");
+                    return resultVO;
+                }
+                System.out.println("进来了");
+                if (day <= 20 && dateTime.equals(last_month)){//传来的时间是上一个月的
+                    //当月20日前，可以修改/提交上一个月的
+                }else{
+                    //当月20号后，不能上传
+                    if (user.getModify() == 0) {
+                        resultVO.setMsg("上传失败！原因：只能于本月21号前上传上一个月的数据【联系建泰办公室取得权限即可】");
+                        return resultVO;
+                    }
+                }
+                //field = "materiels_evidence";这是数据库字段 不需要的
+                filePath = filePath + "equipment_maintenance/";
             }else {
                 resultVO.setMsg("上传失败：请勿进行非法操作！");
                 return resultVO;
@@ -348,9 +411,14 @@ public class UserControll {
                 if (type == 3){
                     path =  path + materials + "/";
                 }else if (type == 4){
-                    path =  path + dateTime + "/";
+                    String[] d = dateTime.split("-");//2020-01  拆分年月保存
+                    path =  path + d[0] +"/" + d[1] + "/";
+                    //path =  path + dateTime + "/";
+                } else if (type == 5){
+                    String[] d = dateTime.split("-");
+                    path =  path + d[0] +"/" + d[1] + "/";
+                    //path =  path + dateTime + "/";
                 }
-
                 path = path + fileName;
             }
             System.out.println("上传的位置|"+path);
@@ -372,15 +440,18 @@ public class UserControll {
                         commonService.addLog(new JTLog(user.getId(),content));
                         break;
                     case 2:
+                        System.out.println(field);
+                        System.out.println(path);
+                        System.out.println(user.getId());
                         userService.uploadFile(field,path,user.getId());//保存路径到数据库   字段，值，id
-                        user.setProductList(path);
+                        user.setProductionEquipmentList(path);
                         //添加日志
                         content = "上传产品目录";
                         commonService.addLog(new JTLog(user.getId(),content));
                         break;
                     case 3:
                         //先查msds上传过没，有就更新
-                        List<Msds> msdss = userService.getMsdsByCidAndName(user.getId(),materials);
+                        List<Msds> msdss = userService.getMsdsExist(user.getId(),materials);
                         if (msdss.size() > 0){
                             userService.updateMsdsById(path,msdss.get(0).getId());
 
@@ -414,6 +485,24 @@ public class UserControll {
                         }
                         resultVO.setCode(0);
                         break;
+                    case 5:
+                        //查询保养表，如果不存在就直接插入，存在就更新
+                        List<EquipmentMaintenance> list = userService.getEquipmentMaintenance(user.getId(), dateTime);
+                        System.out.println(list);
+                        if (list.size() > 0){
+                            //已经有了，更新
+                            userService.updateEquipmentMaintenanceById(path,list.get(0).getId());
+                            //添加日志
+                            content = "重传保养记录 -> " + dateTime;
+                            commonService.addLog(new JTLog(user.getId(),content));
+                        }else {
+                            //还没有，直接插入
+                            userService.saveEquipmentMaintenance(user.getId(),dateTime,path);
+                            //添加日志
+                            content = "上传保养记录 -> " + dateTime;
+                            commonService.addLog(new JTLog(user.getId(),content));
+                        }
+                        break;
                 }
                 request.getSession().setAttribute("user",user);//因为其他地方需要用到session，这里就更新一下session
             } catch (IOException e) {
@@ -424,6 +513,13 @@ public class UserControll {
         }
         return resultVO;
     }
+
+    /**
+     * 下载 1=平面图，2=产品名录，3=msds，4=下载物料凭证
+     * @param type
+     * @param response
+     * @param request
+     */
     @RequestMapping("download")
     public void download(Integer type, HttpServletResponse response,HttpServletRequest request){
         //查询数据库目前的最新文件路径
@@ -431,13 +527,13 @@ public class UserControll {
         List<User> users = userService.getUserById(user.getId());
         String path = "";
        switch (type){
-           case 1:
+           case 1://平面图
                 path = users.get(0).getPlaneFigure();
                break;
-           case 2:
-               path = users.get(0).getProductList();
+           case 2://产品名录
+               path = users.get(0).getProductionEquipmentList();
                break;
-           case 3:
+           case 3://msds
                String name = request.getParameter("name");
                if (StringUtils.isNotBlank(name)){
                    List<Msds> list = userService.getMsdsByCidAndName(user.getId(), name);
@@ -456,6 +552,18 @@ public class UserControll {
                   }
               }
               break;
+           case 5:
+               //设备运行及保养记录
+               String time = request.getParameter("time");//2020-07
+               if (StringUtils.isNotBlank(time)){
+                   //去查询是不是真的存在
+                   List<EquipmentMaintenance> list = userService.getEquipmentMaintenance(users.get(0).getId(), time);
+                   if (list.size() > 0){
+                       path = list.get(0).getSrc();
+
+                   }
+               }
+               break;
        }
 
        if (path != ""){
@@ -463,6 +571,12 @@ public class UserControll {
        }
 
     }
+
+    /**
+     * 跳转到msds页面
+     * @param id
+     * @return
+     */
     @RequestMapping("toMsds")
     public ModelAndView toMsds(Integer id){
         ModelAndView mv = new ModelAndView();
@@ -476,6 +590,48 @@ public class UserControll {
         mv.addObject("msds_list",list);
         return mv;
     }
+
+    /**
+     * 删除msds
+     * @param request
+     * @return
+     */
+    @RequestMapping("deleteMSDS")
+    @ResponseBody
+    public ResultVO deleteMSDS(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        resultVO.setMsg("删除失败，请传id");
+        User user = (User)request.getSession().getAttribute("user");
+        String id = request.getParameter("id");
+        System.out.println("======================================="+id);
+        if (StringUtils.isNotBlank(id)){
+            //传id删除-- state = 0
+            List<Msds> msdsList = userService.getMsdsByCid(user.getId());
+            for (int i = 0;i<msdsList.size();i++){
+                if ((msdsList.get(i).getId()+"").equals(id)){
+                    userService.deleteMsdsById(id,user.getId());
+                    resultVO.setMsg("删除成功");
+                    resultVO.setCode(1);
+                    //记录日志
+                    String content = "删除MSDS -> " + msdsList.get(i).getName();
+                    commonService.addLog(new JTLog(user.getId(),content));
+                    return resultVO;
+                }
+            }
+                resultVO.setMsg("删除失败，不存在该id");
+                resultVO.setCode(1);
+
+        }
+
+        return resultVO;
+    }
+
+    /**
+     * 物料数据页面  回显
+     * @param request
+     * @return
+     */
     @RequestMapping("materielData")
     public ModelAndView materielData(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -499,6 +655,7 @@ public class UserControll {
             }
             //根据时间查询该月物料用量，用于数据回显
             List<Material> list = userService.getMaterialsUsedByUsedTime(id, dateTime);
+            System.out.println(list+"=================================");
             if (list.size()>0){
 
                 for (Material m1 : materials_remember){
@@ -563,6 +720,13 @@ public class UserControll {
 
         return "redirect:materielData";
     }
+
+    /**
+     * 删除物料记忆
+     * @param name
+     * @param request
+     * @return
+     */
     @RequestMapping("deleteMaterialRemember")
     @ResponseBody
     public ResultVO deleteMaterialRemember(String name,HttpServletRequest request){
@@ -577,6 +741,9 @@ public class UserControll {
                 userService.changeMaterialsRememberStateByCidAndName(0,id,name);
                 vo.setCode(1);
                 vo.setMsg("删除成功");
+                //添加日志
+                String content = "删除物料 -> " + name;
+                commonService.addLog(new JTLog(user.getId(),content));
             }else {
                 //查不到，即虽然传来的物料名正确，但是表中没有，没有的不会回显，但是却传来了，非法操作！
                 vo.setMsg("删除失败！请勿进行非法操作！");
@@ -587,6 +754,12 @@ public class UserControll {
         }
         return vo;
     }
+
+    /**
+     * 保存物料使用情况
+     * @param request
+     * @return
+     */
     @RequestMapping("saveMaterielUsed")
     @ResponseBody
     public ResultVO saveMaterielUsed(HttpServletRequest request){
@@ -647,6 +820,9 @@ public class UserControll {
                     userService.updateMaterialsUsed(v,id,k,finalUsedTime);
                     vo.setCode(1);
                     vo.setMsg(finalUsedTime + "数据" + "更新成功");
+                    //添加日志
+                    String content = "更新物料使用数据 -> " + finalUsedTime + " [" + k + "：" + list.get(0).getUsed() + "->" + v + "]";//更新物料使用数据 -> 2020-04 [干膜:20 -> ]
+                    commonService.addLog(new JTLog(user.getId(),content));
                 }else{
                     //当月20号后，不能修改
                     if (user.getModify() == 0) {
@@ -656,6 +832,9 @@ public class UserControll {
                         userService.updateMaterialsUsed(v,id,k,finalUsedTime);
                         vo.setCode(1);
                         vo.setMsg(finalUsedTime + "数据" + "更新成功");
+                        //添加日志
+                        String content = "更新物料使用数据 -> " + finalUsedTime + " [" + k + "：" + list.get(0).getUsed() + "->" + v + "]";//更新物料使用数据 -> 2020-04 [干膜:20 -> ]
+                        commonService.addLog(new JTLog(user.getId(),content));
                     }
                 }
 
@@ -666,6 +845,9 @@ public class UserControll {
                     userService.saveMaterialsUsed(id,k,v,finalUsedTime);
                     vo.setCode(1);
                     vo.setMsg(finalUsedTime + "数据" + "提交成功");
+                    //添加日志
+                    String content = "提交物料使用数据 -> " + finalUsedTime + " [" + k + "：" + v + "]";//更新物料使用数据 -> 2020-04 [干膜:20 -> ]
+                    commonService.addLog(new JTLog(user.getId(),content));
                 }else{
                     //当月20号后，不能提交
                     if (user.getModify() == 0) {
@@ -675,6 +857,9 @@ public class UserControll {
                         userService.saveMaterialsUsed(id,k,v,finalUsedTime);
                         vo.setCode(1);
                         vo.setMsg(finalUsedTime + "数据" + "提交成功");
+                        //添加日志
+                        String content = "提交物料使用数据 -> " + finalUsedTime + " [" + k + "：" + v + "]";//更新物料使用数据 -> 2020-04 [干膜:20 -> ]
+                        commonService.addLog(new JTLog(user.getId(),content));
                     }
                 }
 
@@ -686,6 +871,12 @@ public class UserControll {
         }
         return vo;
     }
+
+    /**
+     * 产品数据页面 回显
+     * @param request
+     * @return
+     */
     @RequestMapping("productData")
     public ModelAndView productData(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -694,6 +885,9 @@ public class UserControll {
         Integer id = user.getId();
         //查询生产 产品种类表
         List<Product> productsList = userService.getProductsList();
+        productsList.forEach(l->{
+            l.setName(l.getFirst() + " -> " + l.getSecond() + " -> " + l.getName());
+        });
         mv.addObject("products",productsList);
         String dateTime = request.getParameter("dateTime");
         if (StringUtils.isNotBlank(dateTime)){
@@ -733,6 +927,12 @@ public class UserControll {
 
         return mv;
     }
+
+    /**
+     * 保存产品产量
+     * @param request
+     * @return
+     */
     @RequestMapping("saveProductOutput")
     @ResponseBody
     public ResultVO saveProductOutput(HttpServletRequest request){
@@ -766,13 +966,18 @@ public class UserControll {
         String finalDateTime = dateTime;
         List<Product> productsOutput = userService.getProductsOutput(id, finalDateTime);
         if (productsOutput.size() == 0){
+            String finalDateTime1 = dateTime;
             map.forEach((k, v)->{
                 userService.saveProductsOutput(id,k,v,finalDateTime);
-                vo.setCode(1);
-                vo.setMsg("保存成功");
             });
+            vo.setCode(1);
+            vo.setMsg("保存成功");
+            //添加日志
+            String content = "提交产品产量 -> " + finalDateTime1;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+            commonService.addLog(new JTLog(user.getId(),content));
         }else {
             //该月有申报，更新
+            String finalDateTime2 = dateTime;
             map.forEach((k, v)->{
                 //查一下，没有该产品就插入，有就更新 -- 因为后面新增产品的话，新增的没法赋值
                 List<Product> productsOutputByPid = userService.getProductsOutputByPid(id, finalDateTime, k);
@@ -782,13 +987,21 @@ public class UserControll {
                     //插入
                     userService.saveProductsOutput(id,k,v,finalDateTime);
                 }
-                vo.setCode(1);
-                vo.setMsg("更新成功");
-
             });
+            vo.setCode(1);
+            vo.setMsg("更新成功");
+            //添加日志
+            String content = "更新产品产量 -> " + finalDateTime2;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+            commonService.addLog(new JTLog(user.getId(),content));
         }
         return vo;
     }
+
+    /**
+     * 设备列表页面
+     * @param request
+     * @return
+     */
     @RequestMapping("equipmentList")
     public ModelAndView equipmentList(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -817,6 +1030,11 @@ public class UserControll {
         return mv;
     }
 
+    /**
+     * 跳转到具体设备种类的页面
+     * @param request
+     * @return
+     */
     @RequestMapping("equipment")
     public ModelAndView equipment(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -840,6 +1058,13 @@ public class UserControll {
         }
         return mv;
     }
+
+    /**
+     * 添加生产设备
+     * @param request
+     * @param equipment
+     * @return
+     */
     @RequestMapping("addEquipment")
     @ResponseBody
     public ResultVO addEquipment(HttpServletRequest request,Equipment equipment){
@@ -856,13 +1081,19 @@ public class UserControll {
                 userService.addEquipmentAir(equipment);
                 resultVO.setCode(1);
                 resultVO.setMsg("空压机添加成功！");
+                //添加日志
+                String content1 = "添加生产设备 -> 空压机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                commonService.addLog(new JTLog(user.getId(),content1));
                 break;
             case "2":
                 equipment.setcId(cid);
                 equipment.setType(2);
                 userService.addEquipmentWind(equipment);
                 resultVO.setCode(1);
-                resultVO.setMsg("空压机添加成功！");
+                resultVO.setMsg("风机添加成功！");
+                //添加日志
+                String content2 = "添加生产设备 -> 风机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                commonService.addLog(new JTLog(user.getId(),content2));
                 break;
             case "3":
                 equipment.setcId(cid);
@@ -870,6 +1101,9 @@ public class UserControll {
                 userService.addEquipmentElectric(equipment);
                 resultVO.setCode(1);
                 resultVO.setMsg("电机添加成功！");
+                //添加日志
+                String content3 = "添加生产设备 -> 电机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                commonService.addLog(new JTLog(user.getId(),content3));
                 break;
             default:
                 resultVO.setMsg("新增错误！暂不支持该设备类型添加");
@@ -878,16 +1112,51 @@ public class UserControll {
 
         return resultVO;
     }
+
+    /**
+     * 删除生产设备
+     * @param id
+     * @return
+     */
     @RequestMapping("deleteEquipment")
     @ResponseBody
-    public ResultVO deleteEquipment(Integer id){
+    public ResultVO deleteEquipment(Integer id,HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
         ResultVO resultVO = new ResultVO();
+        List<Equipment> equipments = userService.getEquipmentById(id);
+        if (equipments.size() > 0){
+            userService.deleteEquipmentById(id);
+            resultVO.setCode(1);
+            resultVO.setMsg("删除成功");
+            //添加日志
 
-        userService.deleteEquipmentById(id);
-        resultVO.setCode(1);
-        resultVO.setMsg("删除成功");
+            switch (equipments.get(0).getType()){
+                case 1:
+                    String content1 = "删除生产设备 -> 空压机" ;
+                    commonService.addLog(new JTLog(user.getId(),content1));
+                    break;
+                case 2:
+                    String content2 = "删除生产设备 -> 风机" ;
+                    commonService.addLog(new JTLog(user.getId(),content2));
+                    break;
+                case 3:
+                    String content3 = "删除生产设备 -> 电机" ;
+                    commonService.addLog(new JTLog(user.getId(),content3));
+                    break;
+            }
+
+        }else {
+            resultVO.setCode(0);
+            resultVO.setMsg("删除失败");
+        }
         return resultVO;
     }
+
+    /**
+     * 跳转到对应的设备编辑页面
+     * @param request
+     * @return
+     */
     @RequestMapping("toEquipmentEdit")
     public ModelAndView toEquipmentEdit(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
@@ -910,20 +1179,24 @@ public class UserControll {
                     mv.setViewName("user/machine-electric-edit");
                 }
 
-
             }else {
                 mv.setViewName("error");
             }
-
         }else {
             mv.setViewName("error");
         }
         return mv;
     }
 
+    /**
+     * 修改生产设备参数
+     * @param e
+     * @return
+     */
     @RequestMapping("equipmentEdit")
     @ResponseBody
-    public ResultVO equipmentEdit(Equipment e){
+    public ResultVO equipmentEdit(Equipment e,HttpServletRequest request){
+        User user = (User)request.getSession().getAttribute("user");
         ResultVO resultVO = new ResultVO();
         resultVO.setCode(0);
         List<Equipment> equipmentList = userService.getEquipmentById(e.getId());
@@ -933,11 +1206,107 @@ public class UserControll {
             userService.updateEquipment(e);
             resultVO.setMsg("更新成功");
             resultVO.setCode(1);
+            Integer type = equipmentList.get(0).getType();
+            if (type == 1){
+                String content = "更新生产设备 -> 空压机" ;
+                commonService.addLog(new JTLog(user.getId(),content));
+            }
+            if (type == 2){
+                String content = "更新生产设备 -> 风机" ;
+                commonService.addLog(new JTLog(user.getId(),content));
+            }
+            if (type == 3){
+                String content = "更新生产设备 -> 电机" ;
+                commonService.addLog(new JTLog(user.getId(),content));
+            }
+
         }else {
             //id不存在，返回异常
             //mv.setViewName("error");
             resultVO.setMsg("更新失败，数据不存在");
         }
+
+        return resultVO;
+    }
+
+    /**
+     * 跳转到设备保养及运行记录页面
+     * @param request
+     * @return
+     */
+    @RequestMapping("equipmentMaintenance")
+    public ModelAndView equipmentMaintenance(HttpServletRequest request){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("user/equipment-maintenance");
+        User user = (User)request.getSession().getAttribute("user");
+        Integer id = user.getId();
+        String dateTime = request.getParameter("dateTime");
+
+
+        // 用于回显给用户看自己提交了那几个月的数据
+        List<String> productsOutputTime = userService.getMaintainTimeByCid(id);
+        //System.out.println(materialsUsedTime+"==================");
+        LocalDate now = LocalDate.now();
+        int year = 0;
+        if (StringUtils.isBlank(dateTime)){
+            year = now.getYear();
+        }else {
+            if (dateTime.length()==4){
+                year = Integer.parseInt(dateTime);
+            }else {
+                mv.setViewName("error");
+            }
+
+
+        }
+        Map map = new LinkedHashMap();//{"2020-01":"you","2020-02":"you"}
+        for (int i = 1;i <= 12;i++){
+            String msg = "未提交";
+            for (int j = 0;j<productsOutputTime.size();j++){
+                if ((year + "-" + (i < 10 ? "0" + i : "" + i)).equals(productsOutputTime.get(j))){
+                    msg = "已提交";
+                    break;
+                }
+            }
+            map.put(year + "-" + (i < 10 ? "0" + i : "" + i),msg);
+        }
+        mv.addObject("maintain_time",map);
+        mv.addObject("year",year);
+        return mv;
+    }
+
+    /**
+     * 删除设备保养记录
+     * @param request
+     * @return
+     */
+    @RequestMapping("deleteEquipmentMaintenance")
+    @ResponseBody
+    public ResultVO deleteEquipmentMaintenance(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        User user = (User)request.getSession().getAttribute("user");
+
+        String dateTime = request.getParameter("dateTime");
+        if (StringUtils.isNotBlank(dateTime)){
+            if (MyUtils.isValidDate(dateTime)) {
+                //去查，如果有就设置state = 0，没有就报错
+                List<EquipmentMaintenance> list = userService.getEquipmentMaintenance(user.getId(), dateTime);
+                if (list.size() > 0){
+                    userService.deleteEquipmentMaintenanceById(list.get(0).getId());
+                    resultVO.setMsg("删除成功");
+                    String content = "删除设备保养记录 -> " + dateTime;
+                    commonService.addLog(new JTLog(user.getId(),content));
+                }else {
+                    resultVO.setMsg("删除失败,不存在");
+                }
+            }else {
+                resultVO.setMsg("参数时间格式不对");
+            }
+        }else {
+            resultVO.setMsg("删除失败");
+        }
+
 
         return resultVO;
     }

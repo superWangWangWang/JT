@@ -73,7 +73,7 @@
 	 * @param  {Boolean} full  [全屏]
 	 * @return {[type]}        [description]
 	 */
-	Xadmin.prototype.open = function (title,url,w,h,full,maxmin) {
+	Xadmin.prototype.open = function (title,url,w,h,full,maxmin,reload) {
 		if (title == null || title == '') {
 	        var title=false;
 	    };
@@ -91,6 +91,11 @@
         }else {
             maxmin = false;
         };
+        if (reload == false || reload == null) {
+            reload = false;
+        }else {
+            reload = true;
+        };
 	    var index = layer.open({
 	        type: 2,
 	        area: [w+'px', h +'px'],
@@ -99,8 +104,11 @@
 	        shadeClose: true,
 	        shade:0.4,
 	        title: title,
-	        content: url
-	    });
+	        content: url,
+            end:function () {
+	            location.reload()
+            }
+        });
 	    if(full){
 	       layer.full(index); 
 	    }

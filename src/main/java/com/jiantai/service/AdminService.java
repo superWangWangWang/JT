@@ -8,14 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public interface AdminService {
-    List<CompanyInfo> getAllCompanyInfo();
-    List<CompanyInfo> getCompanyInfoById(String id);
-    void updateCompanyEnableById(CompanyInfo companyInfo);
+    List<User> getAllCompanyInfo();
+    List<User> getCompanyInfoById(String id);
+    void updateCompanyEnableById(User user);
     void updateCompanyInfoById(CompanyInfo companyInfo);
     List getCompanyInfoByName(String name);
-    void updateCompanyRightById(CompanyInfo companyInfo);
-    List<JTLog> getLogByCid(Integer cid);
-    void addLog(JTLog log);
+    void updateCompanyModifyById(User user);
+    //List<JTLog> getLogByCid(Integer cid);
+    //void addLog(JTLog log);
     List<JTDeclareRecord> searchDeclareRecords(String date, String company, String material);
     List<Material> findMaterials();
 
@@ -35,4 +35,5 @@ public interface AdminService {
     List<CompanyInfo> getCompanyByUserName(String name);
     void addCompany(String name,String pwd);
     List<JTLog> getAllLog();
+    List<User> getAllCompanyInfoExcludeSuper();
 }

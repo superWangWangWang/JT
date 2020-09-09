@@ -79,6 +79,7 @@
                                     </div>
                                 </div>
                                 <button type="button" class="layui-btn layui-btn-normal" onclick="update()">修改详情</button>
+                                <button type="button" class="layui-btn layui-btn-normal" onclick="change_pwd()">修改密码</button>
                             </div>
 
                         </div>
@@ -94,9 +95,10 @@
                                 <div class="layui-colla-content">
                                     <p style="color: #cc0000;font-weight: bold">1.上传的文件大小不能大于30MB</p>
                                     <p>2.平面图要求上传格式为（zip、rar、7z）</p>
-                                    <p>3.产品名录要求上传格式为（doc、docx、xlsx、xls）</p>
+                                    <p>3.生产设备明录要求上传格式为（doc、docx、xlsx、xls）</p>
                                     <p>4.MSDS上传要求上传格式为（pdf）</p>
-                                    <p>4.佐证上传要求上传格式为（zip、rar、7z）</p>
+                                    <p>4.物料使用佐证上传要求上传格式为（zip、rar、7z）</p>
+                                    <p>5.设备保养及运行记录上传要求上传格式为（xlsx、xls）</p>
                                 </div>
                             </div>
                         </div>
@@ -106,7 +108,7 @@
                             <ul class="layui-row layui-col-space10 layui-this x-admin-carousel x-admin-backlog">
                                 <#if user.planeFigure?? && user.planeFigure != "">
                                     <li class="layui-col-md3 layui-col-xs6">
-                                        <div class="layui-card-header">平面图：已上传</div>
+                                        <div class="layui-card-header">平面图：<span style="color: #1B5E20;font-weight: bold">已上传</span></div>
                                         <div class="layui-card-body">
                                             <button type="button" class="layui-btn" onclick="download(1)" ><i class="layui-icon"></i>下载</button>
                                             <button type="button" class="layui-btn upload_plane_figure" ><i class="layui-icon"></i>重传</button>
@@ -114,7 +116,7 @@
                                     </li>
                                 <#else>
                                     <li class="layui-col-md3 layui-col-xs6">
-                                        <div class="layui-card-header">平面图：待上传</p></div>
+                                        <div class="layui-card-header">平面图：<span style="color: #cc0000;font-weight: bold">待上传</span></p></div>
                                         <div class="layui-card-body">
                                             <button type="button" class="layui-btn upload_plane_figure"><i class="layui-icon"></i>上传</button>
                                         </div>
@@ -122,9 +124,9 @@
                                 </#if>
 
 
-                                <#if user.productList?? && user.productList != "">
+                                <#if user.productionEquipmentList?? && user.productionEquipmentList != "">
                                     <li class="layui-col-md3 layui-col-xs6">
-                                        <div class="layui-card-header">生产设备明录：已上传</div>
+                                        <div class="layui-card-header">生产设备明录：<span style="color: #1B5E20;font-weight: bold">已上传</span></div>
                                         <div class="layui-card-body">
                                             <button type="button" class="layui-btn" onclick="download(2)" ><i class="layui-icon"></i>下载</button>
                                             <button type="button" class="layui-btn upload_product_list" ><i class="layui-icon"></i>重传</button>
@@ -132,7 +134,7 @@
                                     </li>
                                     <#else>
                                     <li class="layui-col-md3 layui-col-xs6">
-                                        <div class="layui-card-header">生产设备明录：待上传</div>
+                                        <div class="layui-card-header">生产设备明录：<span style="color: #cc0000;font-weight: bold">待上传</span></div>
                                         <div class="layui-card-body">
                                             <button type="button" class="layui-btn upload_product_list"><i class="layui-icon"></i>上传</button>
                                         </div>
@@ -140,7 +142,7 @@
                                 </#if>
 
                                 <li class="layui-col-md3 layui-col-xs6">
-                                    <div class="layui-card-header">MSDS：已上传${msds_number}份</div>
+                                    <div class="layui-card-header">MSDS：<span style="color: indigo;font-weight: bold">已上传${msds_number}份</span></div>
                                     <div class="layui-card-body">
                                         <button type="button" class="layui-btn" onclick="msds()"><i class="layui-icon"></i>查看</button>
                                     </div>
@@ -163,7 +165,12 @@
                                 <button type="button" class="layui-btn" onclick="equipment()" ><i class="layui-icon"></i>查看</button>
                             </div>
                         </li>
-
+                        <li class="layui-col-md3 layui-col-xs6">
+                            <div class="layui-card-header">设备运行及保养记录</div>
+                            <div class="layui-card-body">
+                                <button type="button" class="layui-btn" onclick="equipmentMaintenance()" ><i class="layui-icon"></i>查看</button>
+                            </div>
+                        </li>
 
 
                             </ul>
@@ -189,8 +196,9 @@
             , accept: 'file' //普通文件
             , exts: 'zip|rar|7z' //只允许上传压缩文件
             , done: function (res) {
-                layer.msg(res.msg);
-                location.href = "welcome";
+                //layer.msg(res.msg);
+                location.reload();
+                //location.href = "welcome";
             }
         });
     });
@@ -203,8 +211,7 @@
             , accept: 'file' //普通文件
             , exts: 'doc|docx|xlsx|xls' //只允许word和excel
             , done: function (res) {
-                layer.msg(res.msg);
-                location.href = "welcome";
+                location.reload();
             }
         });
     });
@@ -218,17 +225,25 @@
             location.href = "download?type="+type;
     }
     function msds() {
-        xadmin.open("【注：如果没找到对应的物料，请联系建泰办公室电话：5162128】", "toMsds?id="+${user.id}, 500, 750)
+        xadmin.open("【注：如果没找到对应的物料，请联系建泰办公室电话：5162128】", "toMsds?id="+${user.id}, 600, 750,false,true)
     }
     function upload_materiel_data() {
         xadmin.open("建泰企业物料使用数据填报", "materielData", 800, 750)
     }
     function upload_product_data() {
-        xadmin.open("建泰企业产品生产数据填报", "productData", 800, 750)
+        xadmin.open("建泰企业产品生产数据填报", "productData",'','',true,false)
     }
     function equipment() {
         //xadmin.add_tab("建泰企业生产设备参数填报", "equipment",true)
         xadmin.open("建泰企业生产设备参数填报", "equipmentList",'','',true,false)
     }
+    function change_pwd() {
+        xadmin.open("修改密码", "toChangePassword",500,300,false,false)
+    }
+    function equipmentMaintenance() {
+        xadmin.open("设备运行及保养记录", "equipmentMaintenance",600,780,false,false)
+    }
 </script>
+
+
 </html>

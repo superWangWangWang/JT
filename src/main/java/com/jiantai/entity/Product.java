@@ -12,6 +12,9 @@ public class Product {
     private Double output;
     private String outputTime;
 
+    private String second;
+    private String first;
+
     @Override
     public String toString() {
         return "Product{" +
@@ -21,23 +24,9 @@ public class Product {
                 ", unitCn='" + unitCn + '\'' +
                 ", output=" + output +
                 ", outputTime='" + outputTime + '\'' +
+                ", second='" + second + '\'' +
+                ", first='" + first + '\'' +
                 '}';
-    }
-
-    public Double getOutput() {
-        return output;
-    }
-
-    public void setOutput(Double output) {
-        this.output = output;
-    }
-
-    public String getOutputTime() {
-        return outputTime;
-    }
-
-    public void setOutputTime(String outputTime) {
-        this.outputTime = outputTime;
     }
 
     public Integer getId() {
@@ -70,5 +59,37 @@ public class Product {
 
     public void setUnitCn(String unitCn) {
         this.unitCn = unitCn;
+    }
+
+    public Double getOutput() {
+        return output;
+    }
+
+    public void setOutput(Double output) {
+        this.output = output;
+    }
+
+    public String getOutputTime() {
+        return outputTime;
+    }
+
+    public void setOutputTime(String outputTime) {
+        this.outputTime = outputTime;
+    }
+
+    public String getSecond() {
+        return second;
+    }
+
+    public void setSecond(String second) {
+        this.second = second;
+    }
+
+    public String getFirst() {
+        return first;
+    }
+
+    public void setFirst(String first) {
+        this.first = first;
     }
 }

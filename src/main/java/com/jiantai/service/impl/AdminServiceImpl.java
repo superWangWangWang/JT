@@ -40,15 +40,19 @@ public class AdminServiceImpl implements AdminService {
     /**
      * 根据公司id更新公司 是否有效
      *
-     * @param companyInfo
+     * @param user
      */
-    public void updateCompanyEnableById(CompanyInfo companyInfo) {
-        adminDao.updateCompanyEnableById(companyInfo);
+    public void updateCompanyEnableById(User user) {
+        adminDao.updateCompanyEnableById(user);
     }
 
+    /**
+     * 更新公司的跨月修改权限
+     * @param user
+     */
     @Override
-    public void updateCompanyRightById(CompanyInfo companyInfo) {
-        adminDao.updateCompanyRightById(companyInfo);
+    public void updateCompanyModifyById(User user) {
+        adminDao.updateCompanyModifyById(user);
     }
 
     /**
@@ -58,9 +62,8 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
 
-    public List<CompanyInfo> getCompanyInfoById(String id) {
-        List companyList = adminDao.getCompanyInfoById(id);
-        return companyList;
+    public List<User> getCompanyInfoById(String id) {
+        return adminDao.getCompanyInfoById(id);
     }
 
     /**
@@ -68,31 +71,38 @@ public class AdminServiceImpl implements AdminService {
      *
      * @return
      */
-    public List getAllCompanyInfo() {
-        List companyList = adminDao.getAllCompanyInfo();
-        return companyList;
+    public List<User> getAllCompanyInfo() {
+        return adminDao.getAllCompanyInfo();
     }
 
     /**
-     * 根据公司id获取日志
-     *
-     * @param cid
+     * 询所有的公司信息除了超级管理员 -- state不为2
      * @return
      */
     @Override
-    public List<JTLog> getLogByCid(Integer cid) {
-        return adminDao.getLogByCid(cid);
+    public List<User> getAllCompanyInfoExcludeSuper() {
+        return adminDao.getAllCompanyInfoExcludeSuper();
     }
+//    /**
+//     * 根据公司id获取日志
+//     *
+//     * @param cid
+//     * @return
+//     */
+//    @Override
+//    public List<JTLog> getLogByCid(Integer cid) {
+//        return adminDao.getLogByCid(cid);
+//    }
 
-    /**
-     * 添加日志
-     *
-     * @param log
-     */
-    @Override
-    public void addLog(JTLog log) {
-        adminDao.addLog(log);
-    }
+//    /**
+//     * 添加日志
+//     *
+//     * @param log
+//     */
+//    @Override
+//    public void addLog(JTLog log) {
+//        adminDao.addLog(log);
+//    }
 
     /**
      * 搜索物料记录

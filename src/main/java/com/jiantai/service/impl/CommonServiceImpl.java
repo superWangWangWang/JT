@@ -24,7 +24,9 @@ public class CommonServiceImpl implements CommonService {
     public void addLog(JTLog log) {
         List<User> users = userDao.getUserById(log.getCid());
         User user = users.get(0);
-        if (user.getType() != 2){
+        if (user.getType() == 2){//超管type = 2 ，普通管理员 1 ，公司 0
+            System.out.println("================================超级管理员日志不记录入数据库========================================");
+        }else {
             commonDao.addLog(log);
         }
     }

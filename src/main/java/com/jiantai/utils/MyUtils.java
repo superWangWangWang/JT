@@ -5,12 +5,17 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 通用工具类
  */
 public class MyUtils {
-    // 创建文件上传路径
+    /**
+     *  创建文件上传路径
+     * @param path
+     */
     public static void mkdir(String path) {
         File fd = null;
         try {
@@ -25,6 +30,12 @@ public class MyUtils {
         }
     }
 
+    /**
+     * 下载本地文件
+     * @param response
+     * @param filePath
+     * @param encode
+     */
     public static void downloadFile(HttpServletResponse response, String filePath, String encode) {
         response.setContentType("text/html;charset=" + encode);
         try {
@@ -49,7 +60,12 @@ public class MyUtils {
             System.out.println(e);
         }
     }
-    //校验8位字符串是否为正确的日期格式
+
+    /**
+     * 校验8位字符串是否为正确的日期格式
+     * @param str
+     * @return
+     */
     public static boolean isValidDate(String str) {
         boolean result = true;
         //判断字符串长度是否为8位
@@ -72,5 +88,31 @@ public class MyUtils {
         return result;
     }
 
+    /**
+     * 字符串匹配将大写字符改为小写加下划线
+     * @param param
+     * @return
+     */
+    public static String upperCharToUnderLine(String param) {
+        Pattern  p= Pattern.compile("[A-Z]");
+        if(param==null ||param.equals("")){
+            return "";
+        }
+        StringBuilder builder=new StringBuilder(param);
+        Matcher mc=p.matcher(param);
+        int i=0;
+        while (mc.find()) {
+            System.out.println(builder.toString());
+            System.out.println("mc.start():" + mc.start() + ", i: " + i);
+            System.out.println("mc.end():" + mc.start() + ", i: " + i);
+            builder.replace(mc.start()+i, mc.end()+i, "_"+mc.group().toLowerCase());
+            i++;
+        }
+
+        if('_' == builder.charAt(0)){
+            builder.deleteCharAt(0);
+        }
+        return builder.toString();
+    }
 
 }

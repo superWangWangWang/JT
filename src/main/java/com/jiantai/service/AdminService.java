@@ -11,7 +11,7 @@ public interface AdminService {
     List<User> getAllCompanyInfo();
     List<User> getCompanyInfoById(String id);
     void updateCompanyEnableById(User user);
-    void updateCompanyInfoById(CompanyInfo companyInfo);
+    void updateCompanyInfo(String field,String value,String id);
     List getCompanyInfoByName(String name);
     void updateCompanyModifyById(User user);
     //List<JTLog> getLogByCid(Integer cid);

@@ -38,8 +38,8 @@ public interface AdminDao {
     /**
      * 更新前端传来的公司数据
      */
-    @Update("UPDATE `jiantai`.`jt_company_info` SET`id` = #{companyInfo.id},`user` = #{companyInfo.user},`password` = #{companyInfo.password},`企业编号` = #{companyInfo.企业编号},`企业简称` = #{companyInfo.企业简称},`企业全称` = #{companyInfo.企业全称},`法人代表` = #{companyInfo.法人代表},`联系地址` = #{companyInfo.联系地址},`公司固话` = #{companyInfo.公司固话},`公司传真` = #{companyInfo.公司传真},`联系人` = #{companyInfo.联系人},`联系人手机号` = #{companyInfo.联系人手机号},`统一社会信用代码` = #{companyInfo.统一社会信用代码},`企业人数` = #{companyInfo.企业人数},`开业时间` = #{companyInfo.开业时间},`产品类型` = #{companyInfo.产品类型},`园区位置` = #{companyInfo.园区位置},`是否启用` = #{companyInfo.是否启用},`备注` = #{companyInfo.备注},`plan_name` = #{companyInfo.planName},`product_name` = #{companyInfo.productName},`right` = #{companyInfo.right} WHERE `id` = #{companyInfo.id}")
-    void updateCompanyInfoById(@Param("companyInfo") CompanyInfo companyInfo);
+    @Update("UPDATE `user` SET ${field} = #{value} WHERE `id` = #{id}")
+    void updateCompanyInfo(String field,String value,String id);
 
     /**
      * 根据公司简称查询详情

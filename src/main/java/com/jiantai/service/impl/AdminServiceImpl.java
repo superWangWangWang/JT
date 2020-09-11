@@ -32,9 +32,15 @@ public class AdminServiceImpl implements AdminService {
         return list;
     }
 
+    /**
+     * 管理员修改公司的信息
+     * @param field
+     * @param value
+     * @param id
+     */
     @Override
-    public void updateCompanyInfoById(CompanyInfo companyInfo) {
-        adminDao.updateCompanyInfoById(companyInfo);
+    public void updateCompanyInfo(String field, String value, String id) {
+        adminDao.updateCompanyInfo(field,value,id);
     }
 
     /**

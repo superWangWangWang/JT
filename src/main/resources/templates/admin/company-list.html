@@ -70,7 +70,7 @@
             ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             ,cols: [[
                 //{checkbox: true, fixed: true}
-                ,{field:'id', title: 'ID', width:60, sort: true, fixed: true}
+                ,{field:'id', title: 'ID', width:60, sort: true, fixed: true,hide: true}
                 ,{field:'companyShortName', title: '企业简称' ,width:80, edit: 'text' }
                 ,{field:'state', title:'允许登录', width:85, templet: '#enable', unresize: true}
                 ,{field:'modify', title:'跨月修改', width:85, templet: '#change', unresize: true}
@@ -104,7 +104,7 @@
                 layout: ['prev', 'page', 'next', 'skip','count','limit'] //自定义分页布局
                 ,first: '首页' //不显示首页
                 ,last: '尾页' //不显示尾页
-                ,limit:15
+                ,limit: 15
                 ,limits: [15,30,50,100,1000]
             }
             //,page: true
@@ -145,9 +145,9 @@
 </script>
 <script type="text/html" id="dproduct">
 <!--    下载产品名录按钮-->
-    {{#  if(d.productList != null){ }}
+{{#if(d.productionEquipmentList != null && d.productionEquipmentList != ""){ }}
     <a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="down_product">下载</a>
-    {{#  } }}
+{{#  } }}
 </script>
 
 <script type="text/html" id="log">
@@ -187,16 +187,34 @@
         //监听单元格编辑
         table.on('edit(table_filter)',
             function(obj) {
-                $.ajax({
-                    type : "get",
-                    contentType: "json",
-                    url : "updateCompanyInfo",
-                    data : obj.data,
-                    //请求成功
-                    success : function(result) {
-                        //console.log(result);
+                layer.msg('确定修改吗？', {
+                    time: 20000, //20s后自动关闭
+                    btn: ['确认', '取消'],
+                    btn1: function(){
+                        $.ajax({
+                            type : "get",
+                            contentType: "json",
+                            url : "updateUser?" + obj.field + "=" + obj.value + "&id=" + obj.data.id,
+                            //data : obj.data,
+                            //请求成功
+                            success : function(data) {
+                                if (data.code == 1){
+                                    layer.alert(data.msg,{icon: 6})
+                                }else {
+                                    layer.alert(data.msg,{icon: 5})
+                                }
+
+                                //console.log(result);
+                            }
+                        });
+                        layer.closeAll();
+                    },
+                    btn2:function () {
+                        location.reload()
                     }
+
                 });
+
             });
 
         //监听是否启用操作

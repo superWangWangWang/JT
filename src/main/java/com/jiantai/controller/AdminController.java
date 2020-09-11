@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -77,18 +78,30 @@ public class AdminController {
         User user = (User)request.getSession().getAttribute("user");
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
+        String companyName = request.getParameter("companyName");
+
         ResultVO resultVO = new ResultVO();//前端需要的试图模型，view object
         resultVO.setCode(1);//状态码 0=正常 1 = err
 
-        if (StringUtils.isNotBlank(page) || StringUtils.isNotBlank(limit)){
+        if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(limit)){
             Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
 
             List<User> companyList;
-            if (user.getType() == 2){//超级管理员  能查询包括自己
-                companyList= adminServiceImpl.getAllCompanyInfo();
-            }else {//普通管理员 不能查询超级管理员
-                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
+            if (StringUtils.isNotBlank(companyName)){//传来的公司名不为空，即按简称搜索
+                companyList = adminServiceImpl.getCompanyInfoByName(companyName);
+                for (int i = 0;i<companyList.size();i++){
+                    if (companyList.get(i).getType() == 2){
+                        companyList.remove(i);
+                    }
+                }
+            }else {
+                if (user.getType() == 2){//超级管理员  能查询包括自己
+                    companyList= adminServiceImpl.getAllCompanyInfo();
+                }else {//普通管理员 不能查询超级管理员
+                    companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
+                }
             }
+
             resultVO.setCode(0);//状态码 0=正常封装返回
             PageInfo pageInfo = new PageInfo(pa);
             int total = (int) pageInfo.getTotal();
@@ -96,73 +109,9 @@ public class AdminController {
             resultVO.setMsg("ok");//相应信息
             resultVO.setData(companyList);
 
-
         }else {
             resultVO.setMsg("传参不对！");
         }
-
-
-
-//
-//        String companyName = request.getParameter("companyName");
-//        if (companyName != "" && companyName != null) {
-//            //根据公司名查询公司信息
-//            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
-//            List company = adminServiceImpl.getCompanyInfoByName(companyName);
-//            if (company.size() > 0) {
-//                //封装返回
-//                vo.setCode(0);//状态码 0=正常
-//                PageInfo pageInfo = new PageInfo(pa);
-//                int total = (int) pageInfo.getTotal();
-//                vo.setCount(total);//分页条数
-//                vo.setMsg("ok");//相应信息
-//
-//                vo.setData(company);
-//                return JSON.toJSONString(vo);
-//            } else {
-//                vo.setCode(1);//状态码 0=正常 1 = 异常
-//                vo.setCount(0);//分页条数
-//                vo.setMsg("page传值不对");//相应信息
-//
-//                return JSON.toJSONString(vo);
-//            }
-//        }
-//
-//        if (null == page || "".equals(page)) {
-//            //封装返回
-//           /* vo.setCode(1);//状态码 0=正常 1 = 异常
-//            vo.setCount(0);//分页条数
-//            vo.setMsg("page传值不对");//相应信息*/
-//            List<User> companyList;
-//            if (user.getType() == 2){//超级管理员  能查询包括自己
-//                companyList= adminServiceImpl.getAllCompanyInfo();
-//            }else {//普通管理员 不能查询超级管理员
-//                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
-//            }
-//
-//            vo.setCode(0);//状态码 0=正常
-//            vo.setCount(0);// 总数据条数
-//            vo.setMsg("ok");//相应信息
-//            vo.setData(companyList);
-//        } else {//页码传入正常
-//            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
-//            List<User> companyList;
-//
-//            if (user.getType() == 2){//超级管理员  能查询包括自己
-//                companyList= adminServiceImpl.getAllCompanyInfo();
-//            }else {//普通管理员 不能查询超级管理员
-//                companyList = adminServiceImpl.getAllCompanyInfoExcludeSuper();
-//            }
-//
-//
-//            vo.setCode(0);//状态码 0=正常封装返回
-//            PageInfo pageInfo = new PageInfo(pa);
-//            int total = (int) pageInfo.getTotal();
-//            vo.setCount(total);//分页条数
-//            vo.setMsg("ok");//相应信息
-//
-//            vo.setData(companyList);
-//        }
 
         return resultVO;
     }
@@ -239,29 +188,49 @@ public class AdminController {
     }
 
     /**
-     * 根据公司的id 更新公司的信息 不返回
-     *
-     * @param companyInfo
+     * 根据公司的id 更新公司的信息
+     * @param request
      * @return
      */
-    @RequestMapping("updateCompanyInfo")
+    @RequestMapping("updateUser")
     @ResponseBody
-    public String updateCompanyInfoById(CompanyInfo companyInfo) {
-        System.out.println(companyInfo);
-        adminServiceImpl.updateCompanyInfoById(companyInfo);
+    public ResultVO updateUser(HttpServletRequest request) {
+        User user = (User)request.getSession().getAttribute("user");
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        Enumeration<String> parameterNames = request.getParameterNames();
+        String fixed = null;
+        String id = null;
+        String value = null;
+        while (parameterNames.hasMoreElements()){
+            String key = parameterNames.nextElement();
+            String v = request.getParameter(key);
+            if ("id".equals(key)){
+                id = v;
+            }else {
+                fixed = MyUtils.upperCharToUnderLine(key);
+                value = v;
+            }
+        }
+        List<User> list = adminServiceImpl.getCompanyInfoById(id);//查询是否存在该id
+        if (list.size() > 0){
+            try {
+                adminServiceImpl.updateCompanyInfo(fixed,value,id);
+                resultVO.setCode(1);
+                resultVO.setMsg("修改成功");
 
-        VO vo1 = new VO();
-        VO vo2 = new VO();
-        vo1.setMsg("a");
-        vo2.setMsg("b");
-        vo1.setCode(1);
-        vo2.setCode(2);
-        //两个不同的对象，其属性比较多（也许会增加新的），
-        //怎么快速找出两个对象哪几个属性值不同，例如找到 msg不同
+                //添加日志   修改企业信息 -> 【航达】 company_short_name ：啊啊
+                String content = "修改企业信息 -> 【" + list.get(0).getCompanyShortName() + "】 " + fixed + " : " + value;
+                commonService.addLog(new JTLog(user.getId(), content));
+            }catch (Exception e){
+                resultVO.setMsg("修改失败，系统出现错误，联系技术人员处理！");
+            }
 
-        //添加日志
-        commonService.addLog(new JTLog(companyInfo.getId(), " 更改信息</br></br>" + companyInfo.toString()));
-        return "";
+        }else {
+            resultVO.setMsg("修改失败，修改的企业不存在");
+        }
+
+        return resultVO;
     }
 
     /**

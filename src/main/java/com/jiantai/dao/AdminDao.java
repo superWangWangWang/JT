@@ -1,6 +1,10 @@
 package com.jiantai.dao;
 
-import com.jiantai.entity.*;
+import com.jiantai.entity.JTLog;
+import com.jiantai.entity.Material;
+import com.jiantai.entity.MaterialsUsed;
+import com.jiantai.entity.User;
+import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -79,15 +83,32 @@ public interface AdminDao {
     List<Material> getMaterials();
 
     /**
-     * 根据申报时间查询物料表
+     * 根据申报时间,公司id、物料id，查询物料表
      * @param used_time
+     * @param c_id
+     * @param mid
      * @return
      */
-    //@Select("SELECT materials_used.*,`user`.`user_name` AS c_name FROM materials_used INNER JOIN `user` ON materials_used.`c_id` = `user`.`id`  WHERE `used_time` = #{used_time} AND `used` != 0")
-    @Select("SELECT materials_used.*,`user`.`company_short_name` AS c_name FROM materials_used INNER JOIN `user` ON materials_used.`c_id` = `user`.`id`  WHERE `used_time` = #{used_time}")
-    List<MaterialsUsed> getMaterialsUsedByTime(String used_time);
+    //使用UserDaoProvider类的findUserById方法来生成sql
+    @SelectProvider(type = UserDaoProvider.class, method = "getMaterialsUsedByTime")
+    List<MaterialsUsed> getMaterialsUsedByTime(String used_time, String c_id, String mid);
 
-    /**
+    class UserDaoProvider {
+        public String getMaterialsUsedByTime(String used_time,String c_id,String mid) {
+            String tem = "";//AND c_id = 20 AND materials.id =27
+            if (StringUtils.isNotBlank(c_id)){
+                tem = tem + " AND `user`.id = " + c_id;
+            }
+            if (StringUtils.isNotBlank(mid)){
+                tem = tem + " AND materials.id = " + mid;
+            }
+            String sql = "SELECT materials.`unit_cn`,materials.`id` AS materials_id,materials_used.*,`user`.`company_short_name` AS c_name FROM materials_used INNER JOIN materials ON materials.`name` = materials_used.`name` INNER JOIN `user` ON materials_used.`c_id` = `user`.`id`  WHERE `used_time` LIKE CONCAT('%',#{used_time},'%') AND materials_used.`name` IN (SELECT materials_remember.`name` FROM materials_remember WHERE `state` = 1) " + tem;
+            sql = sql + " ORDER BY `update_time` DESC";
+            return sql;
+        }
+    }
+
+        /**
      * 添加公司登录账号
      * @param name
      * @param pwd

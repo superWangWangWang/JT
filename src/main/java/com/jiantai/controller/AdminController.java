@@ -21,8 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -335,10 +333,10 @@ public class AdminController {
     @RequestMapping("toMaterial")
     public ModelAndView toMaterial(){
         ModelAndView mv = new ModelAndView();
-        LocalDateTime now = LocalDateTime.now();//获取当前时间
-        LocalDateTime last = now.minusMonths(1);//月份-1
-        String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
-        mv.addObject("dateTime",last_month);//回显时间为上个月
+//        LocalDateTime now = LocalDateTime.now();//获取当前时间
+//        LocalDateTime last = now.minusMonths(1);//月份-1
+//        String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
+//        mv.addObject("dateTime",last_month);//回显时间为上个月
         //回显公司列表
         List<User> companys = adminServiceImpl.getAllCompanyInfo();
         System.out.println("==========="+companys);
@@ -363,18 +361,39 @@ public class AdminController {
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
         String usedTime = request.getParameter("usedTime");
+        String material = request.getParameter("material");//id
+        String company = request.getParameter("company");//id
         System.out.println(page);
         System.out.println(limit);
         System.out.println(usedTime);
         if (StringUtils.isBlank(usedTime)){
-            LocalDateTime now = LocalDateTime.now();//获取当前时间
-            LocalDateTime last = now.minusMonths(1);//月份-1
-            String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
+            usedTime = "";
+            //LocalDateTime now = LocalDateTime.now();//获取当前时间
+            //LocalDateTime last = now.minusMonths(1);//月份-1
+            //String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
             Page<Object> p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
-            List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(last_month);//查出上一个月的所有公司物料使用情况
+            //List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(last_month);//查出上一个月的所有公司物料使用情况
+            List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(usedTime,company,material);//查出上一个月的所有公司物料使用情况
             resultVO.setCount((int)p.getTotal());
             resultVO.setData(list);
+        }else {
+            if (MyUtils.isValidDate(usedTime)){
+                Page<Object> p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+                List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(usedTime,company,material);//查出上一个月的所有公司物料使用情况
+                resultVO.setCount((int)p.getTotal());
+                resultVO.setData(list);
+            }else {
+                resultVO.setMsg("时间格式不对");
+            }
+
         }
         return resultVO;
+    }
+    @RequestMapping("toMsds")
+    public ModelAndView toMsds(){
+        ModelAndView mv = new ModelAndView();
+
+        mv.setViewName("admin/msds");
+        return mv;
     }
 }

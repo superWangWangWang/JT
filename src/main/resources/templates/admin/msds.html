@@ -24,44 +24,40 @@
                         <div class="layui-input-inline">
                             <input type="text" id="date_time" name="dateTime" readonly lay-verify="required|date" class="layui-input" placeholder="选择年月">
                         </div>
-                            <!--                                            <div id="selected">aa</div>-->
-                            <div class="layui-input-inline">
-<!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
+                        <!--                                            <div id="selected">aa</div>-->
+                        <div class="layui-input-inline">
+                            <!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
                             <select  name="company" lay-verify="required" lay-search="" lay-filter="select_company">
                                 <option value="">下拉选择或输入公司关键字</option>
-                                <#list companys as c>
-                                <option value="${c.id}">${c.companyShortName}</option>
-                                 </#list>
+
                             </select>
                         </div>
                         <div class="layui-input-inline">
                             <!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
                             <select name="material" lay-verify="required" lay-search="" lay-filter="select_material">
                                 <option value="">下拉选择或输入物料关键字</option>
-                                <#list materials as m>
-                                <option value="${m.id}">${m.name}</option>
-                            </#list>
+
                             </select>
 
                         </div>
-<!--                        <button type="button" class="layui-btn layui-btn-warm" onclick="query_material()">查询</button>-->
+                        <!--                        <button type="button" class="layui-btn layui-btn-warm" onclick="query_material()">查询</button>-->
                     </form>
                 </div>
 
 
-                </div>
+            </div>
 
 
-                <div class="layui-card-body">
-                    <table class="layui-hide" id="test"></table>
-                    <div align="right">
-                        <span style="font-weight: bold;font-size: 20px">总计：</span>
-                        <span id="total" style="font-weight: bold;font-size: 20px;color: #cc0000"></span>
-                    </div>
-                </div>
+            <div class="layui-card-body">
+                <table class="layui-hide" id="test"></table>
+<!--                <div align="right">-->
+<!--                    <span style="font-weight: bold;font-size: 20px">总计：</span>-->
+<!--                    <span id="total" style="font-weight: bold;font-size: 20px;color: #cc0000"></span>-->
+<!--                </div>-->
             </div>
         </div>
     </div>
+</div>
 
 
 
@@ -87,13 +83,13 @@
             , limits: [15, 30, 50 , 100] //自定义分页数据选项
             //,done: function () {
             ,done: function(res, curr, count){
-                    var total = 0;
-                    for (var i = 0; i < res.data.length; i++) {
-                        //total += parseFloat(res.data[i].used).toFixed(2);//总计
-                        total =  accAdd(total,parseFloat(res.data[i].used))//总计
-                    }
-                    document.getElementById("total").innerText = total;
-                    //console.log(defray)
+                var total = 0;
+                for (var i = 0; i < res.data.length; i++) {
+                    //total += parseFloat(res.data[i].used).toFixed(2);//总计
+                    total =  accAdd(total,parseFloat(res.data[i].used))//总计
+                }
+                document.getElementById("total").innerText = total;
+                //console.log(defray)
             }
         });
     });
@@ -120,7 +116,7 @@
             //监听提交
             form.on('select(select_company)',function (date) {
                 var old_url = document.getElementById("my_url").innerText;
-               var new_url = replaceParamVal(old_url,"company",date.value);
+                var new_url = replaceParamVal(old_url,"company",date.value);
 
                 document.getElementById("my_url").innerText = new_url;
                 var table = layui.table;

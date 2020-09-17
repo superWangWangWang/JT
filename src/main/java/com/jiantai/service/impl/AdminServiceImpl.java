@@ -97,8 +97,8 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public List<MaterialsUsed> getMaterialsUsedByTime(String used_time) {
-        return adminDao.getMaterialsUsedByTime(used_time);
+    public List<MaterialsUsed> getMaterialsUsedByTime(String used_time,String c_id,String mid) {
+        return adminDao.getMaterialsUsedByTime(used_time,c_id,mid);
     }
 
     /**

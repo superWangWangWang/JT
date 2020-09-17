@@ -14,7 +14,7 @@ public interface AdminService {
     void updateCompanyInfo(String field,String value,String id);
     List getCompanyInfoByName(String name);
     void updateCompanyModifyById(User user);
-    List<MaterialsUsed> getMaterialsUsedByTime(String used_time);
+    List<MaterialsUsed> getMaterialsUsedByTime(String used_time,String c_id,String mid);
     List<JTLog> getAllLog();
     List<User> getAllCompanyInfoExcludeSuper();
     List<Material> getMaterials();

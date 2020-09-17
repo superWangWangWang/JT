@@ -18,6 +18,7 @@ public class MaterialsUsed {
     private Double used;
     //used_time      物料使用的年月
     private String usedTime;
+    private String unitCn;
     //create_time
     private Date createTime;
     //update_time
@@ -32,6 +33,7 @@ public class MaterialsUsed {
                 ", name='" + name + '\'' +
                 ", used=" + used +
                 ", usedTime='" + usedTime + '\'' +
+                ", unitCn='" + unitCn + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 '}';
@@ -83,6 +85,14 @@ public class MaterialsUsed {
 
     public void setUsedTime(String usedTime) {
         this.usedTime = usedTime;
+    }
+
+    public String getUnitCn() {
+        return unitCn;
+    }
+
+    public void setUnitCn(String unitCn) {
+        this.unitCn = unitCn;
     }
 
     public Date getCreateTime() {

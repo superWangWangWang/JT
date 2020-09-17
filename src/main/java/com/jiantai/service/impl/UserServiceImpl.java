@@ -16,26 +16,6 @@ public class UserServiceImpl implements UserService {
 	private UserDao userDao;
 
 
-	@Override
-	public void changePassword(CompanyInfo companyInfo, String new_password) throws Exception {
-		userDao.changePassword(companyInfo,new_password);
-	}
-
-	@Override
-	public CompanyInfo companyLogin(String username) {
-		return userDao.companyLogin(username);
-	}
-
-	@Override
-	public CompanyInfo findCompanyById(String id) {
-		return userDao.findCompanyById(id);
-	}
-
-	@Override
-	public void addLog(JTLog log) {
-		userDao.addLog(log);
-	}
-
 	//=========================================
 
 	/**

@@ -1,33 +1,30 @@
 package com.jiantai.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.jiantai.entity.*;
+import com.jiantai.entity.JTLog;
+import com.jiantai.entity.Material;
+import com.jiantai.entity.MaterialsUsed;
+import com.jiantai.entity.User;
 import com.jiantai.service.impl.AdminServiceImpl;
-
 import com.jiantai.service.impl.CommonServiceImpl;
-import com.jiantai.utils.DownloadUtil;
-
-import com.jiantai.utils.FileUtils;
 import com.jiantai.utils.MyUtils;
 import com.jiantai.vo.ResultVO;
-import com.jiantai.vo.VO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -250,163 +247,6 @@ public class AdminController {
         return mv;
     }
 
-    /**
-     * @page 物料管理 material.html
-     * @funciton
-     */
-    @RequestMapping("/searchDeclareRecords")
-    @ResponseBody
-    public String searchDeclareRecords(HttpServletRequest request) {
-        VO vo = new VO();//前端需要的试图模型，view object
-        String page = request.getParameter("page");
-        String pageSize = request.getParameter("limit");
-        String date = request.getParameter("date");
-        String company = request.getParameter("company");
-        String material = request.getParameter("material");
-
-        if (!StringUtils.isNotBlank(page)) {
-            vo.setCode(1);//状态码 0=正常 1 = 异常
-            vo.setCount(0);//分页条数
-            vo.setMsg("page传值不对");//相应信息
-        } else {
-            PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(pageSize));//设置分页 15条每页
-            List<JTDeclareRecord> records = adminServiceImpl.searchDeclareRecords(date, company, material);
-            System.out.println("records==================="+records);
-            PageInfo pageInfo = new PageInfo<>(records);
-            //封装返回
-            vo.setCount((int) pageInfo.getTotal());//分页条数
-            vo.setCode(0);//状态码 0=正常
-            vo.setMsg("ok");//相应信息
-
-            vo.setData(records);
-        }
-
-        return JSON.toJSONString(vo);
-    }
-
-    /**
-     * @page 物料管理 material.html
-     * @funciton
-     */
-    @GetMapping("/findMaterials")
-    @ResponseBody
-    public VO findMaterials(HttpServletRequest request) {
-        VO vo = new VO();//前端需要的试图模型，view object
-
-        List<Material> records = adminServiceImpl.findMaterials();
-        //封装返回
-        vo.setCode(0);//状态码 0=正常
-        vo.setMsg("ok");//相应信息
-        vo.setData(records);
-        return vo;
-    }
-
-    /**
-     * <<<<<<< HEAD
-     *
-     * @page 物料导出数据 material.html
-     * @funciton
-     */
-    @PostMapping("/exportToMaterial")
-    @ResponseBody
-    public VO exportToMaterial(HttpServletRequest request) {
-        VO vo = new VO();//前端需要的试图模型，view object
-        String date = request.getParameter("date");
-        String company = request.getParameter("company");
-        String material = request.getParameter("material");
-        //System.out.println(date + "," + company + "," + material);
-        Map<String, Object> exportInfos = adminServiceImpl.searchExprotDeclareRecords(date, company, material);
-        vo.setData(exportInfos);
-        return vo;
-    }
-
-
-    /**
-     * @page 根据类型查询已上传文件 file.html
-     * @funciton
-     */
-    @GetMapping("/findFileByType")
-    @ResponseBody
-    public VO findFileByType(HttpServletRequest request) {
-        VO vo = new VO();//前端需要的试图模型，view object
-        String type = request.getParameter("type");//type = 平面图 生产设备名录 MSDS 佐证
-        String page = request.getParameter("page");
-        String pageSize = request.getParameter("limit");
-
-        PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(pageSize));//设置分页
-        if (StringUtils.isNotBlank(type)) {
-            if ("plan".equals(type)) {//选择类型为平面图
-                List<CompanyInfo> companyInfos = adminServiceImpl.findExistPlanName();//根据plan_name字段不为空的条件查询公司信息
-                PageInfo pageInfo = new PageInfo<>(companyInfos);
-                //封装返回
-                vo.setCount((int) pageInfo.getTotal());//所有数据数量
-                vo.setData(companyInfos);
-            } else if ("product".equals(type)) {//选择类型为产品
-                List<CompanyInfo> companyInfos = adminServiceImpl.findExistProductName();//根据product_name字段不为空的条件查询公司信息
-                PageInfo pageInfo = new PageInfo<>(companyInfos);
-                //封装返回
-                vo.setCount((int) pageInfo.getTotal());//所有数据数量
-                vo.setData(companyInfos);
-            } else if ("msds".equals(type)) {//选择类型为产品
-                String company = request.getParameter("company");
-                String material = request.getParameter("material");
-                List<JTMsdsUpload> jtMsdsUploads = adminServiceImpl.findMsdsUpload(company, material);
-                PageInfo pageInfo = new PageInfo<>(jtMsdsUploads);
-                //封装返回
-                vo.setCount((int) pageInfo.getTotal());//所有数据数量
-                vo.setData(jtMsdsUploads);
-            } else if ("evidence".equals(type)) {//选择类型为产品
-                String company = request.getParameter("company");
-                String material = request.getParameter("material");
-                String datetime = request.getParameter("date");
-                List<JtMaterialEvidence> jtMaterialEvidences = adminServiceImpl.findEvidenceUpload(company, datetime);
-                PageInfo pageInfo = new PageInfo<>(jtMaterialEvidences);
-                //封装返回
-                vo.setCount((int) pageInfo.getTotal());//所有数据数量
-                vo.setData(jtMaterialEvidences);
-            }
-        }
-
-        vo.setCode(0);//状态码 0=正常
-        vo.setMsg("ok");//相应信息
-        return vo;
-    }
-
-    //下载文件接口
-    @GetMapping("/downloadFile")
-    @ResponseBody
-    public String downloadFile(HttpServletRequest request, HttpServletResponse response) throws Exception {
-
-        //获取路径和文件名
-        String folder = request.getParameter("folder");//文件夹名称
-        String id = request.getParameter("id");//物料名
-        String localPath = "D:\\upload\\" + folder + "\\";
-        String filename_str = "";
-        User user = adminServiceImpl.getCompanyInfoById(id).get(0);//获取登录用户
-        if ("msds".equals(folder)) {//MSDS目录
-            JTMsdsUpload jtMsdsUpload = adminServiceImpl.findMsdsUploadById(id);//根据id查询msds
-            filename_str = jtMsdsUpload.getMsdsFilename();
-            localPath += filename_str;
-        } else if ("plan".equals(folder)) {//平面图目录
-            filename_str = user.getPlaneFigure();
-            localPath += filename_str;
-        } else if ("evidence".equals(folder)) {//佐证文件目录
-            JtMaterialEvidence jtMaterialEvidence = adminServiceImpl.findJtMaterialEvidenceById(id);
-            filename_str = jtMaterialEvidence.getFilename();
-            localPath += filename_str;
-        } else if ("product".equals(folder)) {//产品设备文件目录
-            filename_str = user.getProductionEquipmentList();
-            localPath += filename_str;
-        }
-
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("multipart/form-data");
-        response.setHeader("Content-Disposition", "attachment;fileName=" + filename_str);
-        File file = new File(localPath);
-        DownloadUtil.downloadFile(file, response);
-        System.out.println("下载目录文件为:" + localPath);
-        return null;
-    }
 
     /**
      * 管理员下载文件方法（平面图，产品名录）
@@ -417,16 +257,11 @@ public class AdminController {
     @RequestMapping("down")
     @ResponseBody
     public void downFile(HttpServletResponse response, HttpServletRequest request) throws IOException {
-        //String localPath = "D:\\upload\\" + folder + "\\";
-        //FileUtils.downloadFile(path,fileName,response);
-        //System.out.println(type);
-        //System.out.println(fileName);//空字符串则表示没有
-        //VO vo = new VO<>();
+
         String type = request.getParameter("type");// 1 = 平面图 2 = 产品名录 3 = msds 4 =
         String cid = request.getParameter("cid");//公司的id
         String id = request.getParameter("id");//表中行数据对应的id
 
-        //User user = (User)request.getSession().getAttribute("user");
         if (StringUtils.isNotBlank(type)){//传来的下载的类型才可以放行
             switch (type){
                 case "1":
@@ -447,65 +282,10 @@ public class AdminController {
                     break;
             }
 
-
         }
 
-
-
-//        if ("".equals(fileName) || fileName == null) {
-//            //vo.setCode(0);
-//            //vo.setMsg("尚未上传");
-//        } else {
-//            /*if ("plan".equals(type)){
-//                type = "plan";
-//            }*/
-//            //需要先查下数据口是否有记录，不然出错
-//
-//            FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
-//            //vo.setCode(1);
-//            //vo.setMsg("下载成功");
-//            if (!"".equals(fileName) && fileName != null && !"".equals(type) && type != null) {
-//                if ("plan".equals(type)) {
-//                    type = "imgs";  //数据保存在的文件夹是imgs文件夹而不是plan文件夹
-//                }
-//                //建议先查下数据口是否有记录，不然出错，
-//                FileUtils.downloadFile(response, request, fileName, "D:\\upload\\" + type + "\\" + fileName);
-//            }
-//        }
     }
 
-        /**
-         * 添加公司登录账号密码
-         * @param name
-         * @param pwd
-         * @return
-         */
-        @RequestMapping("companyAdd")
-        @ResponseBody
-        public VO companyAdd (String name, String pwd){
-
-            System.out.println(name + "====");
-            System.out.println(pwd + "====");
-            VO vo = new VO();
-            if (!"".equals(name) && name != null && !"".equals(pwd) && pwd != null) {
-                //查询是否存在用户名
-                List<CompanyInfo> companys = adminServiceImpl.getCompanyByUserName(name);
-                if (companys.size() == 0) {//没有该账号，允许注册
-                    adminServiceImpl.addCompany(name, pwd);
-                    vo.setCode(1);
-                    vo.setMsg("新增成功");
-                } else {
-                    //存在账号，返回错误信息
-                    vo.setCode(0);
-                    vo.setMsg("该账号已存在");
-                }
-
-            } else {
-                vo.setCode(0);
-                vo.setMsg("参数提交不正确");
-            }
-            return vo;
-        }
 
     /**
      * 显式系统日志首页
@@ -547,4 +327,54 @@ public class AdminController {
             mv.addObject("logs",list);
             return mv;
         }
+
+    /**
+     * 跳转到物料申报统计页面
+     * @return
+     */
+    @RequestMapping("toMaterial")
+    public ModelAndView toMaterial(){
+        ModelAndView mv = new ModelAndView();
+        LocalDateTime now = LocalDateTime.now();//获取当前时间
+        LocalDateTime last = now.minusMonths(1);//月份-1
+        String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
+        mv.addObject("dateTime",last_month);//回显时间为上个月
+        //回显公司列表
+        List<User> companys = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("==========="+companys);
+        mv.addObject("companys",companys);
+        //回显物料名
+        List<Material> materials = adminServiceImpl.getMaterials();
+        mv.addObject("materials",materials);
+        mv.setViewName("admin/material");
+        return mv;
     }
+
+    /**
+     * 查询物料使用情况
+     * @param request
+     * @return
+     */
+    @RequestMapping("material")
+    @ResponseBody
+    public ResultVO material(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        String page = request.getParameter("page");
+        String limit = request.getParameter("limit");
+        String usedTime = request.getParameter("usedTime");
+        System.out.println(page);
+        System.out.println(limit);
+        System.out.println(usedTime);
+        if (StringUtils.isBlank(usedTime)){
+            LocalDateTime now = LocalDateTime.now();//获取当前时间
+            LocalDateTime last = now.minusMonths(1);//月份-1
+            String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
+            Page<Object> p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+            List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(last_month);//查出上一个月的所有公司物料使用情况
+            resultVO.setCount((int)p.getTotal());
+            resultVO.setData(list);
+        }
+        return resultVO;
+    }
+}

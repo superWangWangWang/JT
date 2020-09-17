@@ -2,6 +2,9 @@ package com.jiantai.entity;
 
 import java.util.Date;
 
+/**
+ * msds表模型
+ */
 public class Msds {
     private Integer id;
     //c_idint(11) NULL公司id

@@ -8,20 +8,6 @@ import java.util.List;
 @Mapper
 public interface UserDao {
 
-
-	@Update("update jt_company_info set `password` = #{new_password} where `user` = #{companyInfo.user}")
-	@Options(useGeneratedKeys = false)
-	 void changePassword(@Param("companyInfo") CompanyInfo companyInfo, @Param("new_password") String new_password);
-
-	
-	@Select("select * from jt_company_info where `user` = #{user}")
-	 CompanyInfo companyLogin(String username);
-
-	
-	@Select("select * from jt_company_info where `id` = #{id}")
-	 CompanyInfo findCompanyById(String id);
-
-
 	//==============================================================================================
 
 	/**

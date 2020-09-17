@@ -2,10 +2,15 @@ package com.jiantai.entity;
 
 import java.util.Date;
 
+/**
+ * 物料用量表模型
+ */
 public class MaterialsUsed {
     //id
     private Integer id;
     //c_id           公司id
+    private String cName;//公司名
+
     private Integer cId;
     //name           物料名
     private String name;
@@ -22,6 +27,7 @@ public class MaterialsUsed {
     public String toString() {
         return "MaterialsUsed{" +
                 "id=" + id +
+                ", cName='" + cName + '\'' +
                 ", cId=" + cId +
                 ", name='" + name + '\'' +
                 ", used=" + used +
@@ -37,6 +43,14 @@ public class MaterialsUsed {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getcName() {
+        return cName;
+    }
+
+    public void setcName(String cName) {
+        this.cName = cName;
     }
 
     public Integer getcId() {

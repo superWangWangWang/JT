@@ -1,5 +1,8 @@
 package com.jiantai.entity;
 
+/**
+ * 产品产量表模型
+ */
 public class Product {
     //id       int(11)      (NULL)              NO      PRI     (NULL)   auto_increment  select,insert,update,references
     private Integer id;

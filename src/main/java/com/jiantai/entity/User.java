@@ -3,7 +3,7 @@ package com.jiantai.entity;
 import java.util.Date;
 
 /**
- * 公司详情的实体类
+ * 用户表模型
  */
 public class User {
     //id                    int(11)       主键id

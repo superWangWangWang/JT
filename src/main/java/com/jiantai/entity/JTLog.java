@@ -11,7 +11,7 @@ public class JTLog {
     private Date createTime;
     //contentvarchar(255) NULL日志内容
     private String content;
-    private String shortName;
+    private String companyShortName;
 
     public JTLog() {//无参构造
     }
@@ -28,7 +28,7 @@ public class JTLog {
                 ", cid=" + cid +
                 ", createTime=" + createTime +
                 ", content='" + content + '\'' +
-                ", shortName='" + shortName + '\'' +
+                ", companyShortName='" + companyShortName + '\'' +
                 '}';
     }
 
@@ -64,11 +64,11 @@ public class JTLog {
         this.content = content;
     }
 
-    public String getShortName() {
-        return shortName;
+    public String getCompanyShortName() {
+        return companyShortName;
     }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
+    public void setCompanyShortName(String companyShortName) {
+        this.companyShortName = companyShortName;
     }
 }

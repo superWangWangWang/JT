@@ -1,5 +1,8 @@
 package com.jiantai.entity;
 
+/**
+ * 物料记忆表模型
+ */
 public class MaterialRemember {
     //idint(11) NOT NULL
     private Integer id;

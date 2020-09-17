@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ResultVO {
     //前端需要的json数据模型
-    private Integer code;//错误码
+    private Integer code;//错误码  layui的数据表格返回0为正常 1 为不正常 ，我自己定义的接口一般是0异常1正常
     private String msg;//信息
-    private Integer count;//
+    private Integer count;//总条数
     private List data;//集合数据
 
     @Override

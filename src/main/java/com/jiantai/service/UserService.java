@@ -7,13 +7,6 @@ import java.util.List;
 
 @Service
 public interface UserService {
-
-	public void changePassword(CompanyInfo companyInfo, String new_password) throws Exception;
-
-	public CompanyInfo companyLogin(String username);
-
-	public CompanyInfo findCompanyById(String id);
-	void addLog(JTLog log);
 	//=========================================
 	List<User> getUserByUserName(String userName);
 	void updateDetails(User u);

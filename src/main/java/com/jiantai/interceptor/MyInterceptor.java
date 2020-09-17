@@ -1,6 +1,6 @@
 package com.jiantai.interceptor;
 
-import com.jiantai.entity.CompanyInfo;
+
 import com.jiantai.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+/**
+ * 拦截器
+ */
 @Component
 public class MyInterceptor implements HandlerInterceptor {
     @Override

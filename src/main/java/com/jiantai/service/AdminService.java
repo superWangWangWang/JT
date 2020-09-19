@@ -1,9 +1,6 @@
 package com.jiantai.service;
 
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
-import com.jiantai.entity.MaterialsUsed;
-import com.jiantai.entity.User;
+import com.jiantai.entity.*;
 
 import java.util.List;
 
@@ -18,4 +15,6 @@ public interface AdminService {
     List<JTLog> getAllLog();
     List<User> getAllCompanyInfoExcludeSuper();
     List<Material> getMaterials();
+    List<Msds> getMsds(String c_id);
+    List<Msds> getMsdsByIdAndCid(String id,String c_id);
 }

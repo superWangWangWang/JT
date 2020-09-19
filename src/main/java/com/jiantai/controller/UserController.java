@@ -1075,32 +1075,59 @@ public class UserController {
             case "1":
                 equipment.setcId(cid);
                 equipment.setType(1);
-                userService.addEquipmentAir(equipment);
-                resultVO.setCode(1);
-                resultVO.setMsg("空压机添加成功！");
-                //添加日志
-                String content1 = "添加生产设备 -> 空压机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
-                commonService.addLog(new JTLog(user.getId(),content1));
+                //查询是否已经添加此型号，如果有，则不作处理
+                List<Equipment> equipmentList1 = userService.getEquipment(equipment);
+                if (equipmentList1.size() > 0){
+                    //已经存在，返回提示
+                    resultVO.setCode(0);
+                    resultVO.setMsg("该型号空压机已存在！请勿重复操作！");
+                }else {
+                    userService.addEquipmentAir(equipment);
+                    resultVO.setCode(1);
+                    resultVO.setMsg("空压机添加成功！");
+                    //添加日志
+                    String content1 = "添加生产设备 -> 空压机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                    commonService.addLog(new JTLog(user.getId(),content1));
+                }
+
                 break;
             case "2":
                 equipment.setcId(cid);
                 equipment.setType(2);
-                userService.addEquipmentWind(equipment);
-                resultVO.setCode(1);
-                resultVO.setMsg("风机添加成功！");
-                //添加日志
-                String content2 = "添加生产设备 -> 风机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
-                commonService.addLog(new JTLog(user.getId(),content2));
+                //查询是否已经添加此型号，如果有，则不作处理
+                List<Equipment> equipmentList2 = userService.getEquipment(equipment);
+                if (equipmentList2.size() > 0){
+                    //已经存在，返回提示
+                    resultVO.setCode(0);
+                    resultVO.setMsg("该型号风机已存在！请勿重复操作！");
+                }else {
+                    userService.addEquipmentWind(equipment);
+                    resultVO.setCode(1);
+                    resultVO.setMsg("风机添加成功！");
+                    //添加日志
+                    String content2 = "添加生产设备 -> 风机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                    commonService.addLog(new JTLog(user.getId(),content2));
+                }
+
                 break;
             case "3":
                 equipment.setcId(cid);
                 equipment.setType(3);
-                userService.addEquipmentElectric(equipment);
-                resultVO.setCode(1);
-                resultVO.setMsg("电机添加成功！");
-                //添加日志
-                String content3 = "添加生产设备 -> 电机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
-                commonService.addLog(new JTLog(user.getId(),content3));
+                //查询是否已经添加此型号，如果有，则不作处理
+                List<Equipment> equipmentList3 = userService.getEquipment(equipment);
+                if (equipmentList3.size() > 0){
+                    //已经存在，返回提示
+                    resultVO.setCode(0);
+                    resultVO.setMsg("该型号电机已存在！请勿重复操作！");
+                }else {
+                    userService.addEquipmentElectric(equipment);
+                    resultVO.setCode(1);
+                    resultVO.setMsg("电机添加成功！");
+                    //添加日志
+                    String content3 = "添加生产设备 -> 电机" ;//提交产品产量 -> 2020-04 [干膜:20 -> ]
+                    commonService.addLog(new JTLog(user.getId(),content3));
+                }
+
                 break;
             default:
                 resultVO.setMsg("新增错误！暂不支持该设备类型添加");

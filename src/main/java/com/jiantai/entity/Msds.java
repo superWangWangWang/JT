@@ -17,6 +17,8 @@ public class Msds {
     private Date createTime;
     //update_timetimestamp NOT NULL
     private Date updateTime;
+    //公司简称--用于管理员查询时
+    private String companyShortName;
 
     @Override
     public String toString() {
@@ -27,6 +29,7 @@ public class Msds {
                 ", src='" + src + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
+                ", companyShortName='" + companyShortName + '\'' +
                 '}';
     }
 
@@ -76,5 +79,13 @@ public class Msds {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getCompanyShortName() {
+        return companyShortName;
+    }
+
+    public void setCompanyShortName(String companyShortName) {
+        this.companyShortName = companyShortName;
     }
 }

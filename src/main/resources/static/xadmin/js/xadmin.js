@@ -44,7 +44,7 @@
 		this.add_lay_tab(title,url,id);
 	    this.set_data(title,url,id);
 	    element.tabChange('xbs_tab', id);
-
+        //xadmin.del_data(id);//防止页面选项卡的缓存导致跨界操作 --by 波
 	}
 
   Xadmin.prototype.del_tab = function (id) {
@@ -206,6 +206,24 @@
 		  ,value: tab_list[id]
 		});
 	};
+    Xadmin.prototype.del_all_data = function() {//删除所有的选项卡
+        if(typeof is_remember!="undefined")
+            return false;
+
+        //遍历所有的选项卡
+        // var tabtitle = $(".layui-tab-title li");
+        // var ids = new Array();
+        // $.each(tabtitle, function (i) {
+        //     ids[i] = $(this).attr("lay-id");
+        //     xadmin.del_data($(this).attr("lay-id"));//删除下标为i的选项卡
+        // })
+        var tabtitle = $(".layui-tab-title li");//获取选项卡格式--因为有个不能删除的，所以要大于1才去删除 - 这样能防止页面疯狂刷新
+        //console.log(tabtitle.length);
+        if (tabtitle.length > 1){
+            layui.data('tab_list',null);
+            //location.reload();
+        }
+    };
 	win.xadmin = new Xadmin();
 	
 }(window);

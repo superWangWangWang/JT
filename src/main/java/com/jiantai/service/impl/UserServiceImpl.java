@@ -464,4 +464,14 @@ public class UserServiceImpl implements UserService {
 	public void deleteEquipmentMaintenanceById(Integer id) {
 		userDao.deleteEquipmentMaintenanceById(id);
 	}
+
+	/**
+	 * 根据 型号，机器类型，公司id查询生产设备
+	 * @param equipment
+	 * @return
+	 */
+	@Override
+	public List<Equipment> getEquipment(Equipment equipment) {
+		return userDao.getEquipment(equipment);
+	}
 }

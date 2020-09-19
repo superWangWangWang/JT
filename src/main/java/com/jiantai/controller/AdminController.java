@@ -3,10 +3,7 @@ package com.jiantai.controller;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
-import com.jiantai.entity.MaterialsUsed;
-import com.jiantai.entity.User;
+import com.jiantai.entity.*;
 import com.jiantai.service.impl.AdminServiceImpl;
 import com.jiantai.service.impl.CommonServiceImpl;
 import com.jiantai.utils.MyUtils;
@@ -39,9 +36,11 @@ public class AdminController {
      * @return
      */
     @RequestMapping("index")
-    public ModelAndView toIndex() {
+    public ModelAndView toIndex(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
+        User user = (User)request.getSession().getAttribute("user");
         //mv.addObject("data", "aaa");
+        mv.addObject("user",user);
         mv.setViewName("admin/index");
         return mv;
     }
@@ -79,7 +78,7 @@ public class AdminController {
         resultVO.setCode(1);//状态码 0=正常 1 = err
 
         if (StringUtils.isNotBlank(page) && StringUtils.isNotBlank(limit)){
-            Page pa = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
+            Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));//设置分页 15条每页
 
             List<User> companyList;
             if (StringUtils.isNotBlank(companyName)){//传来的公司名不为空，即按简称搜索
@@ -98,7 +97,7 @@ public class AdminController {
             }
 
             resultVO.setCode(0);//状态码 0=正常封装返回
-            PageInfo pageInfo = new PageInfo(pa);
+            PageInfo pageInfo = new PageInfo(p);
             int total = (int) pageInfo.getTotal();
             resultVO.setCount(total);//分页条数
             resultVO.setMsg("ok");//相应信息
@@ -275,6 +274,26 @@ public class AdminController {
                     }
 
                     break;
+                case "2":
+                    //根据cid查询对应的平面图
+                    if (StringUtils.isNotBlank(cid)){
+                        List<User> companyInfos = adminServiceImpl.getCompanyInfoById(cid);
+                        if (companyInfos.size() > 0){
+                            //有这个公司id
+                            String src = companyInfos.get(0).getProductionEquipmentList();
+                            System.out.println(companyInfos.get(0)+"==================");
+                            MyUtils.downloadFile(response,src,"utf-8");
+                        }
+                    }
+                case "3":
+                        if (StringUtils.isNotBlank(cid) && StringUtils.isNotBlank(id)){//cid 和 id两个都不为空
+                            //根据cid和id查询msds表的src
+                            List<Msds> list = adminServiceImpl.getMsdsByIdAndCid(id, cid);
+                            if (list.size() > 0 ){//查到了
+                                String src = list.get(0).getSrc();
+                                MyUtils.downloadFile(response,src,"utf-8");
+                            }
+                        }
                 default:
                     //没传对，不处理
                     break;
@@ -340,6 +359,12 @@ public class AdminController {
         //回显公司列表
         List<User> companys = adminServiceImpl.getAllCompanyInfo();
         System.out.println("==========="+companys);
+        for (int i = 0;i<companys.size();i++){
+            if (companys.get(i).getType() != 0){
+                companys.remove(i);
+            }
+        }
+
         mv.addObject("companys",companys);
         //回显物料名
         List<Material> materials = adminServiceImpl.getMaterials();
@@ -371,16 +396,21 @@ public class AdminController {
             //LocalDateTime now = LocalDateTime.now();//获取当前时间
             //LocalDateTime last = now.minusMonths(1);//月份-1
             //String last_month = last.format(DateTimeFormatter.ofPattern("yyyy-MM"));// 时间格式化 2020-08
-            Page<Object> p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+            Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
             //List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(last_month);//查出上一个月的所有公司物料使用情况
             List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(usedTime,company,material);//查出上一个月的所有公司物料使用情况
-            resultVO.setCount((int)p.getTotal());
+            PageInfo pageInfo = new PageInfo(p);
+            int total = (int)pageInfo.getTotal();
+            resultVO.setCount(total);
             resultVO.setData(list);
         }else {
             if (MyUtils.isValidDate(usedTime)){
-                Page<Object> p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+                Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
                 List<MaterialsUsed> list = adminServiceImpl.getMaterialsUsedByTime(usedTime,company,material);//查出上一个月的所有公司物料使用情况
-                resultVO.setCount((int)p.getTotal());
+                PageInfo pageInfo = new PageInfo(p);
+                int total = (int)pageInfo.getTotal();
+                resultVO.setCount(total);
+
                 resultVO.setData(list);
             }else {
                 resultVO.setMsg("时间格式不对");
@@ -389,11 +419,51 @@ public class AdminController {
         }
         return resultVO;
     }
+
+    /**
+     * 跳转到msds页面
+     * @param request
+     * @return
+     */
     @RequestMapping("toMsds")
-    public ModelAndView toMsds(){
+    public ModelAndView toMsds(HttpServletRequest request){
         ModelAndView mv = new ModelAndView();
+        //回显公司列表 -仅type = 0
+        List<User> companylist = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("===========" + companylist);
+        for (int i = 0;i<companylist.size();i++){
+            if (companylist.get(i).getType() != 0){
+                companylist.remove(i);
+            }
+        }
+
+        mv.addObject("companys",companylist);
 
         mv.setViewName("admin/msds");
         return mv;
+    }
+
+    /**
+     * 获取msds数据
+     * @param request
+     * @return
+     */
+    @RequestMapping("msds")
+    @ResponseBody
+    public ResultVO msds(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        //查询msds
+        String id = request.getParameter("id");
+        String limit = request.getParameter("limit");
+        String page = request.getParameter("page");
+        Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+        List<Msds> msdsList = adminServiceImpl.getMsds(id);
+        PageInfo pageInfo = new PageInfo(p);
+        int total = (int)pageInfo.getTotal();
+        resultVO.setCount(total);
+        resultVO.setCode(0);
+        resultVO.setMsg("查询成功");
+        resultVO.setData(msdsList);
+        return resultVO;
     }
 }

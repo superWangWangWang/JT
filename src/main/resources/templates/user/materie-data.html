@@ -24,6 +24,13 @@
         <div class="layui-col-md12">
             <div class="layui-card">
                 <div class="layui-card-body ">
+                    <p style="color: #cc0000;font-size: 15px">操作步骤：</p>
+                    <p style="color: #cc0000;font-size: 15px">1.添加申报的物料（只要添加一次，系统会记录您的选择，以后仅需上传佐证、填写物料用量）</p>
+                    <p style="color: #cc0000;font-size: 15px">2.选择需要（提交或查看）的月份</p>
+                    <p style="color: #cc0000;font-size: 15px">3.上传佐证（对账单或送货单文件）【格式为压缩包，后缀zip、rar、7z】</p>
+                    <p style="color: #cc0000;font-size: 15px">4.输入当月物料的使用量</p>
+                    <p style="color: #cc0000;font-size: 15px">5.提交用量</p>
+                    <br>
                     <form class="layui-form layui-col-space5" action="materialRemember">
 
                         <div class="layui-input-inline layui-show-xs-block">
@@ -39,16 +46,11 @@
                             <button class="layui-btn" lay-submit="">添加物料</button>&nbsp;&nbsp;&nbsp;<span style="color: #cc0000;font-size: 15px">没有对应物料请联系建泰办公室新增</span>
                         </div>
                     </form>
-                    <p style="color: #cc0000;font-size: 15px">操作步骤：</p>
-                    <p style="color: #cc0000;font-size: 15px">1.添加申报的物料（只要添加一次，系统会记录你的选择）</p>
-                    <p style="color: #cc0000;font-size: 15px">2.选择需要（提交或查看）的月份</p>
-                    <p style="color: #cc0000;font-size: 15px">3.上传佐证【格式为压缩包，后缀zip、rar、7z】</p>
-                    <p style="color: #cc0000;font-size: 15px">4.输入当月的使用量</p>
-                    <p style="color: #cc0000;font-size: 15px">5.提交</p>
+
                 </div>
 
 
-                <div class="layui-card-body ">
+                <div class="layui-card-body " >
 
 
                     <form class="layui-form" id="form_data">
@@ -61,12 +63,12 @@
 
                                 <div>
                                     <#if evidence_upload??>
-                                        <span style="color: #cc0000;font-size: 15px">当前月份尚未上传佐证（对账单或送货单文件）</span>
+                                        <span style="color: #cc0000;font-size: 15px">佐证【未上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>上传佐证</button>
                                      </#if>
 
                                     <#if evidence_update??>
-                                        <span style="color: #cc0000;font-size: 15px">当前月份已上传佐证（对账单或送货单）</span>
+                                        <span style="color: #1B5E20;font-size: 15px">佐证【已上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>重传佐证</button>
                                     </#if>
                                     <#if evidence_down??>
@@ -107,14 +109,14 @@
             </table>
 
                     </form>
-                    <div align="center"><button type="button" class="layui-btn layui-btn-normal" onclick="save()">提交</button></div>
+                    <div align="center"><button type="button" class="layui-btn layui-btn-normal" onclick="save()">提交用量</button></div>
                 </div>
 <!--        ================================================-->
         <table class="layui-table ">
             <thead>
             <tr>
-                <th>月份</th>
-                <th>是否已提交</th>
+                <th>时间</th>
+                <th>物料月用量</th>
 
             </tr>
             </thead>
@@ -129,7 +131,7 @@
                 <#else>
                 <td><span style="color: #cc0000">${map[key]!''}</span></td>
                 </#if>
-            </tr>
+            </tbody>
             </#list>
 
             </tbody>

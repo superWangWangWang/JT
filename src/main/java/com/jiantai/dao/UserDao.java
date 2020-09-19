@@ -293,6 +293,14 @@ public interface UserDao {
 	void addEquipmentElectric(@Param("equipment") Equipment equipment);
 
 	/**
+	 * 根据 型号，机器类型，公司id查询生产设备
+	 * @param equipment
+	 * @return
+	 */
+	@Select("SELECT * FROM equipment WHERE `type` = #{equipment.type} AND `kinds` = #{equipment.kinds} AND `state` = 1 AND `c_id` = #{equipment.cId}")
+	List<Equipment> getEquipment(@Param("equipment") Equipment equipment);
+
+	/**
 	 * 根据公司id查出其所有的设备
 	 * @param c_id
 	 * @return

@@ -1,9 +1,6 @@
 package com.jiantai.dao;
 
-import com.jiantai.entity.JTLog;
-import com.jiantai.entity.Material;
-import com.jiantai.entity.MaterialsUsed;
-import com.jiantai.entity.User;
+import com.jiantai.entity.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.*;
 
@@ -90,23 +87,8 @@ public interface AdminDao {
      * @return
      */
     //使用UserDaoProvider类的findUserById方法来生成sql
-    @SelectProvider(type = UserDaoProvider.class, method = "getMaterialsUsedByTime")
+    @SelectProvider(type = AdminDaoProvider.class, method = "getMaterialsUsedByTime")
     List<MaterialsUsed> getMaterialsUsedByTime(String used_time, String c_id, String mid);
-
-    class UserDaoProvider {
-        public String getMaterialsUsedByTime(String used_time,String c_id,String mid) {
-            String tem = "";//AND c_id = 20 AND materials.id =27
-            if (StringUtils.isNotBlank(c_id)){
-                tem = tem + " AND `user`.id = " + c_id;
-            }
-            if (StringUtils.isNotBlank(mid)){
-                tem = tem + " AND materials.id = " + mid;
-            }
-            String sql = "SELECT materials.`unit_cn`,materials.`id` AS materials_id,materials_used.*,`user`.`company_short_name` AS c_name FROM materials_used INNER JOIN materials ON materials.`name` = materials_used.`name` INNER JOIN `user` ON materials_used.`c_id` = `user`.`id`  WHERE `used_time` LIKE CONCAT('%',#{used_time},'%') AND materials_used.`name` IN (SELECT materials_remember.`name` FROM materials_remember WHERE `state` = 1) " + tem;
-            sql = sql + " ORDER BY `update_time` DESC";
-            return sql;
-        }
-    }
 
         /**
      * 添加公司登录账号
@@ -122,6 +104,47 @@ public interface AdminDao {
      */
     @Select("SELECT l.*,u.company_short_name FROM `log` AS l INNER JOIN `user` AS u ON l.`cid` = u.`id` ORDER BY create_time DESC")
     List<JTLog> getAllLog();
+
+    /**
+     * 查询msds信息
+     * @return
+     */
+    @SelectProvider(type = AdminDaoProvider.class, method = "getMsds")
+    List<Msds> getMsds(String c_id);
+
+    /**
+     * 根据公司id和自身id 查询msds的src用于管理员下载
+     * @param id
+     * @param c_id
+     * @return
+     */
+    @Select("select * from `msds` where `id` = #{id} and `c_id` = #{c_id} and `state` = 1")
+    List<Msds> getMsdsByIdAndCid(String id,String c_id);
+
+
+    class AdminDaoProvider {
+        public String getMaterialsUsedByTime(String used_time,String c_id,String mid) {
+            String tem = "";//AND c_id = 20 AND materials.id =27
+            if (StringUtils.isNotBlank(c_id)){
+                tem = tem + " AND `user`.id = " + c_id;
+            }
+            if (StringUtils.isNotBlank(mid)){
+                tem = tem + " AND materials.id = " + mid;
+            }
+            tem = tem + " AND `user`.type = 0";
+            String sql = "SELECT materials.`unit_cn`,materials.`id` AS materials_id,materials_used.*,`user`.`company_short_name` AS c_name FROM materials_used INNER JOIN materials ON materials.`name` = materials_used.`name` INNER JOIN `user` ON materials_used.`c_id` = `user`.`id`  WHERE `used_time` LIKE CONCAT('%',#{used_time},'%') AND materials_used.`name` IN (SELECT materials_remember.`name` FROM materials_remember WHERE `state` = 1) " + tem;
+            sql = sql + " ORDER BY `update_time` DESC";
+            return sql;
+        }
+        public String getMsds(String cid){
+            String tem = "";
+            if (StringUtils.isNotBlank(cid))
+                tem = " AND `user`.id = " + cid;
+
+            String sql = "SELECT `msds`.*,`user`.`company_short_name` FROM `msds` INNER JOIN `user` ON `msds`.`c_id` = `user`.`id` WHERE `user`.`type` = 0 AND `msds`.`state` = 1" + tem;
+            return sql;
+        }
+    }
 }
 
 

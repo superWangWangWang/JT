@@ -53,7 +53,7 @@
 
 
                 <div class="layui-card-body">
-                    <table class="layui-hide" id="test"></table>
+                    <table class="layui-hide" id="material"></table>
                     <div align="right">
                         <span style="font-weight: bold;font-size: 20px">总计：</span>
                         <span id="total" style="font-weight: bold;font-size: 20px;color: #cc0000"></span>
@@ -71,8 +71,14 @@
         var table = layui.table;
         var url = document.getElementById("my_url").innerText;
         table.render({
-            elem: '#test'
+            elem: '#material'
             ,url: url
+            ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+                title: '提示'
+                ,layEvent: 'LAYTABLE_TIPS'
+                ,icon: 'layui-icon-tips'
+            }]
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
             ,cols: [[
                 {field:'id',  title: 'ID',hide: true}
                 ,{field:'',  title: 'No',type: 'numbers'}
@@ -80,7 +86,7 @@
                 ,{field:'name',  title: '物料'}
                 ,{field:'usedTime',  title: '时间'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
                 ,{field:'unitCn',  title: '单位'}
-                ,{field:'used',  title: '用量'}
+                ,{field:'used',  title: '月用量'}
             ]]
             , page: true //是否显示分页
             , limit: 15 //默认分页条数
@@ -124,7 +130,7 @@
 
                 document.getElementById("my_url").innerText = new_url;
                 var table = layui.table;
-                table.reload('test', {
+                table.reload('material', {
                     url: new_url,
                     page: {
                         curr: 1 //重新从第 1 页开始
@@ -138,7 +144,7 @@
 
                 document.getElementById("my_url").innerText = new_url;
                 var table = layui.table;
-                table.reload('test', {
+                table.reload('material', {
                     url: new_url,
                     page: {
                         curr: 1 //重新从第 1 页开始
@@ -166,7 +172,7 @@
 
                         document.getElementById("my_url").innerText = new_url;
                         var table = layui.table;
-                        table.reload('test', {
+                        table.reload('material', {
                             url: new_url,
                             page: {
                                 curr: 1 //重新从第 1 页开始
@@ -193,7 +199,7 @@
         //执行重载
         var table = layui.table;
 
-        table.reload('test', {
+        table.reload('material', {
             page: {
                 //url:'material?dateTime='+dateTime
                 curr: 1 //重新从第 1 页开始

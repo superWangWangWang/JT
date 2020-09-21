@@ -385,7 +385,7 @@ public class AdminController {
         resultVO.setCode(0);
         String page = request.getParameter("page");
         String limit = request.getParameter("limit");
-        String usedTime = request.getParameter("usedTime");
+        String usedTime = request.getParameter("time");
         String material = request.getParameter("material");//id
         String company = request.getParameter("company");//id
         System.out.println(page);
@@ -464,6 +464,54 @@ public class AdminController {
         resultVO.setCode(0);
         resultVO.setMsg("查询成功");
         resultVO.setData(msdsList);
+        return resultVO;
+    }
+
+    /**
+     * 跳转到产品产量输出页面
+     * @return
+     */
+    @RequestMapping("toOutput")
+    public ModelAndView toOutput(){
+        ModelAndView mv = new ModelAndView();
+        //回显公司列表
+        List<User> companys = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("==========="+companys);
+        for (int i = 0;i<companys.size();i++){
+            if (companys.get(i).getType() != 0){
+                companys.remove(i);
+            }
+        }
+
+        mv.addObject("companys",companys);
+        mv.setViewName("admin/product-output");
+        return mv;
+    }
+
+    /**
+     * 获取每月产量数据
+     * @return
+     */
+    @RequestMapping("output")
+    @ResponseBody
+    public ResultVO output(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        String outputTime = request.getParameter("time");//查询的时间
+        String companyId = request.getParameter("company");//查询的公司id
+        String limit = request.getParameter("limit");
+        String page = request.getParameter("page");
+        System.out.println(outputTime+"=========");
+        Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+        //查询
+        List<Product> list = adminServiceImpl.getOutput(outputTime, companyId);
+        list.forEach(l->{
+            l.setName(l.getFirst() + " -> " + l.getSecond() + " -> " +  l.getName());
+        });
+        PageInfo pageInfo = new PageInfo(p);
+        int total = (int)pageInfo.getTotal();
+        resultVO.setCode(0);
+        resultVO.setData(list);
+        resultVO.setCount(total);
         return resultVO;
     }
 }

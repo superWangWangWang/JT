@@ -1,6 +1,7 @@
 package com.jiantai.dao;
 
 import com.jiantai.entity.*;
+import com.jiantai.utils.MyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.annotations.*;
 
@@ -16,10 +17,10 @@ public interface AdminDao {
     List<User> getAllCompanyInfo();
 
     /**
-     * 查询所有的公司信息除了超级管理员 -- state不为2
+     * 查询所有的公司信息除了管理员
      * @return
      */
-    @Select("SELECT * FROM `user` where `type` != 2")
+    @Select("SELECT * FROM `user` where `type` = 0")
     List<User> getAllCompanyInfoExcludeSuper();
 
     /**
@@ -121,6 +122,15 @@ public interface AdminDao {
     @Select("select * from `msds` where `id` = #{id} and `c_id` = #{c_id} and `state` = 1")
     List<Msds> getMsdsByIdAndCid(String id,String c_id);
 
+    /**
+     * 根据时间或公司id查询产品输出
+     * @param time
+     * @param cid
+     * @return
+     */
+    @SelectProvider(type = AdminDaoProvider.class, method = "getOutput")
+    List<Product> getOutput(String time,String cid);
+
 
     class AdminDaoProvider {
         public String getMaterialsUsedByTime(String used_time,String c_id,String mid) {
@@ -142,6 +152,23 @@ public interface AdminDao {
                 tem = " AND `user`.id = " + cid;
 
             String sql = "SELECT `msds`.*,`user`.`company_short_name` FROM `msds` INNER JOIN `user` ON `msds`.`c_id` = `user`.`id` WHERE `user`.`type` = 0 AND `msds`.`state` = 1" + tem;
+            return sql;
+        }
+        public String getOutput(String time,String cid){
+            String sql = "SELECT po.*,u.`company_short_name`,p.unit_cn,p.name AS `name`,p.unit,pcs.name AS `second`,pcf.name AS `first` " +
+                    "FROM products_output AS po INNER JOIN `user` AS u ON u.`id` = po.`c_id` " +
+                    "INNER JOIN products AS p ON p.id = po.p_id " +
+                    "INNER JOIN products_class_second AS pcs ON pcs.id = p.father " +
+                    "INNER JOIN products_class_first AS pcf ON pcf.id = pcs.father " +
+                    "WHERE po.output != 0";
+
+            if (StringUtils.isNotBlank(time) && MyUtils.isValidDate(time)){
+                System.out.println(time);
+                sql = sql + " AND po.output_time = '" + time + "'";
+            }
+            if (StringUtils.isNotBlank(cid)){
+                sql = sql + " AND po.c_id = " + cid;
+            }
             return sql;
         }
     }

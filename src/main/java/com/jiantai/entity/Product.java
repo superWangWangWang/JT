@@ -14,7 +14,7 @@ public class Product {
     private String unitCn;
     private Double output;
     private String outputTime;
-
+    private String companyShortName;
     private String second;
     private String first;
 
@@ -27,6 +27,7 @@ public class Product {
                 ", unitCn='" + unitCn + '\'' +
                 ", output=" + output +
                 ", outputTime='" + outputTime + '\'' +
+                ", companyShortName='" + companyShortName + '\'' +
                 ", second='" + second + '\'' +
                 ", first='" + first + '\'' +
                 '}';
@@ -78,6 +79,14 @@ public class Product {
 
     public void setOutputTime(String outputTime) {
         this.outputTime = outputTime;
+    }
+
+    public String getCompanyShortName() {
+        return companyShortName;
+    }
+
+    public void setCompanyShortName(String companyShortName) {
+        this.companyShortName = companyShortName;
     }
 
     public String getSecond() {

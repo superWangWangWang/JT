@@ -127,4 +127,15 @@ public class AdminServiceImpl implements AdminService {
     public List<Msds> getMsdsByIdAndCid(String id, String c_id) {
         return adminDao.getMsdsByIdAndCid(id,c_id);
     }
+
+    /**
+     * 根据时间或公司id查询产品输出
+     * @param time
+     * @param cid
+     * @return
+     */
+    @Override
+    public List<Product> getOutput(String time, String cid) {
+        return adminDao.getOutput(time,cid);
+    }
 }

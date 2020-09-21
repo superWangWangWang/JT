@@ -12,7 +12,7 @@
 
 </head>
 <body>
-<div id="my_url" hidden="hidden">material</div>
+<div id="my_url" hidden="hidden">output</div>
 <div style="padding: 20px">
     <div class="layui-row layui-col-space15">
         <div class="layui-col-md12">
@@ -34,16 +34,7 @@
                                  </#list>
                             </select>
                         </div>
-                        <div class="layui-input-inline">
-                            <!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
-                            <select name="material" lay-verify="required" lay-search="" lay-filter="select_material">
-                                <option value="">下拉选择或输入物料关键字</option>
-                                <#list materials as m>
-                                <option value="${m.id}">${m.name}</option>
-                            </#list>
-                            </select>
 
-                        </div>
 <!--                        <button type="button" class="layui-btn layui-btn-warm" onclick="query_material()">查询</button>-->
                     </form>
                 </div>
@@ -82,11 +73,11 @@
             ,cols: [[
                 {field:'id',  title: 'ID',hide: true}
                 ,{field:'',  title: 'No',type: 'numbers'}
-                ,{field:'cName',  title: '公司'}
-                ,{field:'name',  title: '物料'}
-                ,{field:'usedTime',  title: '时间'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ,{field:'companyShortName',  title: '公司' , width: 120}
+                ,{field:'name',  title: '产品'}
+                ,{field:'outputTime',  title: '时间'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
                 ,{field:'unitCn',  title: '单位'}
-                ,{field:'used',  title: '月用量'}
+                ,{field:'output',  title: '月产量'}
             ]]
             , page: true //是否显示分页
             , limit: 15 //默认分页条数
@@ -96,7 +87,7 @@
                     var total = 0;
                     for (var i = 0; i < res.data.length; i++) {
                         //total += parseFloat(res.data[i].used).toFixed(2);//总计
-                        total =  accAdd(total,parseFloat(res.data[i].used))//总计
+                        total =  accAdd(total,parseFloat(res.data[i].output))//总计
                     }
                     document.getElementById("total").innerText = total;
                     //console.log(defray)

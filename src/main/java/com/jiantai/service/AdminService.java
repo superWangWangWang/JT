@@ -17,4 +17,5 @@ public interface AdminService {
     List<Material> getMaterials();
     List<Msds> getMsds(String c_id);
     List<Msds> getMsdsByIdAndCid(String id,String c_id);
+    List<Product> getOutput(String time,String cid);
 }

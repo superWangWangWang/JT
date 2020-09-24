@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <script src="../index/assets/js/jquery-1.10.2.js"></script>
+    <script src="../layui/layui.js" charset="utf-8"></script>
+
+</head>
+<body>
+<div id="my_url" hidden="hidden">equipment</div>
+<div style="padding: 20px">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header" style="background-color: #E1FFFF">
+                    <input id="selected" value="" hidden="hidden">
+                    <form class="layui-form">
+
+                        <div class="layui-input-inline">
+                            <!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
+                            <select  name="company" lay-verify="required" lay-search="" lay-filter="select_company">
+                                <option value="">下拉选择或输入公司关键字</option>
+                                <#list companys as c>
+                                    <option value="${c.id}">${c.companyShortName}</option>
+                                </#list>
+                            </select>
+                        </div>
+
+                    </form>
+                </div>
+
+
+            </div>
+
+
+            <div class="layui-card-body">
+                <table class="layui-hide" id="kyj"></table>
+                <table class="layui-hide" id="fj"></table>
+                <table class="layui-hide" id="dj"></table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        var url = document.getElementById("my_url").innerText;
+        url = replaceParamVal(url,"type","1");
+        table.render({
+            elem: '#kyj'
+            ,url: url
+            ,cols: [[
+                {field:'id',  title: 'ID',hide: true}
+                ,{field:'cId',  title: 'companyId',hide: true}
+                ,{field:'',  title: 'No',type: 'numbers'}
+                ,{field:'companyShortName',  title: '公司名'}
+                ,{field:'kinds',  title: '空压机型号'}
+                //,{field:'updateTime',  title: '最近更新'}
+                //,{ align: 'center', title: '操作', width: 180, templet: OnloadTool }
+                ,{field:'total',  title: '台数'}
+                ,{field:'loadPressure',  title: '加载压力-MPA'}
+                ,{field:'unloadPressure',  title: '卸载压力-MPA'}
+                ,{field:'power',  title: '功率-KW'}
+                ,{field:'exhaustTemperature',  title: '排气温度-℃'}
+                ,{field:'loadRate',  title: '负载率-%'}
+                ,{field:'lubricatingOilUsed',  title: '润滑油使用量-L'}
+                ,{field:'lubricatingOilReplace',  title: '润滑油更换周期-月/次'}
+            ]]
+            , page: true //是否显示分页
+            , limit: 4 //默认分页条数
+            , limits: [4,15, 30, 50 , 100] //自定义分页数据选项
+            //,done: function () {
+
+        });
+        url = replaceParamVal(url,"type","2");
+        table.render({
+            elem: '#fj'
+            ,url: url
+            ,cols: [[
+                {field:'id',  title: 'ID',hide: true}
+                ,{field:'cId',  title: 'companyId',hide: true}
+                ,{field:'',  title: 'No',type: 'numbers'}
+                ,{field:'companyShortName',  title: '公司名'}
+                ,{field:'kinds',  title: '风机型号'}
+                ,{field:'total',  title: '台数'}
+                ,{field:'power',  title: '功率-KW'}
+                ,{field:'lubricatingOilUsed',  title: '润滑油使用量-L'}
+                ,{field:'lubricatingOilReplace',  title: '润滑油更换周期-月/次'}
+                //,{field:'updateTime',  title: '最近更新'}
+                //,{ align: 'center', title: '操作', width: 180, templet: OnloadTool }
+                // ,{field:'unitCn',  title: '单位'}
+                // ,{field:'used',  title: '用量'}
+            ]]
+            , page: true //是否显示分页
+            , limit: 4 //默认分页条数
+            , limits: [4,15, 30, 50 , 100] //自定义分页数据选项
+            //,done: function () {
+            ,done: function(res, curr, count){
+                var total = 0;
+                for (var i = 0; i < res.data.length; i++) {
+                    //total += parseFloat(res.data[i].used).toFixed(2);//总计
+                    total =  accAdd(total,parseFloat(res.data[i].used))//总计
+                }
+                //document.getElementById("total").innerText = total;
+
+            }
+        });
+        url = replaceParamVal(url,"type","3");
+        table.render({
+            elem: '#dj'
+            ,url: url
+            ,cols: [[
+                {field:'id',  title: 'ID',hide: true}
+                ,{field:'cId',  title: 'companyId',hide: true}
+                ,{field:'',  title: 'No',type: 'numbers'}
+                ,{field:'companyShortName',  title: '公司名'}
+                ,{field:'kinds',  title: '电机型号'}
+                ,{field:'total',  title: '台数'}
+                ,{field:'power',  title: '功率-KW'}
+                ,{field:'voltage',  title: '电压-V'}
+                ,{field:'electricCurrent',  title: '电流-A'}
+                ,{field:'speed',  title: '转速-r/min'}
+                //,{field:'updateTime',  title: '最近更新'}
+                //,{ align: 'center', title: '操作', width: 180, templet: OnloadTool }
+                // ,{field:'unitCn',  title: '单位'}
+                // ,{field:'used',  title: '用量'}
+            ]]
+            , page: true //是否显示分页
+            , limit: 4 //默认分页条数
+            , limits: [4,15, 30, 50 , 100] //自定义分页数据选项
+            //,done: function () {
+            ,done: function(res, curr, count){
+                var total = 0;
+                for (var i = 0; i < res.data.length; i++) {
+                    //total += parseFloat(res.data[i].used).toFixed(2);//总计
+                    total =  accAdd(total,parseFloat(res.data[i].used))//总计
+                }
+                //document.getElementById("total").innerText = total;
+
+            }
+        });
+    });
+</script>
+
+<script>
+    //静态表格
+    layui.use('table',function() {
+        var table = layui.table;//加载表格模块
+        table.init('demo', {
+            //height: 500 //设置高度
+            //page: true //开启分页
+            //width:650
+        });
+    });
+
+    layui.use(['form', 'layer','jquery','upload','table'],//不能删
+        function() {
+            $ = layui.jquery,upload = layui.upload;;
+            var form = layui.form,
+                layer = layui.layer;
+            var d = new Date();
+            var table = layui.table;
+            //监听提交
+            form.on('select(select_company)',function (date) {
+                var old_url = document.getElementById("my_url").innerText;
+                var new_url = replaceParamVal(old_url,"cid",date.value);
+                document.getElementById("my_url").innerText = new_url;
+                var table = layui.table;
+                table.reload('kyj', {
+                    url: new_url + "&type=1",
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                });
+                table.reload('fj', {
+                    url: new_url + "&type=2",
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                });
+                table.reload('dj', {
+                    url: new_url + "&type=3",
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                });
+            })
+            // form.on('select(select_material)',function (date) {
+            //     var old_url = document.getElementById("my_url").innerText;
+            //     var new_url = replaceParamVal(old_url,"material",date.value);
+            //
+            //     document.getElementById("my_url").innerText = new_url;
+            //     var table = layui.table;
+            //     table.reload('test', {
+            //         url: new_url,
+            //         page: {
+            //             curr: 1 //重新从第 1 页开始
+            //         }
+            //         //,where: data.field
+            //     });
+            // })
+            // //日期组件初始赋值
+            layui.use('laydate', function(){
+                var laydate = layui.laydate;
+                //初始赋值
+                laydate.render({
+                    elem: '#date_time'
+                    //,value: ""
+                    ,type: 'month'
+                    ,trigger:'click'	//日期框只能点击选择，不能手动输入
+                    ,format: 'yyyy-MM'
+                    ,theme: 'molv'
+                    ,value: "${(dateTime)!''}"
+                    //,max: "2020-06"
+                    ,max: d.getFullYear() + '-' + lay.digit(d.getMonth() + 1)
+                    ,done: function(date){
+                        var old_url = document.getElementById("my_url").innerText;
+                        var new_url = replaceParamVal(old_url,"cid",date);
+                        console.log(new_url);
+                        document.getElementById("my_url").innerText = new_url;
+                        var table = layui.table;
+                        table.reload('kyj', {
+                            url: new_url,
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                        table.reload('fj', {
+                            url: new_url,
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                        table.reload('dj', {
+                            url: new_url,
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        });
+                    }
+
+                });
+
+            });
+
+        });
+
+    //input输入框只能输入数字和 小数点后两位
+    function inputnum(obj,val){
+        obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g,""); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+    }
+    function query_material() {
+        //执行重载
+        var table = layui.table;
+
+        table.reload('test', {
+            page: {
+                //url:'material?dateTime='+dateTime
+                curr: 1 //重新从第 1 页开始
+            }
+            //,where: data.field
+        });
+
+    }
+    //替换url参数
+    function replaceParamVal(url, arg, arg_val){
+        /// <summary>
+        /// url参数替换值
+        /// </summary>
+        /// <param name="url">目标url </param>
+        /// <param name="arg">需要替换的参数名称</param>
+        ///<param name="arg_val">替换后的参数的值</param>
+        /// <returns>参数替换后的url </returns>
+        var pattern = arg + '=([^&]*)';
+        var replaceText = arg + '=' + arg_val;
+        if (url.match(pattern)) {
+            var tmp = '/(' + arg + '=)([^&]*)/gi';
+            tmp = url.replace(eval(tmp), replaceText);
+            return tmp;
+        } else {
+            if (url.match('[\?]')) {
+                return url + '&' + replaceText;
+            } else {
+                return url + '?' + replaceText;
+            }
+        }
+        return url + '\n' + arg + '\n' + arg_val;
+    }
+
+    //说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
+    //调用：accAdd(arg1,arg2)
+    //返回值：arg1加上arg2的精确结果
+    function accAdd(arg1,arg2){
+        var r1,r2,m;
+        try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+        try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+        m=Math.pow(10,Math.max(r1,r2))
+        return (arg1*m+arg2*m)/m
+    }
+    function OnloadTool(data) {
+        //var htmls = '<a class="layui-btn layui-btn-xs" lay-event="edit">备注</a>';
+        if (data.EnclosureUrl != '') {
+            htmls = '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="download" href="down?type=3&cid='+ data.cId + '&id=' + data.id + '">下载</a>';
+        }
+        return htmls;
+    }
+
+</script>
+</html>

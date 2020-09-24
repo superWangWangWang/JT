@@ -111,6 +111,51 @@ public class AdminController {
     }
 
     /**
+     * 新增公司账户
+     * @return
+     */
+    @RequestMapping("companyAdd")
+    @ResponseBody
+    public ResultVO companyAdd(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        String name = request.getParameter("name");//登录账户 -- 需要判断是否重复
+        String pwd = request.getParameter("pwd");//登录密码
+        String cname = request.getParameter("cname");//公司全称 -- 需要判断是否重复
+        String csname = request.getParameter("csname");//公司简称 -- 需要判断是否重复
+        String code = request.getParameter("code");//通行码，没有的话不让添加
+        if(!"520520".equals(code)){//暂时写死为520520
+            resultVO.setMsg("通行码错误，您没有该权限");
+            return resultVO;
+        }
+
+        //获取所有的账户信息
+        List<User> allCompanyInfo = adminServiceImpl.getAllCompanyInfo();
+        for (int i = 0;i<allCompanyInfo.size();i++){
+            if (allCompanyInfo.get(i).getUserName().equals(name)){
+                resultVO.setMsg("账号已存在，请替换");
+                return resultVO;
+            }
+            if (allCompanyInfo.get(i).getCompanyName().equals(cname)){
+                resultVO.setMsg("公司全称已存在，请替换");
+                return resultVO;
+            }
+            if (allCompanyInfo.get(i).getCompanyShortName().equals(csname)){
+                resultVO.setMsg("公司简称已存在，请替换");
+                return resultVO;
+            }
+        }
+        //通过了，直接添加
+        adminServiceImpl.companyAdd(name,pwd,cname,csname);
+        resultVO.setMsg("新增成功");
+        //添加日志
+        User u = (User)request.getSession().getAttribute("user");
+        String content = "新增公司账户";
+        commonService.addLog(new JTLog(u.getId(), content));
+        return resultVO;
+    }
+
+    /**
      * 更新公司 是否启用（就是能不能登录） 不返回
      *
      * @param request
@@ -246,7 +291,7 @@ public class AdminController {
 
 
     /**
-     * 管理员下载文件方法（平面图，产品名录）
+     * 管理员下载文件方法（1=平面图，2=产品名录,3=msds,4=物料凭证，5=设备保养记录）
      * @param response
      * @param request
      * @throws IOException
@@ -255,7 +300,7 @@ public class AdminController {
     @ResponseBody
     public void downFile(HttpServletResponse response, HttpServletRequest request) throws IOException {
 
-        String type = request.getParameter("type");// 1 = 平面图 2 = 产品名录 3 = msds 4 =
+        String type = request.getParameter("type");// 1 = 平面图 2 = 产品名录 3 = msds 4 =物料凭证 5=设备保养记录
         String cid = request.getParameter("cid");//公司的id
         String id = request.getParameter("id");//表中行数据对应的id
 
@@ -294,6 +339,24 @@ public class AdminController {
                                 MyUtils.downloadFile(response,src,"utf-8");
                             }
                         }
+                case "4":
+                    if (StringUtils.isNotBlank(cid) && StringUtils.isNotBlank(id)){//cid 和 id两个都不为空
+                        //根据cid和id查询msds表的src
+                        List<MaterielEvidence> list = adminServiceImpl.getMaterielEvidenceSrc(cid,id);
+                        if (list.size() > 0 ){//查到了
+                            String src = list.get(0).getSrc();
+                            MyUtils.downloadFile(response,src,"utf-8");
+                        }
+                    }
+                case "5":
+                    if (StringUtils.isNotBlank(cid) && StringUtils.isNotBlank(id)){//cid 和 id两个都不为空
+                        //根据cid和id查询msds表的src
+                        List<EquipmentMaintenance> list = adminServiceImpl.getEquipmentMaintenanceSrc(cid,id);
+                        if (list.size() > 0 ){//查到了
+                            String src = list.get(0).getSrc();
+                            MyUtils.downloadFile(response,src,"utf-8");
+                        }
+                    }
                 default:
                     //没传对，不处理
                     break;
@@ -512,6 +575,142 @@ public class AdminController {
         resultVO.setCode(0);
         resultVO.setData(list);
         resultVO.setCount(total);
+        return resultVO;
+    }
+
+    /**
+     * 跳转到生产设备页面
+     * @return
+     */
+    @RequestMapping("toEquipment")
+    public ModelAndView toEquipment(){
+        ModelAndView mv = new ModelAndView();
+        //回显公司列表 -仅type = 0
+        List<User> companylist = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("===========" + companylist);
+        for (int i = 0;i<companylist.size();i++){
+            if (companylist.get(i).getType() != 0){
+                companylist.remove(i);
+            }
+        }
+
+        mv.addObject("companys",companylist);
+        mv.setViewName("admin/equipment-list");
+        return mv;
+    }
+
+    /**
+     * 获取生产设备数据
+     * @param request
+     * @return
+     */
+    @RequestMapping("equipment")
+    @ResponseBody
+    public ResultVO equipment(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        String page = request.getParameter("page");
+        String limit = request.getParameter("limit");
+        String cid = request.getParameter("cid");
+        String type = request.getParameter("type");
+        //根据公司id和type 1=空压机，2=风机，3=电机，查生产设备--没有公司id则查出全部
+        Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+        List<Equipment> list = adminServiceImpl.getEquipment(cid, type);
+        PageInfo pageInfo = new PageInfo(p);
+        int total = (int)pageInfo.getTotal();
+        resultVO.setCount(total);
+        resultVO.setData(list);
+        return resultVO;
+    }
+
+    /**
+     * 跳转到物料凭证列表页面
+     * @return
+     */
+    @RequestMapping("toMaterielEvidence")
+    public ModelAndView toMaterielEvidence(){
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("admin/materiel-evidence");
+        //回显公司列表
+        List<User> companys = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("==========="+companys);
+        for (int i = 0;i<companys.size();i++){
+            if (companys.get(i).getType() != 0){
+                companys.remove(i);
+            }
+        }
+
+        mv.addObject("companys",companys);
+        return mv;
+    }
+
+    /**
+     * 获取物料凭证上传信息，用于管理员下载
+     * @param request
+     * @return
+     */
+    @RequestMapping("materielEvidence")
+    @ResponseBody
+    public ResultVO materielEvidence(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        String page = request.getParameter("page");
+        String limit = request.getParameter("limit");
+        String time = request.getParameter("time");
+        String cid = request.getParameter("cid");
+        //查询上传的物料凭证
+
+        Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+        List<MaterielEvidence> list = adminServiceImpl.getMaterielEvidence(cid, time);
+        PageInfo pageInfo = new PageInfo(p);
+        int total = (int)pageInfo.getTotal();
+        resultVO.setCount(total);
+        resultVO.setData(list);
+        return resultVO;
+    }
+
+    /**
+     * 跳转到设备保养记录页面
+     * @return
+     */
+    @RequestMapping("toEquipmentMaintenance")
+    public ModelAndView toEquipmentMaintenance(){
+        ModelAndView mv = new ModelAndView();
+        //回显公司列表
+        List<User> companys = adminServiceImpl.getAllCompanyInfo();
+        System.out.println("==========="+companys);
+        for (int i = 0;i<companys.size();i++){
+            if (companys.get(i).getType() != 0){
+                companys.remove(i);
+            }
+        }
+
+        mv.addObject("companys",companys);
+        mv.setViewName("admin/equipment-maintenance");
+        return mv;
+    }
+
+    /**
+     * 获取设备保养记录
+     * @param request
+     * @return
+     */
+    @RequestMapping("equipmentMaintenance")
+    @ResponseBody
+    public ResultVO equipmentMaintenance(HttpServletRequest request){
+        ResultVO resultVO = new ResultVO();
+        resultVO.setCode(0);
+        String page = request.getParameter("page");
+        String limit = request.getParameter("limit");
+        String cid = request.getParameter("cid");
+        String time = request.getParameter("time");
+        //获取列表
+        Page p = PageHelper.startPage(Integer.parseInt(page), Integer.parseInt(limit));
+        List<EquipmentMaintenance> equipmentMaintenanceList = adminServiceImpl.getEquipmentMaintenanceList(time, cid);
+        PageInfo pageInfo = new PageInfo(p);
+        int total = (int)pageInfo.getTotal();
+        resultVO.setCount(total);
+        resultVO.setData(equipmentMaintenanceList);
         return resultVO;
     }
 }

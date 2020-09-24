@@ -41,6 +41,8 @@ public class Equipment {
     //create_time
     private Date createTime;
 
+    private String companyShortName;
+
     @Override
     public String toString() {
         return "Equipment{" +
@@ -61,6 +63,7 @@ public class Equipment {
                 ", speed=" + speed +
                 ", state=" + state +
                 ", createTime=" + createTime +
+                ", companyShortName='" + companyShortName + '\'' +
                 '}';
     }
 
@@ -198,5 +201,13 @@ public class Equipment {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getCompanyShortName() {
+        return companyShortName;
+    }
+
+    public void setCompanyShortName(String companyShortName) {
+        this.companyShortName = companyShortName;
     }
 }

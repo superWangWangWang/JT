@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../layui/css/layui.css" media="all">
+    <script src="../index/assets/js/jquery-1.10.2.js"></script>
+    <script src="../layui/layui.js" charset="utf-8"></script>
+
+</head>
+<body>
+<div id="my_url" hidden="hidden">equipmentMaintenance</div>
+<div style="padding: 20px">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header" style="background-color: #E1FFFF">
+                    <input id="selected" value="" hidden="hidden">
+                    <form class="layui-form">
+
+                        <div class="layui-input-inline">
+                            <input type="text" id="date_time" name="dateTime" readonly lay-verify="required|date" class="layui-input" placeholder="选择年月">
+                        </div>
+                        <!--                                            <div id="selected">aa</div>-->
+                        <div class="layui-input-inline">
+                            <!--                            <select name="material" lay-verify="required" lay-search="" lay-filter="material">-->
+                            <select  name="company" lay-verify="required" lay-search="" lay-filter="select_company">
+                                <option value="">下拉选择或输入公司关键字</option>
+                                <#list companys as c>
+                                <option value="${c.id}">${c.companyShortName}</option>
+                            </#list>
+                            </select>
+                        </div>
+
+                        <!--                        <button type="button" class="layui-btn layui-btn-warm" onclick="query_material()">查询</button>-->
+                    </form>
+                </div>
+
+
+            </div>
+
+
+            <div class="layui-card-body">
+                <table class="layui-hide" id="material"></table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+<script>
+    layui.use('table', function(){
+        var table = layui.table;
+        var url = document.getElementById("my_url").innerText;
+        table.render({
+            elem: '#material'
+            ,url: url
+            // ,defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+            //     title: '提示'
+            //     ,layEvent: 'LAYTABLE_TIPS'
+            //     ,icon: 'layui-icon-tips'
+            // }]
+            // ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,cols: [[
+                {field:'id',  title: 'ID',hide: true}
+                ,{field:'',  title: 'No',type: 'numbers'}
+                ,{field:'companyShortName',  title: '公司'}
+                ,{field:'maintainTime',  title: '时间'} //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+                ,{ align: 'center', title: '操作', width: 180, templet: OnloadTool }
+
+            ]]
+            , page: true //是否显示分页
+            , limit: 15 //默认分页条数
+            , limits: [15, 30, 50 , 100] //自定义分页数据选项
+            //,done: function () {
+            // ,done: function(res, curr, count){
+            //     var total = 0;
+            //     for (var i = 0; i < res.data.length; i++) {
+            //         //total += parseFloat(res.data[i].used).toFixed(2);//总计
+            //         total =  accAdd(total,parseFloat(res.data[i].used))//总计
+            //     }
+            //     document.getElementById("total").innerText = total;
+            //     //console.log(defray)
+            // }
+        });
+    });
+</script>
+
+<script>
+    //静态表格
+    layui.use('table',function() {
+        var table = layui.table;//加载表格模块
+        table.init('demo', {
+            //height: 500 //设置高度
+            //page: true //开启分页
+            //width:650
+        });
+    });
+
+    layui.use(['form', 'layer','jquery','upload','table'],//不能删
+        function() {
+            $ = layui.jquery,upload = layui.upload;;
+            var form = layui.form,
+                layer = layui.layer;
+            var d = new Date();
+            var table = layui.table;
+            //监听提交
+            form.on('select(select_company)',function (date) {
+                var old_url = document.getElementById("my_url").innerText;
+                var new_url = replaceParamVal(old_url,"cid",date.value);
+
+                document.getElementById("my_url").innerText = new_url;
+                var table = layui.table;
+                table.reload('material', {
+                    url: new_url,
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    //,where: data.field
+                });
+            })
+            form.on('select(select_material)',function (date) {
+                var old_url = document.getElementById("my_url").innerText;
+                var new_url = replaceParamVal(old_url,"material",date.value);
+
+                document.getElementById("my_url").innerText = new_url;
+                var table = layui.table;
+                table.reload('material', {
+                    url: new_url,
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    //,where: data.field
+                });
+            })
+            // //日期组件初始赋值
+            layui.use('laydate', function(){
+                var laydate = layui.laydate;
+                //初始赋值
+                laydate.render({
+                    elem: '#date_time'
+                    //,value: ""
+                    ,type: 'month'
+                    ,trigger:'click'	//日期框只能点击选择，不能手动输入
+                    ,format: 'yyyy-MM'
+                    ,theme: 'molv'
+                    ,value: "${(dateTime)!''}"
+                    //,max: "2020-06"
+                    ,max: d.getFullYear() + '-' + lay.digit(d.getMonth() + 1)
+                    ,done: function(date){
+                        var old_url = document.getElementById("my_url").innerText;
+                        var new_url = replaceParamVal(old_url,"time",date);
+
+                        document.getElementById("my_url").innerText = new_url;
+                        var table = layui.table;
+                        table.reload('material', {
+                            url: new_url,
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                            //,where: data.field
+                        });
+                    }
+
+                });
+
+            });
+
+        });
+    function OnloadTool(data) {
+        //var htmls = '<a class="layui-btn layui-btn-xs" lay-event="edit">备注</a>';
+        if (data.EnclosureUrl != '') {
+            htmls = '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="download" href="down?type=5&cid='+ data.cId + '&id=' + data.id + '">下载</a>';
+        }
+        return htmls;
+    }
+    //input输入框只能输入数字和 小数点后两位
+    function inputnum(obj,val){
+        obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g,""); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+    }
+    function query_material() {
+        //执行重载
+        var table = layui.table;
+
+        table.reload('material', {
+            page: {
+                //url:'material?dateTime='+dateTime
+                curr: 1 //重新从第 1 页开始
+            }
+            //,where: data.field
+        });
+
+    }
+    //替换url参数
+    function replaceParamVal(url, arg, arg_val){
+        /// <summary>
+        /// url参数替换值
+        /// </summary>
+        /// <param name="url">目标url </param>
+        /// <param name="arg">需要替换的参数名称</param>
+        ///<param name="arg_val">替换后的参数的值</param>
+        /// <returns>参数替换后的url </returns>
+        var pattern = arg + '=([^&]*)';
+        var replaceText = arg + '=' + arg_val;
+        if (url.match(pattern)) {
+            var tmp = '/(' + arg + '=)([^&]*)/gi';
+            tmp = url.replace(eval(tmp), replaceText);
+            return tmp;
+        } else {
+            if (url.match('[\?]')) {
+                return url + '&' + replaceText;
+            } else {
+                return url + '?' + replaceText;
+            }
+        }
+        return url + '\n' + arg + '\n' + arg_val;
+    }
+
+    //说明：javascript的加法结果会有误差，在两个浮点数相加的时候会比较明显。这个函数返回较为精确的加法结果。
+    //调用：accAdd(arg1,arg2)
+    //返回值：arg1加上arg2的精确结果
+    function accAdd(a,b){
+        var c, d, e;
+        try {
+            c = a.toString().split(".")[1].length;
+        } catch (f) {
+            c = 0;
+        }
+        try {
+            d = b.toString().split(".")[1].length;
+        } catch (f) {
+            d = 0;
+        }
+        return e = Math.pow(10, Math.max(c, d)), (mul(a, e) + mul(b, e)) / e;
+    }
+    function mul(a, b) {
+        var c = 0,
+            d = a.toString(),
+            e = b.toString();
+        try {
+            c += d.split(".")[1].length;
+        } catch (f) {}
+        try {
+            c += e.split(".")[1].length;
+        } catch (f) {}
+        return Number(d.replace(".", "")) * Number(e.replace(".", "")) / Math.pow(10, c);
+    }
+</script>
+</html>

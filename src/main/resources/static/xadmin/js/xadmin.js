@@ -45,6 +45,7 @@
 	    this.set_data(title,url,id);
 	    element.tabChange('xbs_tab', id);
         //xadmin.del_data(id);//防止页面选项卡的缓存导致跨界操作 --by 波
+        xadmin.del_other_data(id);
 	}
 
   Xadmin.prototype.del_tab = function (id) {

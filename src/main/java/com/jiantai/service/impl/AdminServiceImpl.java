@@ -13,6 +13,18 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private AdminDao adminDao;
 
+    /**
+     * 添加公司账户
+     * @param user_name
+     * @param password
+     * @param company_name
+     * @param company_short_name
+     */
+    @Override
+    public void companyAdd(String user_name, String password, String company_name, String company_short_name) {
+        adminDao.companyAdd(user_name,password,company_name,company_short_name);
+    }
+
     @Override
     public List getCompanyInfoByName(String name) {
         List list = adminDao.getCompanyInfoByName(name);
@@ -137,5 +149,60 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public List<Product> getOutput(String time, String cid) {
         return adminDao.getOutput(time,cid);
+    }
+
+    /**
+     * 根据公司id查询生产设备
+     * @param cid
+     * @param type
+     * @return
+     */
+    @Override
+    public List<Equipment> getEquipment(String cid, String type) {
+        return adminDao.getEquipment(cid,type);
+    }
+
+    /**
+     * 查询上传的物料凭证
+     * @param cid
+     * @param time
+     * @return
+     */
+    @Override
+    public List<MaterielEvidence> getMaterielEvidence(String cid, String time) {
+        return adminDao.getMaterielEvidence(cid,time);
+    }
+
+    /**
+     * 根据公司id和物料凭证id查询 物料凭证src用于管理员下载
+     * @param cid
+     * @param id
+     * @return
+     */
+    @Override
+    public List<MaterielEvidence> getMaterielEvidenceSrc(String cid, String id) {
+        return adminDao.getMaterielEvidenceSrc(cid,id);
+    }
+
+    /**
+     * 获取设备保养记录列表
+     * @param time
+     * @param cid
+     * @return
+     */
+    @Override
+    public List<EquipmentMaintenance> getEquipmentMaintenanceList(String time, String cid) {
+        return adminDao.getEquipmentMaintenanceList(time,cid);
+    }
+
+    /**
+     * 获取设备保养记录的src用于管理员下载
+     * @param cid
+     * @param id
+     * @return
+     */
+    @Override
+    public List<EquipmentMaintenance> getEquipmentMaintenanceSrc(String cid, String id) {
+        return adminDao.getEquipmentMaintenanceSrc(cid,id);
     }
 }

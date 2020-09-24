@@ -10,6 +10,16 @@ import java.util.List;
 @Mapper
 public interface AdminDao {
     /**
+     * 添加公司账户
+     * @param user_name
+     * @param password
+     * @param company_name
+     * @param company_short_name
+     */
+    @Insert("INSERT INTO `user` SET `user_name` = #{user_name},`password` = #{password},`company_name` = #{company_name},`company_short_name`= #{company_short_name}")
+    void companyAdd(String user_name,String password,String company_name,String company_short_name);
+
+    /**
      * 查询所有的公司信息
      * @return
      */
@@ -57,22 +67,6 @@ public interface AdminDao {
      */
     @Update("update `user` set `modify` = #{user.modify} where `id` = #{user.id}")
     void updateCompanyModifyById(@Param("user") User user);
-
-//    /**
-//     * 根据公司id查询其操作记录
-//     * @param cid
-//     * @return
-//     */
-//    @Select("SELECT * FROM `log` WHERE `cid` = #{cid} ORDER BY `create_time` DESC LIMIT 100")
-//    List<JTLog> getLogByCid(Integer cid);
-
-//    /**
-//     * 添加操作日志
-//     * @param log
-//     */
-//    @Insert("INSERT INTO `log` (cid,content) VALUE (#{log.cid},#{log.content})")
-//    void addLog(@Param("log") JTLog log);
-
 
     /**
      * 查询物料列表
@@ -131,6 +125,50 @@ public interface AdminDao {
     @SelectProvider(type = AdminDaoProvider.class, method = "getOutput")
     List<Product> getOutput(String time,String cid);
 
+    /**
+     * 根据公司id查询生产设备
+     * @param cid
+     * @param type
+     * @return
+     */
+    @SelectProvider(type = AdminDaoProvider.class,method = "getEquipment")
+    List<Equipment> getEquipment(String cid,String type);
+
+    /**
+     * 查询上传的物料凭证
+     * @param cid
+     * @param time
+     * @return
+     */
+    @SelectProvider(type = AdminDaoProvider.class,method = "getMaterielEvidence")
+    List<MaterielEvidence> getMaterielEvidence(String cid,String time);
+
+    /**
+     * 根据公司id和物料凭证id查询 物料凭证src用于管理员下载
+     * @param cid
+     * @param id
+     * @return
+     */
+    @Select("SELECT materiels_evidence.* FROM materiels_evidence INNER JOIN `user` ON materiels_evidence.`c_id` = `user`.`id` WHERE `user`.`id` = #{cid} AND materiels_evidence.`id` = #{id}")
+    List<MaterielEvidence> getMaterielEvidenceSrc(String cid,String id);
+
+    /**
+     * 获取设备保养记录列表
+     * @param time
+     * @param cid
+     * @return
+     */
+    @SelectProvider(type = AdminDaoProvider.class,method = "getEquipmentMaintenanceList")
+    List<EquipmentMaintenance> getEquipmentMaintenanceList(String time,String cid);
+
+    /**
+     * 获取设备保养记录的src用于管理员下载
+     * @param cid
+     * @param id
+     * @return
+     */
+    @Select("SELECT e.*,u.`company_short_name` FROM equipment_maintenance AS e INNER JOIN `user` AS u ON u.`id` = e.`c_id` WHERE e.`state` = 1 AND e.`id` = #{id} AND e.`c_id` = #{cid}")
+    List<EquipmentMaintenance> getEquipmentMaintenanceSrc(String cid,String id);
 
     class AdminDaoProvider {
         public String getMaterialsUsedByTime(String used_time,String c_id,String mid) {
@@ -169,6 +207,28 @@ public interface AdminDao {
             if (StringUtils.isNotBlank(cid)){
                 sql = sql + " AND po.c_id = " + cid;
             }
+            return sql;
+        }
+        public String getEquipment(String cid,String type){
+            String sql = "SELECT equipment.*,`user`.`company_short_name` FROM equipment INNER JOIN `user` ON `user`.`id` = equipment.`c_id` WHERE equipment.`type` = " + type + " AND equipment.`state` = 1 AND `user`.`type` = 0";
+            if (StringUtils.isNotBlank(cid))
+                sql += " AND equipment.`c_id` = " + cid;
+            return sql;
+        }
+        public String getMaterielEvidence(String cid,String time){
+            String sql = "SELECT m.*,u.`company_short_name` FROM materiels_evidence AS m INNER JOIN `user` AS u ON m.c_id = u.id WHERE 1 = 1";
+            if (StringUtils.isNotBlank(cid))
+                sql += " AND m.`c_id` = " + cid;
+            if (StringUtils.isNotBlank(time) && MyUtils.isValidDate(time))
+                sql += " AND m.`evidence_time` = '" + time + "'";
+            return sql;
+        }
+        public String getEquipmentMaintenanceList(String time,String cid){
+            String sql = "SELECT e.*,u.`company_short_name` FROM equipment_maintenance AS e INNER JOIN `user` AS u ON u.`id` = e.`c_id` WHERE e.`state` = 1";
+            if (StringUtils.isNotBlank(time) && MyUtils.isValidDate(time))
+                sql += " AND e.`maintain_time` = '" + time + "'";
+            if (StringUtils.isNotBlank(cid))
+                sql += " AND e.`c_id` = " + cid;
             return sql;
         }
     }

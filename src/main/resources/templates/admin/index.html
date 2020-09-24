@@ -63,8 +63,13 @@
                                     <cite>物料申报</cite></a>
                             </li>
                             <li>
+                                <a onclick="xadmin.add_tab('物料佐证管理','toMaterielEvidence',true)">
+                                    <i class="iconfont">&#xe71d;</i>
+                                    <cite>物料佐证管理</cite></a>
+                            </li>
+                            <li>
                             <a onclick="xadmin.add_tab('产量管理','toOutput',true)">
-                                <i class="iconfont">&#xe6f6;</i>
+                                <i class="iconfont">&#xe6ce;</i>
                                 <cite>产量管理</cite></a>
                             </li>
                             <li>
@@ -73,8 +78,18 @@
                                     <cite>MSDS管理</cite></a>
                             </li>
                             <li>
+                                <a onclick="xadmin.add_tab('生产设备管理','toEquipment',true)">
+                                    <i class="iconfont">&#xe709;</i>
+                                    <cite>生产设备管理</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('设备维护管理','toEquipmentMaintenance',true)">
+                                    <i class="iconfont">&#xe69e;</i>
+                                    <cite>设备维护管理</cite></a>
+                            </li>
+                            <li>
                                 <a onclick="xadmin.add_tab('系统日志','showLog',true)">
-                                    <i class="iconfont">&#xe74e;</i>
+                                    <i class="iconfont">&#xe757;</i>
                                     <cite>系统日志</cite></a>
                             </li>
 
@@ -94,7 +109,7 @@
             <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
                 <ul class="layui-tab-title">
                     <li class="home">
-                        <i class="layui-icon">&#xe68e;</i>我的桌面</li></ul>
+                        <i class="layui-icon">&#xe68e;</i>数据统计</li></ul>
 
 <!--                <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">-->
 <!--                    <dl>-->
@@ -120,6 +135,6 @@
 
     </body>
 <script>
-var is_remember = false;
+//var is_remember = false;
 </script>
 </html>

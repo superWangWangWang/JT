@@ -18,4 +18,10 @@ public interface AdminService {
     List<Msds> getMsds(String c_id);
     List<Msds> getMsdsByIdAndCid(String id,String c_id);
     List<Product> getOutput(String time,String cid);
+    List<Equipment> getEquipment(String cid,String type);
+    List<MaterielEvidence> getMaterielEvidence(String cid,String time);
+    List<MaterielEvidence> getMaterielEvidenceSrc(String cid,String id);
+    List<EquipmentMaintenance> getEquipmentMaintenanceList(String time,String cid);
+    List<EquipmentMaintenance> getEquipmentMaintenanceSrc(String cid,String id);
+    void companyAdd(String user_name,String password,String company_name,String company_short_name);
 }

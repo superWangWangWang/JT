@@ -24,23 +24,40 @@
                     <div class="layui-form-item">
 
                         <label for="L_username" class="layui-form-label">
-                            <span class="x-red">*</span>输入账号</label>
+                            <span class="x-red">*</span>登录账号</label>
                         <div class="layui-input-inline">
                             <input type="text" id="L_username" name="username" required="" lay-verify="required" autocomplete="off" class="layui-input" style="background-color: #64ffda"></div>
                     </div>
                     <div class="layui-form-item">
                         <label for="L_pass" class="layui-form-label">
-                            <span class="x-red">*</span>输入密码</label>
+                            <span class="x-red">*</span>登录密码</label>
                         <div class="layui-input-inline">
                             <input type="text" id="L_pass" name="pass" required="" lay-verify="required" autocomplete="off" class="layui-input" style="background-color: #64ffda"></div>
                     </div>
-
+                    <div class="layui-form-item">
+                        <label for="L_cname" class="layui-form-label">
+                            <span class="x-red">*</span>公司全称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="L_cname" name="pass" required="" lay-verify="required" autocomplete="off" class="layui-input" style="background-color: #64ffda"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="L_csname" class="layui-form-label">
+                            <span class="x-red">*</span>公司简称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="L_csname" name="pass" required="" lay-verify="required" autocomplete="off" class="layui-input" style="background-color: #64ffda"></div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label for="L_code" class="layui-form-label">
+                            <span class="x-red">*</span>通行码</label>
+                        <div class="layui-input-inline">
+                            <input placeholder="联系超级管理员获取" type="text" id="L_code" name="pass" required="" lay-verify="required" autocomplete="off" class="layui-input" style="background-color: #64ffda"></div>
+                    </div>
                     <div class="layui-form-item" align="center">
 
                         <button class="layui-btn" lay-filter="add" lay-submit="">增加</button>
                     </div>
                 </form>
-                <div  align="center"><span style="font-size: 15px;color: #cc0000">添加账号成功后，管理员需帮公司填写“公司全称”、“公司简称”、“企业编号”，然后尽快联系公司登录并完善资料</span></div>
+<!--                <div  align="center"><span style="font-size: 15px;color: #cc0000">添加账号成功后，管理员需帮公司填写“公司全称”、“公司简称”、“企业编号”，然后尽快联系公司登录并完善资料</span></div>-->
             </div>
         </div>
         <script>layui.use(['form', 'layer','jquery'],
@@ -52,7 +69,7 @@
                 form.on('submit(add)',
                 function(data) {
                     $.ajax({
-                        url:"companyAdd?name="+$('#L_username').val()+"&pwd="+$('#L_pass').val(),
+                        url:"companyAdd?name="+$('#L_username').val()+"&pwd="+$('#L_pass').val()+"&cname="+$('#L_cname').val()+"&csname="+$('#L_csname').val()+"&code="+$('#L_code').val(),
                         type:"get",
                         dataType:"json",
                         success:function (data) {

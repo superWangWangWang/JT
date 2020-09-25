@@ -10,6 +10,52 @@ import java.util.List;
 @Mapper
 public interface AdminDao {
     /**
+     * 获取已上传msds的公司名列表
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM msds AS m INNER JOIN `user` AS u ON m.c_id = u.id WHERE m.state = 1 AND u.type = 0 AND u.state = 1 GROUP BY m.c_id ")
+    List<String> getMSDSCompanyName();
+
+    /**
+     * 获取生产设备提交的企业名列表
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM equipment AS e INNER JOIN `user` AS u ON e.c_id = u.id WHERE e.state = 1 AND u.type = 0 AND u.state = 1 GROUP BY e.c_id ")
+    List<String> getEquipmentCompanyName();
+
+    /**
+     * 获取每月设备保养记录的企业名列表
+     * @param time
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM equipment_maintenance AS e INNER JOIN `user` AS u ON e.c_id = u.id WHERE e.maintain_time = #{time} AND u.type = 0 AND u.state = 1 GROUP BY e.c_id")
+    List<String> getEquipmentMaintenanceCompanyNameLastMonth(String time);
+
+    /**
+     * 获取上一个月的提交产品产量的公司名列表
+     * @param time
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM products_output AS po INNER JOIN `user` AS u ON po.c_id = u.id WHERE po.output_time = #{time} AND u.type = 0 AND u.state = 1 GROUP BY po.c_id")
+    List<String> getProductsOutputCompanyNameLastMonth(String time);
+
+    /**
+     * 获取上个月的物料佐证上传公司名列表
+     * @param time
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM materiels_evidence AS m INNER JOIN `user` AS u ON m.c_id = u.id WHERE m.evidence_time = #{time} AND u.type = 0 AND u.state = 1")
+    List<String> getMaterielsEvidenceCompanyNameLastMonth(String time);
+
+    /**
+     * 获取上个月的物料申报公司名列表
+     * @param time
+     * @return
+     */
+    @Select("SELECT u.company_short_name AS `name` FROM materials_used AS m INNER JOIN `user` AS u ON u.id = m.c_id INNER JOIN materials_remember AS mr ON mr.name = m.name WHERE mr.state = 1 AND m.used_time = #{time} AND mr.c_id = u.id AND u.type = 0 AND u.state = 1 GROUP BY m.c_id")
+    List<String> getMaterialsUsedCompanyNameLastMonth(String time);
+//------------------------------------下面的暂时没对公司账户是否state = 1 判断，如果是0则需要排除，因为该账户已不能正常登录使用
+    /**
      * 添加公司账户
      * @param user_name
      * @param password

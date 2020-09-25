@@ -53,9 +53,14 @@
                             <i class="iconfont nav_right">&#xe697;</i></a>
                         <ul class="sub-menu">
                             <li>
+                                <a onclick="xadmin.add_tab('数据统计','preview',true)">
+                                    <i class="iconfont">&#xe6ce;</i>
+                                    <cite>数据统计</cite></a>
+                            </li>
+                            <li>
                                 <a onclick="xadmin.add_tab('公司管理','company-list.html',true)">
                                     <i class="iconfont">&#xe70b;</i>
-                                    <cite>公司管理</cite></a>
+                                    <cite>园区公司</cite></a>
                             </li>
                             <li>
                                 <a onclick="xadmin.add_tab('物料申报管理','toMaterial',true)">
@@ -63,29 +68,29 @@
                                     <cite>物料申报</cite></a>
                             </li>
                             <li>
-                                <a onclick="xadmin.add_tab('物料佐证管理','toMaterielEvidence',true)">
+                                <a onclick="xadmin.add_tab('物料佐证','toMaterielEvidence',true)">
                                     <i class="iconfont">&#xe71d;</i>
-                                    <cite>物料佐证管理</cite></a>
+                                    <cite>物料佐证</cite></a>
                             </li>
                             <li>
-                            <a onclick="xadmin.add_tab('产量管理','toOutput',true)">
-                                <i class="iconfont">&#xe6ce;</i>
-                                <cite>产量管理</cite></a>
+                            <a onclick="xadmin.add_tab('产品产量','toOutput',true)">
+                                <i class="iconfont">&#xe702;</i>
+                                <cite>产品产量</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('生产设备','toEquipment',true)">
+                                    <i class="iconfont">&#xe709;</i>
+                                    <cite>生产设备</cite></a>
+                            </li>
+                            <li>
+                                <a onclick="xadmin.add_tab('设备维护','toEquipmentMaintenance',true)">
+                                    <i class="iconfont">&#xe69e;</i>
+                                    <cite>设备维护</cite></a>
                             </li>
                             <li>
                                 <a onclick="xadmin.add_tab('MSDS管理','toMsds',true)">
                                     <i class="iconfont">&#xe744;</i>
                                     <cite>MSDS管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('生产设备管理','toEquipment',true)">
-                                    <i class="iconfont">&#xe709;</i>
-                                    <cite>生产设备管理</cite></a>
-                            </li>
-                            <li>
-                                <a onclick="xadmin.add_tab('设备维护管理','toEquipmentMaintenance',true)">
-                                    <i class="iconfont">&#xe69e;</i>
-                                    <cite>设备维护管理</cite></a>
                             </li>
                             <li>
                                 <a onclick="xadmin.add_tab('系统日志','showLog',true)">
@@ -109,7 +114,7 @@
             <div class="layui-tab tab" lay-filter="xbs_tab" lay-allowclose="false">
                 <ul class="layui-tab-title">
                     <li class="home">
-                        <i class="layui-icon">&#xe68e;</i>数据统计</li></ul>
+                        <i class="layui-icon">&#xe68e;</i>欢迎</li></ul>
 
 <!--                <div class="layui-unselect layui-form-select layui-form-selected" id="tab_right">-->
 <!--                    <dl>-->

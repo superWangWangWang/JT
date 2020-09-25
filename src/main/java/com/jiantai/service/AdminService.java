@@ -24,4 +24,10 @@ public interface AdminService {
     List<EquipmentMaintenance> getEquipmentMaintenanceList(String time,String cid);
     List<EquipmentMaintenance> getEquipmentMaintenanceSrc(String cid,String id);
     void companyAdd(String user_name,String password,String company_name,String company_short_name);
+    List<String> getMaterialsUsedCompanyNameLastMonth(String time);
+    List<String> getMaterielsEvidenceCompanyNameLastMonth(String time);
+    List<String> getProductsOutputCompanyNameLastMonth(String time);
+    List<String> getEquipmentMaintenanceCompanyNameLastMonth(String time);
+    List<String> getEquipmentCompanyName();
+    List<String> getMSDSCompanyName();
 }

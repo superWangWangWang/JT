@@ -205,4 +205,62 @@ public class AdminServiceImpl implements AdminService {
     public List<EquipmentMaintenance> getEquipmentMaintenanceSrc(String cid, String id) {
         return adminDao.getEquipmentMaintenanceSrc(cid,id);
     }
+
+    /**
+     * 获取上个月的物料申报公司名列表
+     * @param time
+     * @return
+     */
+    @Override
+    public List<String> getMaterialsUsedCompanyNameLastMonth(String time) {
+        return adminDao.getMaterialsUsedCompanyNameLastMonth(time);
+    }
+
+    /**
+     * 获取上个月的物料佐证上传公司名列表
+     * @param time
+     * @return
+     */
+    @Override
+    public List<String> getMaterielsEvidenceCompanyNameLastMonth(String time) {
+        return adminDao.getMaterielsEvidenceCompanyNameLastMonth(time);
+    }
+
+    /**
+     * 获取上一个月的提交产品产量的公司名列表
+     * @param time
+     * @return
+     */
+    @Override
+    public List<String> getProductsOutputCompanyNameLastMonth(String time) {
+        return adminDao.getProductsOutputCompanyNameLastMonth(time);
+    }
+
+    /**
+     * 获取每月设备保养记录的企业名列表
+     * @param time
+     * @return
+     */
+    @Override
+    public List<String> getEquipmentMaintenanceCompanyNameLastMonth(String time) {
+        return adminDao.getEquipmentMaintenanceCompanyNameLastMonth(time);
+    }
+
+    /**
+     * 获取生产设备提交的企业名列表
+     * @return
+     */
+    @Override
+    public List<String> getEquipmentCompanyName() {
+        return adminDao.getEquipmentCompanyName();
+    }
+
+    /**
+     * 获取已上传msds的公司名列表
+     * @return
+     */
+    @Override
+    public List<String> getMSDSCompanyName() {
+        return adminDao.getMSDSCompanyName();
+    }
 }

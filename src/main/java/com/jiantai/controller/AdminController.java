@@ -18,6 +18,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -39,7 +41,6 @@ public class AdminController {
     public ModelAndView toIndex(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView();
         User user = (User)request.getSession().getAttribute("user");
-        //mv.addObject("data", "aaa");
         mv.addObject("user",user);
         mv.setViewName("admin/index");
         return mv;
@@ -52,11 +53,43 @@ public class AdminController {
      */
     @RequestMapping("welcome")
     public ModelAndView toWelcome() {
-        System.out.println("welcome");
         ModelAndView mv = new ModelAndView();
-        mv.addObject("data", "aaa");
-        //查询公司一共有多少
+        //mv.addObject("data", "aaa");
+
         mv.setViewName("admin/welcome");
+        return mv;
+    }
+
+    /**
+     * 数据预览
+     * @return
+     */
+    @RequestMapping("preview")
+    public ModelAndView preview(){
+        ModelAndView mv = new ModelAndView();
+        LocalDate now = LocalDate.now();
+        now = now.minusMonths(1);
+        String time = now.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        //统计上月物料申报企业个数，
+        List<String> list1 = adminServiceImpl.getMaterialsUsedCompanyNameLastMonth(time);
+        mv.addObject("total_MaterialsUsed",list1);
+        //统计上月物料凭证上传企业个数，
+        List<String> list2 = adminServiceImpl.getMaterielsEvidenceCompanyNameLastMonth(time);
+        mv.addObject("total_MaterielsEvidence",list2);
+        //统计上一个月的提交产品产量的企业个数
+        List<String> list3 = adminServiceImpl.getProductsOutputCompanyNameLastMonth(time);
+        mv.addObject("total_ProductsOutput",list3);
+        //统计上一个月的设备保养记录提交的企业个数
+        List<String> list4 = adminServiceImpl.getEquipmentMaintenanceCompanyNameLastMonth(time);
+        mv.addObject("total_EquipmentMaintenance",list4);
+        //统计获取生产设备提交的企业个数
+        List<String> list5 = adminServiceImpl.getEquipmentCompanyName();
+        mv.addObject("total_Equipment",list5);
+        //统计上传msds的企业个数
+        List<String> list6 = adminServiceImpl.getMSDSCompanyName();
+        mv.addObject("total_MSDS",list6);
+
+        mv.setViewName("admin/preview");
         return mv;
     }
 

@@ -55,6 +55,8 @@ public class User {
     //remarks               varchar(256)  备注
     private String remarks;
 
+    private Integer test;
+
     @Override
     public String toString() {
         return "User{" +
@@ -82,6 +84,7 @@ public class User {
                 ", type=" + type +
                 ", state=" + state +
                 ", remarks='" + remarks + '\'' +
+                ", test=" + test +
                 '}';
     }
 
@@ -275,5 +278,13 @@ public class User {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public Integer getTest() {
+        return test;
+    }
+
+    public void setTest(Integer test) {
+        this.test = test;
     }
 }

@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -70,6 +71,15 @@ public class AdminController {
         LocalDate now = LocalDate.now();
         now = now.minusMonths(1);
         String time = now.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+        //取得所有公司账户
+        List<User> users = adminServiceImpl.getAllCompanyInfoExcludeSuper();
+        ArrayList uList = new ArrayList();
+        users.forEach(u->{
+            if (u.getState() == 1)
+                uList.add(u);
+        });
+        mv.addObject("users",uList);
+
         //统计上月物料申报企业个数，
         List<String> list1 = adminServiceImpl.getMaterialsUsedCompanyNameLastMonth(time);
         mv.addObject("total_MaterialsUsed",list1);

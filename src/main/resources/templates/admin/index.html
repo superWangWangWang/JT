@@ -33,7 +33,7 @@
                 <a><i title="展开左侧栏" class="iconfont">&#xe699;</i></a>
             </div>
             <ul class="layui-nav layui-bg-green right">
-                <#if user?? && user.type == 2>
+                <#if user?? && user.test == 1>
                 <li class="layui-nav-item"> <a href="../user/index.html" target="_Blank"><i class="iconfont">&#xe6aa;</i>  公司账户模式【测试专用】</a></li>
                 </#if>
                 <li class="layui-nav-item"><a href="../user/logout"><i class="iconfont">&#xe726;</i>  登出系统</a></li>

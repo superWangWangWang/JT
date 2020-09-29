@@ -71,14 +71,7 @@
                                         </p>
                                     </a>
                                 </li>
-                                <li class="layui-col-md2 layui-col-xs6">
-                                    <a href="javascript:;" class="x-admin-backlog-body">
-                                        <h3 align="center">生产设备提交</h3>
-                                        <p align="center">
-                                            <cite>${total_Equipment?size}家</cite>
-                                        </p>
-                                    </a>
-                                </li>
+
                                 <li class="layui-col-md2 layui-col-xs6">
                                     <a href="javascript:;" class="x-admin-backlog-body">
                                         <h3 align="center">MSDS提交</h3>
@@ -87,7 +80,122 @@
                                         </p>
                                     </a>
                                 </li>
+                                <li class="layui-col-md2 layui-col-xs6">
+                                    <a href="javascript:;" class="x-admin-backlog-body">
+                                        <h3 align="center">生产设备提交</h3>
+                                        <p align="center">
+                                            <cite>${total_Equipment?size}家</cite>
+                                        </p>
+                                    </a>
+                                </li>
                             </ul>
+
+
+                            <div class="layui-form">
+                                <table class="layui-table">
+                                    <colgroup>
+                                        <col width="30">
+<!--                                        <col width="150">-->
+<!--                                        <col width="200">-->
+                                        <col>
+                                    </colgroup>
+                                    <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>公司名</th>
+                                        <th>上月物料申报</th>
+                                        <th>上月物料佐证上传</th>
+                                        <th>上月产品产量提交</th>
+                                        <th>上月设备保养记录提交</th>
+                                        <th>MSDS提交</th>
+                                        <th>生产设备提交</th>
+
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    <#list users as u>
+                                    <tr>
+                                        <td>${u_index+1}</td>
+<!--                                        公司名-->
+                                        <td>${u.companyShortName}</td>
+                                        <!--                                    上月物料申报-->
+                                        <#list total_MaterialsUsed as list>
+                                            <#if list == u.companyShortName>
+                                            <td><span style="color: #1B5E20">已提交</span></td>
+                                            <#break>
+                                            </#if>
+                                            <#if !list_has_next>
+                                                <td><span style="color: #E53935">待提交</span></td>
+                                            </#if>
+                                        </#list>
+<!--                                上月物料佐证上传-->
+                                      <#list total_MaterielsEvidence as list>
+                                            <#if list == u.companyShortName>
+                                            <td><span style="color: #1B5E20">已上传</span></td>
+                                            <#break>
+                                            </#if>
+                                            <#if !list_has_next>
+                                                <td><span style="color: #E53935">待上传</span></td>
+                                            </#if>
+                                        </#list>
+<!--                    上月产品产量提交-->
+                                        <#list total_ProductsOutput as list>
+                                            <#if list == u.companyShortName>
+                                            <td><span style="color: #1B5E20">已提交</span></td>
+                                            <#break>
+                                            </#if>
+                                            <#if !list_has_next>
+                                                <td><span style="color: #E53935">待提交</span></td>
+                                            </#if>
+                                        </#list>
+<!--                                     上月设备保养记录提交-->
+                                        <#list total_EquipmentMaintenance as list>
+                                            <#if list == u.companyShortName>
+                                            <td><span style="color: #1B5E20">已提交</span></td>
+                                            <#break>
+                                            </#if>
+                                            <#if !list_has_next>
+                                                <td><span style="color: #E53935">待提交</span></td>
+                                            </#if>
+                                        </#list>
+
+<!--                                        MSDS提交-->
+                                        <#list total_MSDS as list>
+                                            <#if list == u.companyShortName>
+                                            <td><span style="color: #1B5E20">已提交</span></td>
+                                            <#break>
+                                            </#if>
+                                            <#if !list_has_next>
+                                                <td><span style="color: #E53935">待提交</span></td>
+                                            </#if>
+                                        </#list>
+<!--                                        生产设备提交-->
+                                        <#list total_Equipment as list>
+                                        <#if list == u.companyShortName>
+                                        <td><span style="color: #1B5E20">已提交</span></td>
+                                        <#break>
+                                        </#if>
+                                        <#if !list_has_next>
+                                        <td><span style="color: #E53935">待提交</span></td>
+                                        </#if>
+                                        </#list>
+
+
+                                    </tr>
+
+
+
+
+
+
+
+                                    </#list>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
 
 
                         </div>

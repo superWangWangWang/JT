@@ -63,12 +63,12 @@
 
                                 <div>
                                     <#if evidence_upload??>
-                                        <span style="color: #cc0000;font-size: 15px">佐证【未上传】</span>
+                                        <span style="color: #cc0000;font-size: 15px">当月佐证【未上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>上传佐证</button>
                                      </#if>
 
                                     <#if evidence_update??>
-                                        <span style="color: #1B5E20;font-size: 15px">佐证【已上传】</span>
+                                        <span style="color: #1B5E20;font-size: 15px">当月佐证【已上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>重传佐证</button>
                                     </#if>
                                     <#if evidence_down??>
@@ -100,7 +100,7 @@
                             <input placeholder="该月的用量，不输入则为0" oninput="inputnum(this)" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used?c)!''}" >
                         </td>
                         <td width="20px">
-                            <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除</button></div>
+                            <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除物料</button></div>
                         </td>
                     </tr>
                     </#list>
@@ -117,19 +117,24 @@
             <tr>
                 <th>时间</th>
                 <th>物料月用量</th>
-
+                <th>佐证【选择月份，旁边出现上传按钮】</th>
             </tr>
             </thead>
             <tbody>
-            <#assign map=submitted/>
-            <#assign  keys=map?keys/>
-            <#list keys as key>
+
+            <#list submitted as l>
             <tr>
-                <td>${key}</td>
-                <#if map[key]=="已提交">
-                    <td><span style="color: #1B5E20">${map[key]!''}</span></td>
+                <td>${l.time}</td>
+                <#if l.materiel == "已提交">
+                    <td><span style="color: #1B5E20">${l.materiel}</span></td>
                 <#else>
-                <td><span style="color: #cc0000">${map[key]!''}</span></td>
+                <td><span style="color: #cc0000">${l.materiel}</span></td>
+                </#if>
+
+                <#if l.evidence == "已上传">
+                <td><span style="color: #1B5E20">${l.evidence}</span></td>
+                <#else>
+                <td><span style="color: #cc0000">${l.evidence}</span></td>
                 </#if>
             </tbody>
             </#list>

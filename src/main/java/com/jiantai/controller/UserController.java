@@ -4,6 +4,7 @@ import com.jiantai.entity.*;
 import com.jiantai.service.impl.CommonServiceImpl;
 import com.jiantai.service.impl.UserServiceImpl;
 import com.jiantai.utils.MyUtils;
+import com.jiantai.vo.MaterielAndEvidenceVO;
 import com.jiantai.vo.ResultVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -671,22 +672,37 @@ public class UserController {
         //查询物料使用的时间（2020-08），根据物料记忆表没有删除的物料（因为删除了的物料就没必要再统计了），分组，
         // 用于回显给用户看自己提交了那几个月的数据
         List<String> materialsUsedTime = userService.getMaterialsUsedTime(id);
-        //System.out.println(materialsUsedTime+"==================");
+        //根据公司id查询物料佐证的上传时间，用于回显用户方便查看自己上传了那些月份
+        List<String> materielsEvidenceTime = userService.getMaterielsEvidenceTime(id);
+
         LocalDate now = LocalDate.now();
         int year = now.getYear();
-        Map map = new LinkedHashMap();//{"2020-01":"you","2020-02":"you"}
+        List<MaterielAndEvidenceVO> list = new ArrayList<>();
+
         for (int i = 1;i <= 12;i++){
-            String msg = "未提交";
+            MaterielAndEvidenceVO mevo = new MaterielAndEvidenceVO();
+            String time = year + "-" + (i < 10 ? "0" + i : "" + i);//2020-01
+            mevo.setTime(time);
+            mevo.setMateriel("未提交");
+            mevo.setEvidence("未上传");
+
             for (int j = 0;j<materialsUsedTime.size();j++){
-                if ((year + "-" + (i < 10 ? "0" + i : "" + i)).equals(materialsUsedTime.get(j))){
-                     msg = "已提交";
-                     break;
+                if (time.equals(materialsUsedTime.get(j))){
+                    mevo.setMateriel("已提交");
+                    break;
                 }
             }
-            map.put(year + "-" + (i < 10 ? "0" + i : "" + i),msg);
+            for (int j = 0;j<materielsEvidenceTime.size();j++){
+                if (time.equals(materielsEvidenceTime.get(j))){
+                    mevo.setEvidence("已上传");
+                    break;
+                }
+            }
+            list.add(mevo);
         }
+
         //System.out.println(map+"===================");
-        mv.addObject("submitted",map);
+        mv.addObject("submitted",list);
         return mv;
     }
 

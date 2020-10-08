@@ -53,4 +53,5 @@ public interface UserService {
 	void deleteEquipmentMaintenanceById(Integer id);
 	void changePwd(String pwd,Integer id);
 	List<Equipment> getEquipment(Equipment equipment);
+	List<String> getMaterielsEvidenceTime(Integer cid);
 }

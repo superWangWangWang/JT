@@ -474,4 +474,14 @@ public class UserServiceImpl implements UserService {
 	public List<Equipment> getEquipment(Equipment equipment) {
 		return userDao.getEquipment(equipment);
 	}
+
+	/**
+	 * 根据公司id查询物料佐证的上传时间，用于回显用户方便查看自己上传了那些月份
+	 * @param cid
+	 * @return
+	 */
+	@Override
+	public List<String> getMaterielsEvidenceTime(Integer cid) {
+		return userDao.getMaterielsEvidenceTime(cid);
+	}
 }

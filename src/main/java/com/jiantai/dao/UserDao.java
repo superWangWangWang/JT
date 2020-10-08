@@ -339,6 +339,14 @@ public interface UserDao {
 	List<String> getMaterialsUsedTime(Integer c_id);
 
 	/**
+	 * 根据公司id查询物料佐证的上传时间，用于回显用户方便查看自己上传了那些月份
+	 * @param cid
+	 * @return
+	 */
+	@Select("SELECT materiels_evidence.`evidence_time` FROM  materiels_evidence WHERE `c_id` = #{c_id} ORDER BY evidence_time ASC")
+	List<String> getMaterielsEvidenceTime(Integer cid);
+
+	/**
 	 * 查询产品产量提交的时间（2020-08），分组，
 	 * 用于回显给用户看自己提交了哪几个月的数据
 	 * @param c_id

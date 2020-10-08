@@ -48,7 +48,7 @@
                         <tr>
                             <th>月份</th>
                             <th>是否已提交</th>
-                            <th>操作【上传格式：xlsx、xls】</th>
+                            <th>【格式：xlsx、xls、pdf、bmp、jpg、jpeg、png】</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -96,7 +96,7 @@
                 elem: '.uploadEquipmentMaintenance'
                 , url: 'upload?type=5&dateTime='
                 , accept: 'file' //普通文件
-                , exts: 'xlsx|xls' //只允许上传压缩文件
+                , exts: 'xlsx|xls|pdf|bmp|jpg|png|jpeg' //只允许上传压缩文件
                 , done: function (res) {
                     layer.alert(res.msg, {
                             icon: 6

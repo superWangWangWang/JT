@@ -5,6 +5,8 @@ spring:
     request-context-attribute: request
     cache: false
     #template-loader-path: classpath:/templates/
+    settings:
+      number_format: 0.##      #解决数值用逗号分开的问题
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/jt?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai

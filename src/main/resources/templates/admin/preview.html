@@ -114,73 +114,47 @@
                                     </thead>
                                     <tbody>
 
-                                    <#list users as u>
+                                    <#list statistic as L>
                                     <tr>
-                                        <td>${u_index+1}</td>
+                                        <td>${L_index+1}</td>
 <!--                                        公司名-->
-                                        <td>${u.companyShortName}</td>
-                                        <!--                                    上月物料申报-->
-                                        <#list total_MaterialsUsed as list>
-                                            <#if list == u.companyShortName>
-                                            <td><span style="color: #1B5E20">已提交</span></td>
-                                            <#break>
-                                            </#if>
-                                            <#if !list_has_next>
-                                                <td><span style="color: #E53935">待提交</span></td>
-                                            </#if>
-                                        </#list>
+                                        <td>${L.name}</td>
+<!--                                    上月物料申报-->
+                                <#if L.materielState == 1>
+                                <td><span style="color: #1B5E20">已提交</span></td>
+                                <#else>
+                                <td><span style="color: #E53935">待提交</span></td>
+                                </#if>
 <!--                                上月物料佐证上传-->
-                                      <#list total_MaterielsEvidence as list>
-                                            <#if list == u.companyShortName>
-                                            <td><span style="color: #1B5E20">已上传</span></td>
-                                            <#break>
-                                            </#if>
-                                            <#if !list_has_next>
-                                                <td><span style="color: #E53935">待上传</span></td>
-                                            </#if>
-                                        </#list>
+                                    <#if L.evidenceState == 1>
+                                    <td><span style="color: #1B5E20">已提交</span></td>
+                                    <#else>
+                                    <td><span style="color: #E53935">待提交</span></td>
+                                    </#if>
 <!--                    上月产品产量提交-->
-                                        <#list total_ProductsOutput as list>
-                                            <#if list == u.companyShortName>
-                                            <td><span style="color: #1B5E20">已提交</span></td>
-                                            <#break>
-                                            </#if>
-                                            <#if !list_has_next>
-                                                <td><span style="color: #E53935">待提交</span></td>
-                                            </#if>
-                                        </#list>
+                                <#if L.productState == 1>
+                                    <td><span style="color: #1B5E20">已提交</span></td>
+                                    <#else>
+                                    <td><span style="color: #E53935">待提交</span></td>
+                                </#if>
 <!--                                     上月设备保养记录提交-->
-                                        <#list total_EquipmentMaintenance as list>
-                                            <#if list == u.companyShortName>
-                                            <td><span style="color: #1B5E20">已提交</span></td>
-                                            <#break>
-                                            </#if>
-                                            <#if !list_has_next>
-                                                <td><span style="color: #E53935">待提交</span></td>
-                                            </#if>
-                                        </#list>
-
+                            <#if L.maintainState == 1>
+                                <td><span style="color: #1B5E20">已提交</span></td>
+                                <#else>
+                                <td><span style="color: #E53935">待提交</span></td>
+                            </#if>
 <!--                                        MSDS提交-->
-                                        <#list total_MSDS as list>
-                                            <#if list == u.companyShortName>
-                                            <td><span style="color: #1B5E20">已提交</span></td>
-                                            <#break>
-                                            </#if>
-                                            <#if !list_has_next>
-                                                <td><span style="color: #E53935">待提交</span></td>
-                                            </#if>
-                                        </#list>
+                            <#if L.MSDSState == 1>
+                            <td><span style="color: #1B5E20">已提交</span></td>
+                            <#else>
+                            <td><span style="color: #E53935">待提交</span></td>
+                        </#if>
 <!--                                        生产设备提交-->
-                                        <#list total_Equipment as list>
-                                        <#if list == u.companyShortName>
-                                        <td><span style="color: #1B5E20">已提交</span></td>
-                                        <#break>
-                                        </#if>
-                                        <#if !list_has_next>
-                                        <td><span style="color: #E53935">待提交</span></td>
-                                        </#if>
-                                        </#list>
-
+                        <#if L.equipmentState == 1>
+                        <td><span style="color: #1B5E20">已提交</span></td>
+                        <#else>
+                        <td><span style="color: #E53935">待提交</span></td>
+                    </#if>
 
                                     </tr>
 

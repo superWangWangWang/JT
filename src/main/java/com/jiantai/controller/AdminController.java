@@ -8,6 +8,7 @@ import com.jiantai.service.impl.AdminServiceImpl;
 import com.jiantai.service.impl.CommonServiceImpl;
 import com.jiantai.utils.MyUtils;
 import com.jiantai.vo.ResultVO;
+import com.jiantai.vo.StatisticVO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -71,14 +72,24 @@ public class AdminController {
         LocalDate now = LocalDate.now();
         now = now.minusMonths(1);
         String time = now.format(DateTimeFormatter.ofPattern("yyyy-MM"));
+
+        //统计列表
+        ArrayList<StatisticVO> statistic = new ArrayList<>();
         //取得所有公司账户
         List<User> users = adminServiceImpl.getAllCompanyInfoExcludeSuper();
-        ArrayList uList = new ArrayList();
+        //ArrayList uList = new ArrayList();
         users.forEach(u->{
-            if (u.getState() == 1)
-                uList.add(u);
+            if (u.getState() == 1){
+                StatisticVO statisticVO = new StatisticVO();
+                statisticVO.setName(u.getCompanyShortName());
+                statistic.add(statisticVO);
+                //uList.add(u);
+            }
+
         });
-        mv.addObject("users",uList);
+       // mv.addObject("users",uList);
+
+
 
         //统计上月物料申报企业个数，
         List<String> list1 = adminServiceImpl.getMaterialsUsedCompanyNameLastMonth(time);
@@ -98,6 +109,41 @@ public class AdminController {
         //统计上传msds的企业个数
         List<String> list6 = adminServiceImpl.getMSDSCompanyName();
         mv.addObject("total_MSDS",list6);
+
+
+        statistic.forEach(s->{
+            for (int i = 0;i<list1.size();i++){
+                if (s.getName().equals(list1.get(i))){
+                    s.setMaterielState(1);
+                }
+            }
+            for (int i = 0;i<list2.size();i++){
+                if (s.getName().equals(list2.get(i))){
+                    s.setEvidenceState(1);
+                }
+            }
+            for (int i = 0;i<list3.size();i++){
+                if (s.getName().equals(list3.get(i))){
+                    s.setProductState(1);
+                }
+            }
+            for (int i = 0;i<list4.size();i++){
+                if (s.getName().equals(list4.get(i))){
+                    s.setMaintainState(1);
+                }
+            }
+            for (int i = 0;i<list5.size();i++){
+                if (s.getName().equals(list5.get(i))){
+                    s.setEquipmentState(1);
+                }
+            }
+            for (int i = 0;i<list6.size();i++){
+                if (s.getName().equals(list6.get(i))){
+                    s.setMSDSState(1);
+                }
+            }
+        });
+        mv.addObject("statistic",statistic);
 
         mv.setViewName("admin/preview");
         return mv;

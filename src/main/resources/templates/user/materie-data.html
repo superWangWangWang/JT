@@ -16,7 +16,39 @@
     <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
     <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
+    <script src="https://cdn.bootcss.com/xlsx/0.11.5/xlsx.core.min.js"></script>
 </head>
+
+<style type="text/css">
+    .file {
+        position: relative;
+        display: inline-block;
+        background: #D0EEFF;
+        border: 1px solid #99D3F5;
+        border-radius: 4px;
+        padding: 4px 12px;
+        overflow: hidden;
+        color: #1E88C7;
+        text-decoration: none;
+        text-indent: 0;
+        line-height: 20px;
+    }
+    .file input {
+        position: absolute;
+        font-size: 100px;
+        right: 0;
+        top: 0;
+        opacity: 0;
+    }
+    .file:hover {
+        background: #AADFFD;
+        border-color: #78C3F3;
+        color: #004974;
+        text-decoration: none;
+    }
+</style>
 <body>
 
 <div class="layui-fluid">
@@ -30,6 +62,7 @@
                     <p style="color: #cc0000;font-size: 15px">3.上传佐证（对账单或送货单文件）【格式为压缩包，后缀zip、rar、7z】</p>
                     <p style="color: #cc0000;font-size: 15px">4.输入当月物料的使用量</p>
                     <p style="color: #cc0000;font-size: 15px">5.提交用量</p>
+                    <p style="color: #cc0000;font-size: 15px">6.使用excel提交数据前，必须先将贵公司所需提交的物料添加完，然后下载excel，填写完最后上传excel</p>
                     <br>
                     <form class="layui-form layui-col-space5" action="materialRemember">
 
@@ -62,25 +95,31 @@
                             </div>
 
                                 <div>
+                                    <button type="button" class="layui-btn layui-btn-normal" onclick="down_excel()">下载excel</button>
+
+<!--                                    <input type="file" id="excel-file" >-->
                                     <#if evidence_upload??>
                                         <span style="color: #cc0000;font-size: 15px">当月佐证【未上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>上传佐证</button>
+<!--                                         <button type="button" class="layui-btn layui-btn-warm" onclick="down_excel()">上传excel</button>-->
                                      </#if>
-
                                     <#if evidence_update??>
                                         <span style="color: #1B5E20;font-size: 15px">当月佐证【已上传】</span>
                                         <button type="button" class="layui-btn uploadEvidence" ><i class="layui-icon"></i>重传佐证</button>
+<!--                                         <button type="button" class="layui-btn layui-btn-warm" onclick="down_excel()">上传excel</button>-->
+
                                     </#if>
                                     <#if evidence_down??>
-
                                         <button type="button" class="layui-btn" onclick="down('${evidence_down.id}')"><i class="layui-icon"></i>下载佐证</button>
+<!--                                         <button type="file" id="excel-file" class="layui-btn layui-btn-warm" >上传excel</button>-->
+
                                     </#if>
+
                                 </div>
-
-
+                <a href="javascript:;" class="file">上传excel<input type="file" name="" id="excel-file"></a>
                         </div>
 
-            <table   class="layui-table">
+            <table id="demo"  class="layui-table">
                 <thead>
                 <tr>
                     <th lay-data="{field:'id', width:150}">物料名</th>
@@ -97,7 +136,7 @@
                         <td>${mr.unitCn}</td>
                         <td>
 <!--                            onkeyup="value=value.replace(/^(0+)|[^\d.]+/g,'')"-->
-                            <input placeholder="该月的用量，不输入则为0" oninput="inputnum(this)" type="text"  name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used?c)!''}" >
+                            <input placeholder="该月的用量，不输入则为0" oninput="inputnum(this)" type="text" id="${mr.name}" name="${mr.name}" required=""  autocomplete="off" class="layui-input" value="${(mr.used?c)!''}" >
                         </td>
                         <td width="20px">
                             <div align="center"><button class="layui-btn layui-btn-danger" type="button" onclick="bt_delete('${mr.name}')">删除物料</button></div>
@@ -287,7 +326,62 @@
         obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
         obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
     }
+    //下载excel填写模板
+    function down_excel() {
+        location.href = "downExcel?type=materie";
+    }
 
 </script>
+<script>
+    //给input标签绑定change事件，一上传选中的.xls文件就会触发该函数
+    $('#excel-file').change(function(e) {
+        var files = e.target.files;
+        var fileReader = new FileReader();
+        fileReader.onload = function(ev) {
+            try {
+                var data = ev.target.result
+                var workbook = XLSX.read(data, {
+                    type: 'binary'
+                }) // 以二进制流方式读取得到整份excel表格对象
+                var persons = []; // 存储获取到的数据
+            } catch (e) {
+                console.log('文件类型不正确');
+                return;
+            }
+            // 表格的表格范围，可用于判断表头是否数量是否正确
+            var fromTo = '';
+            // 遍历每张表读取
+            for (var sheet in workbook.Sheets) {
+                if (workbook.Sheets.hasOwnProperty(sheet)) {
+                    fromTo = workbook.Sheets[sheet]['!ref'];
+                    console.log(fromTo);
+                    persons = persons.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
+                    // break; // 如果只取第一张表，就取消注释这行
+                }
+            }
+            //在控制台打印出来表格中的数据
+            console.log(persons);
+        <#list materials_remember as mr>
 
+            for (i = 0; i < persons.length; i++) {
+                console.log(persons[i].物料名);
+                if (persons[i].物料名 == "${mr.name}"){
+                    var use = persons[i].月用量;
+
+                    console.log(use);
+                    if (use == null){
+                        use = 0;
+                    }
+                    document.getElementById("${mr.name}").value = use;
+                }
+
+
+            }
+
+        </#list>
+        };
+        // 以二进制方式打开文件
+        fileReader.readAsBinaryString(files[0]);
+    });
+</script>
 </html>

@@ -1,10 +1,16 @@
 package com.jiantai.utils;
 
+import sun.misc.BASE64Encoder;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,4 +121,20 @@ public class MyUtils {
         return builder.toString();
     }
 
+    public static String filenameEncoding(String filename, HttpServletRequest request) throws IOException {
+        String agent = request.getHeader("User-Agent"); //获取浏览器
+        if (agent.contains("Firefox")) {
+            BASE64Encoder base64Encoder = new BASE64Encoder();
+            filename = "=?utf-8?B?"
+                    + base64Encoder.encode(filename.getBytes("utf-8"))
+                    + "?=";
+        } else if(agent.contains("MSIE")) {
+            filename = URLEncoder.encode(filename, "utf-8");
+        } else if(agent.contains ("Safari")) {
+            filename = new String (filename.getBytes ("utf-8"),"ISO8859-1");
+        } else {
+            filename = URLEncoder.encode(filename, "utf-8");
+        }
+        return filename;
+    }
 }

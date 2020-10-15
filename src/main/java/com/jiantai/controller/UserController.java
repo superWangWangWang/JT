@@ -7,6 +7,9 @@ import com.jiantai.utils.MyUtils;
 import com.jiantai.vo.MaterielAndEvidenceVO;
 import com.jiantai.vo.ResultVO;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -567,6 +572,71 @@ public class UserController {
        if (path != ""){
            MyUtils.downloadFile(response,path,"utf-8");
        }
+
+    }
+
+    /**
+     * 下载execl提交模板
+     * @param request
+     * @param response
+     */
+    @RequestMapping("downExcel")
+    public void downExcel(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String type = request.getParameter("type");
+        System.out.println(type);
+        User user = (User)request.getSession().getAttribute("user");
+        Integer id = user.getId();
+        //查询物料表，排除已经上传的
+        List<Material> materials_remember = userService.getMaterialsRememberByCid(id);
+        System.out.println(materials_remember);
+
+        //-----------
+
+        //1.在内存中创建一个excel文件
+        HSSFWorkbook hssfWorkbook = new HSSFWorkbook();
+
+        //2.创建工作簿
+        HSSFSheet sheet = hssfWorkbook.createSheet();
+
+
+        //3.创建标题行
+        HSSFRow titlerRow = sheet.createRow(0);
+        titlerRow.createCell(0).setCellValue("物料名");
+        titlerRow.createCell(1).setCellValue("单位");
+        titlerRow.createCell(2).setCellValue("月用量（可保留小数点后两位）,不填写则为0");
+        titlerRow.createCell(3).setCellValue("注意（使用excel上传务必规范填写以免出现错误！）：填写完后，网页上选择对应的月份，然后上传填好的excel表格，最后点击【提交用量】按钮提交数据");
+        //4.遍历数据,创建数据行
+        for (Material material : materials_remember) {
+            int lastRowNum = sheet.getLastRowNum();
+            HSSFRow dataRow = sheet.createRow(lastRowNum + 1);
+            dataRow.createCell(0).setCellValue(material.getName());
+            dataRow.createCell(1).setCellValue(material.getUnitCn());
+            dataRow.createCell(2).setCellValue("");
+        }
+        //设置自动宽
+        sheet.autoSizeColumn(0);
+        sheet.setColumnWidth(0,sheet.getColumnWidth(0)*17/10);
+        sheet.autoSizeColumn(1);
+        sheet.setColumnWidth(1,sheet.getColumnWidth(1)*17/10);
+        sheet.autoSizeColumn(2);
+        sheet.setColumnWidth(2,sheet.getColumnWidth(2)*17/10);
+        sheet.autoSizeColumn(3);
+        sheet.setColumnWidth(3,sheet.getColumnWidth(3)*17/10);
+        //5.创建文件名
+        String fileName = "物料用量.xls";
+        //6.获取输出流对象
+        ServletOutputStream outputStream = response.getOutputStream();
+        //7.获取mimeType
+        ServletContext servletContext = request.getServletContext();
+        String mimeType = servletContext.getMimeType(fileName);
+        //8.获取浏览器信息,对文件名进行重新编码
+        fileName = MyUtils.filenameEncoding(fileName, request);
+        //9.设置信息头
+        response.setContentType(mimeType);
+        response.setHeader("Content-Disposition","attachment;filename="+fileName);
+        //10.写出文件,关闭流
+        hssfWorkbook.write(outputStream);
+        hssfWorkbook.close();
 
     }
 

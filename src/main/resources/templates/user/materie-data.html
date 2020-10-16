@@ -62,7 +62,7 @@
                     <p style="color: #cc0000;font-size: 15px">3.上传佐证（对账单或送货单文件）【格式为压缩包，后缀zip、rar、7z】</p>
                     <p style="color: #cc0000;font-size: 15px">4.输入当月物料的使用量</p>
                     <p style="color: #cc0000;font-size: 15px">5.提交用量</p>
-                    <p style="color: #cc0000;font-size: 15px">6.使用excel提交数据前，必须先将贵公司所需提交的物料添加完，然后下载excel，填写完最后上传excel</p>
+                    <p style="color: #cc0000;font-size: 15px">6.使用excel提交数据前，必须先将贵公司所需提交的物料全部添加完，然后下载excel模板，修改excel模板后上传，然后点击提交用量按钮提交数据</p>
                     <br>
                     <form class="layui-form layui-col-space5" action="materialRemember">
 
@@ -124,7 +124,7 @@
                 <tr>
                     <th lay-data="{field:'id', width:150}">物料名</th>
                     <th lay-data="{field:'operation', width:60}">单位</th>
-                    <th lay-data="{field:'kinds', width:400}">月用量（不为整数的，可保留小数点后两位）</th>
+                    <th lay-data="{field:'kinds', width:400}">月用量（不为整数的，可保留小数点后六位）</th>
                     <th lay-data="{field:'total', width:80}">操作</th>
                 </tr>
                 </thead>
@@ -324,7 +324,7 @@
         obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字
         obj.value = obj.value.replace(/\.{2,}/g,""); //只保留第一个, 清除多余的
         obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
-        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d).*$/,'$1$2.$3'); //只能输入两个小数
+        obj.value = obj.value.replace(/^(\-)*(\d+)\.(\d\d\d\d\d\d).*$/,'$1$2.$3'); //只能输入两个小数
     }
     //下载excel填写模板
     function down_excel() {

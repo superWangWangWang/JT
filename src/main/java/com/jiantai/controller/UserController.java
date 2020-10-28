@@ -603,8 +603,8 @@ public class UserController {
         HSSFRow titlerRow = sheet.createRow(0);
         titlerRow.createCell(0).setCellValue("物料名");
         titlerRow.createCell(1).setCellValue("单位");
-        titlerRow.createCell(2).setCellValue("月用量（可保留小数点后六位）,不填写则为0");
-        titlerRow.createCell(3).setCellValue("注意（使用excel上传务必规范填写以免出现错误！）：填写完后，网页上选择对应的月份，然后上传填好的excel表格，最后点击【提交用量】按钮提交数据");
+        titlerRow.createCell(2).setCellValue("月用量");
+        titlerRow.createCell(3).setCellValue("注意（使用excel上传务必规范填写以免出现错误！！！月用量（可保留小数点后六位）,不填写则为0），填写完后，网页上选择对应的月份，然后上传填好的excel表格，最后点击【提交用量】按钮提交数据");
 
         if(materials_remember.size() == 0){//没有添加过物料，这是空表
             HSSFRow dataRow = sheet.createRow(1);

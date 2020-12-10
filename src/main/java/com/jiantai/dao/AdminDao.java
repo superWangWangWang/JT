@@ -278,6 +278,13 @@ public interface AdminDao {
             return sql;
         }
     }
+
+    /**
+     * 新增物料
+     * @param material
+     */
+    @Insert("INSERT INTO `materials` (`name`,`unit`,`unit_cn`,`remarks`) VALUE (#{material.name},#{material.unit},#{material.unitCn},#{material.remarks})")
+    void addMaterial(@Param("material") Material material);
 }
 
 

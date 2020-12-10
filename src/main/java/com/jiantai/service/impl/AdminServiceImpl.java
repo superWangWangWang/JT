@@ -263,4 +263,9 @@ public class AdminServiceImpl implements AdminService {
     public List<String> getMSDSCompanyName() {
         return adminDao.getMSDSCompanyName();
     }
+
+    @Override
+    public void addMaterial(Material material) {
+        adminDao.addMaterial(material);
+    }
 }

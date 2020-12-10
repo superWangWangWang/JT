@@ -36,6 +36,7 @@
                         </div>
                         <button class="layui-btn" data-type="reload">搜索</button>
                         <button class="layui-btn layui-btn-warm" id="add_company" onclick="add_company()">添加账号</button>
+                        <button class="layui-btn layui-btn-warm" id="add_material" onclick="add_material()">添加物料</button>
                     </div>
 
                 </div>
@@ -272,6 +273,9 @@
     //添加公司账户
     function add_company() {
         xadmin.open("新增公司登录账号：", 'company-add.html', 455, 400)
+    }
+    function add_material() {
+        xadmin.open("新增申报物料：", 'material-add.html', 500, 400)
     }
 </script>
 </html>

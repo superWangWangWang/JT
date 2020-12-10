@@ -30,4 +30,5 @@ public interface AdminService {
     List<String> getEquipmentMaintenanceCompanyNameLastMonth(String time);
     List<String> getEquipmentCompanyName();
     List<String> getMSDSCompanyName();
+    void addMaterial(Material material);
 }

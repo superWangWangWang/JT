@@ -583,7 +583,7 @@ public class AdminController {
         //回显公司列表 -仅type = 0
         List<User> companylist = adminServiceImpl.getAllCompanyInfo();
         System.out.println("===========" + companylist);
-        for (int i = 0;i<companylist.size();i++){
+         for (int i = 0;i<companylist.size();i++){
             if (companylist.get(i).getType() != 0){
                 companylist.remove(i);
             }
@@ -800,6 +800,39 @@ public class AdminController {
         int total = (int)pageInfo.getTotal();
         resultVO.setCount(total);
         resultVO.setData(equipmentMaintenanceList);
+        return resultVO;
+    }
+
+    @RequestMapping("addMaterial")
+    @ResponseBody
+    public ResultVO addMaterial(Material material){
+        System.out.println(material);
+        ResultVO resultVO = new ResultVO();
+        if (!StringUtils.isNotBlank(material.getName()) || !StringUtils.isNotBlank(material.getUnitCn()) || !StringUtils.isNotBlank(material.getUnit()) || !StringUtils.isNotBlank(material.getRemarks())){
+            resultVO.setCode(0);
+            resultVO.setMsg("新增失败，参数不能为空");
+            return resultVO;
+        }
+
+        //先查询是否已经存在
+        List<Material> materials = adminServiceImpl.getMaterials();
+        for (int i = 0;i < materials.size();i++){
+            if (materials.get(i).getName().equals(material.getName())){
+                resultVO.setCode(0);
+                resultVO.setMsg("新增失败，已存在该物料");
+                return resultVO;
+            }
+        }
+        //找不到--直接插入
+        try {
+            adminServiceImpl.addMaterial(material);
+        }catch (Exception e){
+            resultVO.setCode(0);
+            resultVO.setMsg("新增失败，系统出现未知错误");
+            return resultVO;
+        }
+        resultVO.setCode(1);
+        resultVO.setMsg("新增成功");
         return resultVO;
     }
 }

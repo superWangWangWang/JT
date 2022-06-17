@@ -71,7 +71,7 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
-            <version>1.2.72</version>
+            <version>1.2.83</version>
         </dependency>
         <!-- excel相关 -->
         <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
